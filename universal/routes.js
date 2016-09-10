@@ -1,15 +1,13 @@
-import React from 'react';
-import { Route, IndexRoute } from 'react-router';
+import React from 'react'
+import { Route, IndexRoute } from 'react-router'
 
-import PulseApp from './containers/PulseApp';
-import MyEvents from './containers/MyEvents';
-
-import OtherEvents from './containers/OtherEvents';
+import CoreLayout from './layouts/CoreLayout'
+import HomeView from './views/HomeView'
+import GamesView from './views/GamesView'
 
 export default (
-  <Route path='/' component={PulseApp}>
-    <IndexRoute components={{myEvents: MyEvents, otherEvents: OtherEvents}} />
-    <Route path='my-events' components={{myEvents: MyEvents}} />
-    <Route path='other-events' components={{otherEvents: OtherEvents}} />
+  <Route path='/' component={CoreLayout}>
+    <IndexRoute components={HomeView} />
+    <Route path='games' components={GamesView} />
   </Route>
-);
+)

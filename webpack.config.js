@@ -1,11 +1,11 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var nib = require('nib');
+var path = require('path')
+var webpack = require('webpack')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var nib = require('nib')
 
-var config = require('config');
+var config = require('config')
 
-var entry, output, plugins, loaders;
+var entry, output, plugins, loaders
 
 if (process.env.NODE_ENV === 'development') {
   entry = [
@@ -81,4 +81,4 @@ module.exports = {
   stylus: {
     use: [ nib() ]
   }
-};
+}

@@ -1,4 +1,4 @@
-var webpackConfig = require('./webpack.config.js');
+var webpackConfig = require('./webpack.config.js')
 
 module.exports = function (config) {
   config.set({
@@ -29,5 +29,5 @@ module.exports = function (config) {
     webpackServer: {
       noInfo: true // We don't want webpack output
     }
-  });
-};
+  })
+}

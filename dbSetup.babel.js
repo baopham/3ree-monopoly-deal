@@ -1,2 +1,2 @@
-require('babel-core/register'); 
-require('./dbSetup');
+require('babel-core/register')
+require('./dbSetup')

@@ -2,3 +2,4 @@ node_modules
 dist
 build
 config/local.json
+rethinkdb_data/
