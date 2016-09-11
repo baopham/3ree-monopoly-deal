@@ -38,12 +38,15 @@ const getGame = (id) => {
   }
 }
 
-const join = (name) => {
-  return (dispatch) => {
-    dispatch(joinRequest())
+const join = (username) => {
+  return (dispatch, getState) => {
+    const id = getState().currentGame.game.id
+
+    dispatch(joinRequest(username))
 
     return request
       .post(`${gamesUrl}/${id}/join`)
+      .send({ username })
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (err) {
@@ -59,6 +62,7 @@ const leave = (name) => {
   return (dispatch) => {
     return request
       .post(`${gamesUrl}/${id}/leave`)
+      .send(username)
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (err) {
@@ -72,8 +76,8 @@ const leave = (name) => {
 
 const loadRequest = (id) => ({ type: LOAD_REQUEST, id })
 const loadSuccess = (game) => ({ type: LOAD_SUCCESS, game })
-const joinRequest = () => ({ type: JOIN_REQUEST })
-const joinSuccess = (name) => ({ type: JOIN_SUCCESS, name })
+const joinRequest = (username) => ({ type: JOIN_REQUEST, username })
+const joinSuccess = (newMember) => ({ type: JOIN_SUCCESS, newMember })
 const error = (err) => ({ type: ERROR, error: err })
 
 export const actions = {
@@ -85,7 +89,8 @@ export const actions = {
 // Reducer
 // ------------------------------------
 const initialState = {
-  game: {},
+  game: null,
+  membership: {},
   isWorking: false,
   error: null
 }
@@ -95,16 +100,24 @@ const requestActionHandler = (state) => ({ ...state, isWorking: true, error: nul
 const actionHandlers = {
   [LOAD_REQUEST]: requestActionHandler,
 
-  [LOAD_SUCCESS]: (state, { game }) => ({ ...state, game, isWorking: false, error: null }),
+  [LOAD_SUCCESS]: (state, { game }) => {
+    const nextState = deepmerge(state, { game, isWorking: false, error: null })
+
+    return nextState
+  },
 
   [JOIN_REQUEST]: requestActionHandler,
 
-  [JOIN_SUCCESS]: (state, { name }) => {
+  [JOIN_SUCCESS]: (state, { newMember }) => {
     const nextState = deepmerge(state, { isWorking: false, error: null })
 
-    if (nextState.game.members.indexOf(name) === -1) {
-      nextState.game.members.push(name)
+    const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
+
+    if (!alreadyJoined) {
+      nextState.game.members.push(newMember)
     }
+
+    nextState.membership[nextState.game.id] = newMember
 
     return nextState
   },

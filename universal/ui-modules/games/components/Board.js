@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react'
-import Cards from './Cards'
+import DrawPile from './DrawPile'
+import DiscardPile from './DiscardPile'
+import PlacedCards from './PlacedCards'
 
 export default class Board extends React.Component {
   static propTypes = {
@@ -7,11 +9,15 @@ export default class Board extends React.Component {
   }
 
   render () {
-    const { cards } = this.props.game
+    const { game } = this.props
 
     return (
       <div>
-        <Cards cards={cards} />
+        <DrawPile cards={game.availableCards} />
+        <DiscardPile cards={game.discardedCards} />
+        {game.members.map((member, i) =>
+          <PlacedCards key={i} member={member} />
+        )}
       </div>
     )
   }

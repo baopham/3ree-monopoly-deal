@@ -61,3 +61,10 @@ export function deleteGame (req, res) {
     .catch(err => handleError(err, res))
 }
 
+export function joinGame (req, res) {
+  const promise = service.addMember(req.params.id, req.body.username)
+
+  promise
+    .then(result => res.json(result))
+    .catch(err => handleError(err, res))
+}

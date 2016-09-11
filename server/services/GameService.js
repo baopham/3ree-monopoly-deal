@@ -1,13 +1,18 @@
 import r from 'rethinkdb'
-import { connect } from './rethinkdb-util'
+import GameRepository from '../repositories/GameRepository'
+import MemberRepository from '../repositories/MemberRepository'
 import RealtimeService from './RealtimeService'
-
-const GAMES_TABLE = 'games'
-const GAME_MEMBERS_TABLE = 'game_members'
+import { newDeck } from '../../universal/monopoly-cards'
 
 export default class GameService extends RealtimeService {
+  constructor () {
+    super()
+    this.gameRepository = new GameRepository()
+    this.memberRepository = new MemberRepository()
+  }
+
   static liveUpdates (io) {
-    super.liveUpdates(io, GAMES_TABLE, `${GAMES_TABLE}-change`)
+    super.liveUpdates(io, GameRepository.table, 'game-change')
   }
 
   validateAndSanitize (game) {
@@ -20,88 +25,39 @@ export default class GameService extends RealtimeService {
     page = parseInt(page, 10)
     limit = parseInt(limit, 10)
 
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .orderBy(r.desc('created'))
-          .skip(page * limit)
-          .limit(limit)
-          .run(conn)
-          .then(cursor => cursor.toArray())
-      })
+    return this.gameRepository.getAll(page, limit)
   }
 
   getGame (id) {
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .get(id)
-          .merge(g => {
-            return {
-              members: r
-                .table(GAME_MEMBERS_TABLE)
-                .getAll(id, { index: 'game_id' })
-                .coerceTo('array')
-            }
-          })
-          .run(conn)
-          .then(response => response)
-      })
+    return this.gameRepository.find(id)
   }
 
   getCount () {
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .count()
-          .run(conn)
-          .then(result => result)
-      })
+    return this.gameRepository.getCount()
   }
 
   addGame (game) {
     this.validateAndSanitize(game)
 
-    game.cards = ['todo']
+    game.availableCards = newDeck()
+    game.discardedCards = []
 
-    return connect()
-      .then(conn => {
-        game.created = new Date()
-        return r
-          .table(GAMES_TABLE)
-          .insert(game)
-          .run(conn)
-          .then(response => {
-            return Object.assign({}, game, { id: response.generated_keys[0] })
-          })
-      })
+    return this.gameRepository.insert(game)
   }
 
   updateGame (id, game) {
     this.validateAndSanitize(game)
 
-    game.updated = new Date()
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .get(id)
-          .update(game)
-          .run(conn)
-          .then(() => game)
-      })
+    game.updatedAt = new Date()
+
+    return this.gameRepository.update(id, game)
   }
 
   deleteGame (id) {
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .get(id).delete().run(conn)
-          .then(() => ({ id: id, deleted: true }))
-      })
+    return this.gameRepository.delete(id)
+  }
+
+  addMember (id, username) {
+    return this.memberRepository.joinGame(id, username)
   }
 }

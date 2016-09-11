@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react'
 import Board from '../components/Board'
+import CardsOnHand from '../components/CardsOnHand'
+import JoinForm from '../components/JoinForm'
 import { connect } from 'react-redux'
 import { actions } from '../../../ducks/currentGame'
 
@@ -11,6 +13,7 @@ export class GameContainer extends React.Component {
   static propTypes = {
     currentGame: PropTypes.object.isRequired,
     getGame: PropTypes.func.isRequired,
+    join: PropTypes.func.isRequired,
     currentGameId: PropTypes.string.isRequired
   }
 
@@ -19,14 +22,23 @@ export class GameContainer extends React.Component {
   }
 
   render () {
-    const { game } = this.props.currentGame
+    const { join } = this.props
+    const { game, membership } = this.props.currentGame
+
+    const currentMember = game && membership[game.id]
 
     return (
       <div>
-        {game.id &&
+        {game &&
           <div>
             <p>Game: {game.id}</p>
             <Board game={game} />
+            {!currentMember &&
+              <JoinForm onJoin={join} />
+            }
+            {currentMember &&
+              <CardsOnHand member={currentMember} />
+            }
           </div>
         }
       </div>

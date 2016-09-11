@@ -44,6 +44,7 @@
     "react-router": "2.4.x",
     "react-router-redux": "4.0.x",
     "redux": "3.5.x",
+    "redux-localstorage": "^0.4.1",
     "redux-logger": "2.6.x",
     "redux-thunk": "2.1.x",
     "remote-redux-devtools": "^0.4.8",
