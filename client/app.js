@@ -8,7 +8,7 @@ import setupRealtime from './real-time'
 import routes from '../universal/routes'
 import store from '../universal/store'
 
-import Root from '../universal/containers/root'
+import Root from '../universal/containers/Root'
 
 import '../style/pure.css'
 import '../style/main.styl'

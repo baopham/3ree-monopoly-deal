@@ -1,8 +1,9 @@
+/* global __DEV__ */
+
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 import { routerReducer } from 'react-router-redux'
-import DevTools from '../containers/devTools'
 
 import ducks from '../ducks'
 
@@ -14,18 +15,20 @@ const rootReducer = combineReducers({
   ...ducks
 })
 
+const enhancers = []
 
-const loggerMiddleware = createLogger({
-  level: 'info',
-  collapsed: true,
-})
+if (__DEV__ && typeof window.devToolsExtension === 'function') {
+  enhancers.push(window.devToolsExtension())
+}
 
-const enhancer = compose(
-  applyMiddleware(thunkMiddleware, loggerMiddleware),
-  DevTools.instrument()
+const store = createStore(
+  rootReducer,
+  initialState,
+  compose(
+    applyMiddleware(thunkMiddleware),
+    ...enhancers
+  )
 )
-
-const store = createStore(rootReducer, initialState, enhancer)
 
 if (module.hot) {
   module.hot.accept('../ducks', () =>
@@ -34,6 +37,6 @@ if (module.hot) {
       ...require('../ducks')
     }))
   )
-};
+}
 
 export default store

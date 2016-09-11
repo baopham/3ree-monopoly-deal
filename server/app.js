@@ -5,7 +5,6 @@ import { RouterContext, match } from 'react-router'
 
 import configureStore from '../universal/store'
 import routes from '../universal/routes'
-import DevTools from '../universal/containers/devTools'
 
 const isDev = (process.env.NODE_ENV !== 'production')
 
@@ -36,14 +35,11 @@ export function handleRender(req, res) {
       return
     }
 
-    const devTools = (isDev) ? <DevTools /> : null
-
     // Render the component to a string
     const html = ReactDOMServer.renderToString(
       <Provider store={store}>
         <div>
           <RouterContext {...renderProps} />
-          {devTools}
           </div>
         </Provider>
     )
