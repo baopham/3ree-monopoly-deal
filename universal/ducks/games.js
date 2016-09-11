@@ -1,5 +1,5 @@
 import { namespace, deepmerge, apiUrl } from './util'
-import request from 'superagent'
+import * as request from '../request-util'
 
 function namespacedConstant (value) {
   return namespace('GAMES', value)
@@ -23,37 +23,29 @@ const ERROR = namespacedConstant('ERROR')
 // ------------------------------------
 // Action Creators
 // ------------------------------------
-const getGames = (page = 0) => {
+function getGames (page = 0) {
   return (dispatch) => {
     dispatch(loadPageRequest(page))
 
     return request
-      .get(gamesUrl)
-      .query({ page })
-      .set('Accept', 'application/json')
+      .get(gamesUrl, { page })
       .end((err, res) => {
-        if (err) {
-          dispatch(error(err))
-        } else {
-          dispatch(loadSuccess(res.body))
-        }
+        err ? dispatch(error(err)) : loadSuccess(res.body)
       })
   }
 }
 
-const addGame = (game) => {
+function addGame (game) {
   return (dispatch, getState) => {
     dispatch(addRequest(game))
 
     return request
-      .post(gamesUrl)
-      .send(game)
-      .set('Accept', 'application/json')
+      .post(gamesUrl, game)
       .end((err, res) => {
         if (err) {
           dispatch(error(err))
         } else {
-          dispatch(addSuccess(res.body))
+          // relying on the real-time setup
         }
       })
   }
@@ -66,7 +58,7 @@ const addSuccess = ({ game, count }) => ({ type: ADD_SUCCESS, game, count })
 const deleteRequest = (game) => ({ type: DELETE_REQUEST, game })
 const deleteSuccess = ({ game, count }) => ({ type: DELETE_SUCCESS, game, count })
 const updateRequest = (game) => ({ type: UPDATE_REQUEST, game })
-const updateSuccess = ({ games, count }) => ({ type: UPDATE_SUCCESS, game, count })
+const updateSuccess = ({ game, count }) => ({ type: UPDATE_SUCCESS, game, count })
 const error = (err) => ({ type: ERROR, error: err })
 
 export const actions = {
@@ -104,23 +96,17 @@ const actionHandlers = {
   [UPDATE_REQUEST]: requestActionHandler,
 
   [ADD_SUCCESS]: (state, { game, count }) => {
-    if (state._addedIds[game.id]) {
-      return state
-    }
-
     const nextState = deepmerge(state, {
       isWorking: false,
       error: null,
       games: [game, ...state.games.slice(0, state.limit - 1)],
       count
     })
-    nextState._addedIds[game.id] = true
     return nextState
   },
 
   [DELETE_SUCCESS]: (state, { game, count }) => {
     const nextState = deepmerge(state, { isWorking: false, error: null, count })
-    delete nextState._addedIds[game.id]
     nextState.games = state.games.filter(g => g.id !== game.id)
 
     return nextState

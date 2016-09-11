@@ -14,6 +14,7 @@ export default class Board extends React.Component {
     return (
       <div>
         <DrawPile cards={game.availableCards} />
+        <br />
         <DiscardPile cards={game.discardedCards} />
         {game.members.map((member, i) =>
           <PlacedCards key={i} member={member} />

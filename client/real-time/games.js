@@ -1,7 +1,7 @@
 import { actions } from '../../universal/ducks/games'
 
 // TODO: unsubscribe, resubscribe upon route change
-export default function setupRealtimeGame (io, store) {
+export default function setupRealtimeGames (io, store) {
   io.on('game-change', (change) => {
     if (!change.old_val) {
       store.dispatch(actions.addSuccess({ game: change.new_val, count: change.count }))

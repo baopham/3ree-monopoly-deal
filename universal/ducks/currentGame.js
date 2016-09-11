@@ -1,5 +1,5 @@
 import { namespace, deepmerge, apiUrl } from './util'
-import request from 'superagent'
+import * as request from '../request-util'
 
 function namespacedConstant (value) {
   return namespace('GAME', value)
@@ -16,73 +16,78 @@ const JOIN_REQUEST = namespacedConstant('JOIN_REQUEST')
 const JOIN_SUCCESS = namespacedConstant('JOIN_SUCCESS')
 const LEAVE_REQUEST = namespacedConstant('LEAVE_REQUEST')
 const LEAVE_SUCCESS = namespacedConstant('LEAVE_SUCCESS')
+const DRAW_CARD_SUCCESS = namespacedConstant('DRAW_CARD_SUCCESS')
+const DISCARD_CARD_SUCCESS = namespacedConstant('DISCARD_CARD_SUCCESS')
+const GIVE_CARD_TO_OTHER_MEMBER_SUCCESS = namespacedConstant('GIVE_CARD_TO_OTHER_MEMBER_SUCCESS')
 const ERROR = namespacedConstant('ERROR')
 
 // ------------------------------------
 // Action Creators
 // ------------------------------------
-const getGame = (id) => {
+function getGame (id) {
   return (dispatch) => {
     dispatch(loadRequest(id))
 
     return request
       .get(`${gamesUrl}/${id}`)
-      .set('Accept', 'application/json')
       .end((err, res) => {
-        if (err) {
-          dispatch(error(err))
-        } else {
-          dispatch(loadSuccess(res.body))
-        }
+        err ? dispatch(error(err)) : loadSuccess(res.body)
       })
   }
 }
 
-const join = (username) => {
+function join (username) {
   return (dispatch, getState) => {
     const id = getState().currentGame.game.id
 
     dispatch(joinRequest(username))
 
     return request
-      .post(`${gamesUrl}/${id}/join`)
-      .send({ username })
-      .set('Accept', 'application/json')
+      .post(`${gamesUrl}/${id}/join`, { username })
       .end((err, res) => {
-        if (err) {
-          dispatch(error(err))
-        } else {
-          dispatch(joinSuccess(res.body))
-        }
+        err ? dispatch(error(err)) : joinSuccess(res.body)
       })
   }
 }
 
-const leave = (name) => {
+function leave (name) {
   return (dispatch) => {
     return request
-      .post(`${gamesUrl}/${id}/leave`)
-      .send(username)
-      .set('Accept', 'application/json')
+      .post(`${gamesUrl}/${id}/leave`, { username })
       .end((err, res) => {
-        if (err) {
-          dispatch(error(err))
-        } else {
-          dispatch(leaveSuccess(res.body))
-        }
+        err ? dispatch(error(err)) : leaveSuccess(res.body)
       })
   }
+}
+
+function drawCard (card) {
+  // TODO
+}
+
+function discardCard (card) {
+  // TODO
+}
+
+function placeCard (card) {
+  // TODO
+}
+
+function giveCardToOtherMember (card, username) {
+  // TODO
 }
 
 const loadRequest = (id) => ({ type: LOAD_REQUEST, id })
 const loadSuccess = (game) => ({ type: LOAD_SUCCESS, game })
 const joinRequest = (username) => ({ type: JOIN_REQUEST, username })
 const joinSuccess = (newMember) => ({ type: JOIN_SUCCESS, newMember })
+const drawCardSuccess = (card) => ({ type: DRAW_CARD_SUCCESS, card })
+const discardCardSuccess = (card) => ({ type: DISCARD_CARD_SUCCESS, card })
 const error = (err) => ({ type: ERROR, error: err })
 
 export const actions = {
   getGame,
-  join
+  join,
+  loadSuccess
 }
 
 // ------------------------------------
@@ -118,6 +123,26 @@ const actionHandlers = {
     }
 
     nextState.membership[nextState.game.id] = newMember
+
+    return nextState
+  },
+
+  [DRAW_CARD_SUCCESS]: (state, { card }) => {
+    const nextState = deepmerge(state, { isWorking: false, error: null })
+
+    nextState.game.availableCards = nextState.game.availableCards.filter(c => c !== card)
+
+    nextState.game.discardedCards.push(card)
+
+    return nextState
+  },
+
+  [DISCARD_CARD_SUCCESS]: (state, { card }) => {
+    const nextState = deepmerge(state, { isWorking: false, error: null })
+
+    nextState.game.discardedCards = nextState.game.discardedCards.filter(c => c !== card)
+
+    nextState.game.availableCards.push(card)
 
     return nextState
   },
