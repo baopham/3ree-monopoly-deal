@@ -1,5 +1,8 @@
 import merge from 'lodash.mergewith'
 
+const serverUrl = ''
+export const apiUrl = `${serverUrl}/api/1`
+
 export function namespace (namespace, value) {
   return `${namespace}/${value}`
 }

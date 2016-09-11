@@ -20,6 +20,14 @@ export function getGames (req, res) {
     .catch(err => handleError(err, res))
 }
 
+export function getGame (req, res) {
+  const promise = service.getGame(req.params.id)
+
+  promise
+    .then(result => res.json(result))
+    .catch(err => handleError(err, res))
+}
+
 export function addGame (req, res) {
   const promise = Promise.props({
     game: service.addGame(req.body),

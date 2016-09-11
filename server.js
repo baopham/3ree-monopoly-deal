@@ -33,11 +33,13 @@ app.use(bodyParser.json())
  * API Endpoints
  */
 app.get('/api/1/games', api.games.getGames)
+app.get('/api/1/games/:id', api.games.getGame)
 app.post('/api/1/games', api.games.addGame)
 app.post('/api/1/games/:id', api.games.updateGame)
 app.delete('/api/1/games/:id', api.games.deleteGame)
 
-app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'images', 'favicon.ico')))
+app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'static', 'images', 'favicon.ico')))
+app.use(express.static('static'))
 
 /**
  * Universal Application endpoint

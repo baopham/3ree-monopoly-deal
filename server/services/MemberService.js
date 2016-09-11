@@ -2,12 +2,12 @@ import r from 'rethinkdb'
 import { connect } from './rethinkdb-util'
 import RealtimeService from './RealtimeService'
 
-const GAMES_TABLE = 'games'
-const GAME_MEMBERS_TABLE = 'game_members'
+const TABLE = 'members'
+const EVENT_NAME = 'member-change'
 
 export default class GameService extends RealtimeService {
   static liveUpdates (io) {
-    super.liveUpdates(io, GAMES_TABLE, `${GAMES_TABLE}-change`)
+    super.liveUpdates(io, TABLE, EVENT_NAME)
   }
 
   validateAndSanitize (game) {
@@ -23,7 +23,7 @@ export default class GameService extends RealtimeService {
     return connect()
       .then(conn => {
         return r
-          .table(GAMES_TABLE)
+          .table(TABLE)
           .orderBy(r.desc('created'))
           .skip(page * limit)
           .limit(limit)
@@ -32,30 +32,11 @@ export default class GameService extends RealtimeService {
       })
   }
 
-  getGame (id) {
-    return connect()
-      .then(conn => {
-        return r
-          .table(GAMES_TABLE)
-          .get(id)
-          .merge(g => {
-            return {
-              members: r
-                .table(GAME_MEMBERS_TABLE)
-                .getAll(id, { index: 'game_id' })
-                .coerceTo('array')
-            }
-          })
-          .run(conn)
-          .then(response => response)
-      })
-  }
-
   getCount () {
     return connect()
       .then(conn => {
         return r
-          .table(GAMES_TABLE)
+          .table(TABLE)
           .count()
           .run(conn)
           .then(result => result)
@@ -65,15 +46,12 @@ export default class GameService extends RealtimeService {
   addGame (game) {
     this.validateAndSanitize(game)
 
-    game.cards = ['todo']
-
     return connect()
       .then(conn => {
         game.created = new Date()
         return r
-          .table(GAMES_TABLE)
-          .insert(game)
-          .run(conn)
+          .table(TABLE)
+          .insert(game).run(conn)
           .then(response => {
             return Object.assign({}, game, { id: response.generated_keys[0] })
           })
@@ -87,10 +65,8 @@ export default class GameService extends RealtimeService {
     return connect()
       .then(conn => {
         return r
-          .table(GAMES_TABLE)
-          .get(id)
-          .update(game)
-          .run(conn)
+          .table(TABLE)
+          .get(id).update(game).run(conn)
           .then(() => game)
       })
   }
@@ -99,7 +75,7 @@ export default class GameService extends RealtimeService {
     return connect()
       .then(conn => {
         return r
-          .table(GAMES_TABLE)
+          .table(TABLE)
           .get(id).delete().run(conn)
           .then(() => ({ id: id, deleted: true }))
       })

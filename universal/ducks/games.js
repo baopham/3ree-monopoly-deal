@@ -1,4 +1,4 @@
-import { namespace, deepmerge } from './util'
+import { namespace, deepmerge, apiUrl } from './util'
 import request from 'superagent'
 
 function namespacedConstant (value) {
@@ -8,8 +8,7 @@ function namespacedConstant (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
-const serverUrl = ''
-const eventsUrl = `${serverUrl}/api/1/games`
+const gamesUrl = `${apiUrl}/games`
 
 const LOAD_PAGE_REQUEST = namespacedConstant('LOAD_PAGE_REQUEST')
 const LOAD_SUCCESS = namespacedConstant('LOAD_SUCCESS')
@@ -29,7 +28,7 @@ const getGames = (page = 0) => {
     dispatch(loadPageRequest(page))
 
     return request
-      .get(eventsUrl)
+      .get(gamesUrl)
       .query({ page })
       .set('Accept', 'application/json')
       .end((err, res) => {
@@ -47,7 +46,7 @@ const addGame = (game) => {
     dispatch(addRequest(game))
 
     return request
-      .post(eventsUrl)
+      .post(gamesUrl)
       .send(game)
       .set('Accept', 'application/json')
       .end((err, res) => {

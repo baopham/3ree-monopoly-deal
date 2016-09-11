@@ -3,8 +3,8 @@ import r from 'rethinkdb'
 import config from 'config'
 
 const rethinkdb = config.get('rethinkdb')
-let DATABASE = rethinkdb.db || 'pulse'
-let TABLES = ['pulses', 'games']
+let DATABASE = rethinkdb.db || 'monopoly'
+let TABLES = ['games', 'game_members']
 
 r.connect(rethinkdb)
 .then(conn => {
