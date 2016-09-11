@@ -14,10 +14,10 @@ r.connect(rethinkdb)
   .then(() => closeConnection(conn))
 })
 
-function createDbIfNotExists(conn){
+function createDbIfNotExists (conn) {
   return getDbList(conn)
   .then((list) => {
-    if(list.indexOf(DATABASE) === -1) {
+    if (list.indexOf(DATABASE) === -1) {
       return createDatabase(conn)
     } else {
       console.log(' [!] Database already exists:', DATABASE)
@@ -26,10 +26,10 @@ function createDbIfNotExists(conn){
   })
 }
 
-function createTableIfNotExists(conn, table) {
+function createTableIfNotExists (conn, table) {
   return getTableList(conn)
   .then((list) => {
-    if(list.indexOf(table) === -1) {
+    if (list.indexOf(table) === -1) {
       return createTable(conn, table)
     } else {
       console.log(' [!] Table already exists:', table)
@@ -38,25 +38,25 @@ function createTableIfNotExists(conn, table) {
   })
 }
 
-function getDbList(conn) {
+function getDbList (conn) {
   return r.dbList().run(conn)
 }
 
-function getTableList(conn) {
+function getTableList (conn) {
   return r.db(DATABASE).tableList().run(conn)
 }
 
-function createDatabase(conn) {
+function createDatabase (conn) {
   console.log(' [-] Create Database:', DATABASE)
   return r.dbCreate(DATABASE).run(conn)
 }
 
-function createTable(conn, table) {
+function createTable (conn, table) {
   console.log(' [-] Create Table:', table)
   return r.db(DATABASE).tableCreate(table).run(conn)
 }
 
-function closeConnection(conn) {
+function closeConnection (conn) {
   console.log(' [x] Close connection!')
   return conn.close()
 }

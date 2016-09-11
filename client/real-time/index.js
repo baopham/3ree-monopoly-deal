@@ -3,6 +3,6 @@ import games from './games'
 
 const io = socketClient()
 
-export default function setupRealtime(store) {
+export default function setupRealtime (store) {
   games(io, store)
 }

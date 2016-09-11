@@ -1,9 +1,7 @@
 import { actions } from '../../universal/ducks/games'
 
-export default function setupRealtimeGame(io, store) {
+export default function setupRealtimeGame (io, store) {
   io.on('game-change', (change) => {
-    let state = store.getState()
-
     if (!change.old_val) {
       store.dispatch(actions.addSuccess({ game: change.new_val, count: change.count }))
     } else if (!change.new_val) {

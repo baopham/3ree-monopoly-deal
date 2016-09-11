@@ -1,14 +1,14 @@
 import merge from 'lodash.mergewith'
 
-export function namespace(namespace, value) {
+export function namespace (namespace, value) {
   return `${namespace}/${value}`
 }
 
-export function deepmerge(original, next) {
+export function deepmerge (original, next) {
   return merge({}, original, next, customizer)
 }
 
-function customizer(destValue, srcValue, key, destParent) {
+function customizer (destValue, srcValue, key, destParent) {
   if (srcValue === undefined) {
     delete destParent[key]
   } else if (destValue instanceof Array && srcValue instanceof Array) {

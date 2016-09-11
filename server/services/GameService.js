@@ -1,5 +1,4 @@
 import r from 'rethinkdb'
-import xss from 'xss'
 import { connect } from './rethinkdb-util'
 import RealtimeService from './RealtimeService'
 
@@ -7,16 +6,16 @@ const TABLE = 'games'
 const EVENT_NAME = 'game-change'
 
 export default class GameService extends RealtimeService {
-  static liveUpdates(io) {
+  static liveUpdates (io) {
     super.liveUpdates(io, TABLE, EVENT_NAME)
   }
 
-  validateAndSanitize(game) {
+  validateAndSanitize (game) {
     // TODO
     return true
   }
 
-  getGames(page = 0, limit = 10) {
+  getGames (page = 0, limit = 10) {
     console.log(`Getting games page: ${page}, limit: ${limit}`)
     page = parseInt(page, 10)
     limit = parseInt(limit, 10)
@@ -33,7 +32,7 @@ export default class GameService extends RealtimeService {
       })
   }
 
-  getCount() {
+  getCount () {
     return connect()
       .then(conn => {
         return r
@@ -44,7 +43,7 @@ export default class GameService extends RealtimeService {
       })
   }
 
-  addGame(game) {
+  addGame (game) {
     this.validateAndSanitize(game)
 
     return connect()
@@ -54,12 +53,12 @@ export default class GameService extends RealtimeService {
           .table(TABLE)
           .insert(game).run(conn)
           .then(response => {
-            return Object.assign({}, game, {id: response.generated_keys[0]})
+            return Object.assign({}, game, { id: response.generated_keys[0] })
           })
       })
   }
 
-  updateGame(id, game) {
+  updateGame (id, game) {
     this.validateAndSanitize(game)
 
     game.updated = new Date()
@@ -72,13 +71,13 @@ export default class GameService extends RealtimeService {
       })
   }
 
-  deleteGame(id) {
+  deleteGame (id) {
     return connect()
       .then(conn => {
         return r
           .table(TABLE)
           .get(id).delete().run(conn)
-          .then(() => ({id: id, deleted: true}))
+          .then(() => ({ id: id, deleted: true }))
       })
   }
 }

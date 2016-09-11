@@ -2,7 +2,6 @@
 
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import createLogger from 'redux-logger'
 import { routerReducer } from 'react-router-redux'
 
 import ducks from '../ducks'

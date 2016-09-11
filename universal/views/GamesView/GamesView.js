@@ -2,7 +2,7 @@ import React from 'react'
 import GamesContainer from '../../ui-modules/games/containers/GamesContainter'
 
 export class GamesView extends React.Component {
-  render() {
+  render () {
     return (
       <GamesContainer />
     )

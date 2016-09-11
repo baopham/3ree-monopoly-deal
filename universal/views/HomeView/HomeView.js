@@ -1,7 +1,7 @@
 import React from 'react'
 
 export class HomeView extends React.Component {
-  render() {
+  render () {
     return (
       <div>
         <h1>Home View</h1>

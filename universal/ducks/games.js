@@ -1,7 +1,7 @@
 import { namespace, deepmerge } from './util'
 import request from 'superagent'
 
-function namespacedConstant(value) {
+function namespacedConstant (value) {
   return namespace('GAMES', value)
 }
 

@@ -12,10 +12,10 @@ export class GamesContainer extends React.Component {
     games: PropTypes.object.isRequired,
     addGame: PropTypes.func.isRequired,
     getGames: PropTypes.func.isRequired
-  }
+  };
 
-  componentDidMount() {
-    this.props.getGames(this.props.page)
+  componentDidMount () {
+    this.props.getGames(this.props.games.page)
   }
 
   addGame = () => {
@@ -32,7 +32,7 @@ export class GamesContainer extends React.Component {
     this.props.getGames(this.props.games.page - 1)
   }
 
-  render() {
+  render () {
     const { games, count, page, limit } = this.props.games
 
     const totalPages = Math.ceil(count / limit)

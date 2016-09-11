@@ -1,7 +1,6 @@
-import createHistory from 'history/lib/createMemoryHistory'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import { routerReducer } from 'react-router-redux'
 import devTools from 'remote-redux-devtools'
 
 import ducks from '../ducks'
@@ -26,7 +25,6 @@ export default (req, initialState) => {
       ...enhancers
     )
   )
-
 
   if (process.env.NODE_ENV !== 'production') {
     devTools.updateStore(store)
