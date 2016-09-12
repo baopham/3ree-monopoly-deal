@@ -4,15 +4,24 @@ import MemberRepository from '../repositories/MemberRepository'
 import RealtimeService from './RealtimeService'
 import { newDeck } from '../../universal/monopoly-cards'
 
-export default class GameService extends RealtimeService {
+export default class GameService {
   constructor () {
-    super()
     this.gameRepository = new GameRepository()
     this.memberRepository = new MemberRepository()
   }
 
   static liveUpdates (io) {
-    super.liveUpdates(io, GameRepository.table, 'game-change')
+    GameRepository.watchForChanges((change) => {
+      io.emit('game-change', change)
+
+      if (change.updated) {
+        io.emit(`game-${change.new_val.id}-change`, change.new_value)
+      }
+    })
+
+    MemberRepository.watchForChanges((change) => {
+      io.emit(`game-${change.new_val.gameId}-member-change`, change)
+    })
   }
 
   validateAndSanitize (game) {

@@ -72,9 +72,33 @@ function giveCardToOtherMember (card, username) {
 
 const error = (err) => ({ type: ERROR, error: err })
 
+function subscribeSocket (socket, gameId) {
+  return (dispatch, getState) => {
+    socket.on(`game-${gameId}-member-change`, onGameMemberChange.bind(this, dispatch))
+  }
+}
+
+function onGameMemberChange (dispatch, change) {
+  if (change.created) {
+    dispatch({ type: JOIN_SUCCESS, payload: { newMember: change.new_val } })
+  } else if (change.deleted) {
+    dispatch({ type: LEAVE_SUCCESS, payload: { member: change.old_val } })
+  } else {
+    dispatch({ type: UPDATE_SUCCESS, payload: { member: change.new_val } })
+  }
+}
+
+function unsubscribeSocket (socket) {
+  return (dispatch, getState) => {
+    socket.off(`game-${getState().currentGame.game.id}-member-change`)
+  }
+}
+
 export const actions = {
   getGame,
-  join
+  join,
+  subscribeSocket,
+  unsubscribeSocket
 }
 
 // ------------------------------------
@@ -83,6 +107,7 @@ export const actions = {
 const initialState = {
   game: null,
   membership: {},
+  username: null,
   isWorking: false,
   error: null
 }
@@ -98,7 +123,7 @@ const actionHandlers = {
     return nextState
   },
 
-  [JOIN_REQUEST]: requestActionHandler,
+  [JOIN_REQUEST]: (state, { username }) => ({...state, username, isWorking: true, error: null }),
 
   [JOIN_SUCCESS]: (state, { payload }) => {
     const newMember = payload.newMember
@@ -111,7 +136,9 @@ const actionHandlers = {
       nextState.game.members.push(newMember)
     }
 
-    nextState.membership[nextState.game.id] = newMember
+    if (newMember.username === state.username) {
+      nextState.membership[nextState.game.id] = newMember
+    }
 
     return nextState
   },

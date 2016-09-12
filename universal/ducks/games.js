@@ -46,9 +46,9 @@ function subscribeSocket (socket) {
 }
 
 function onGameChange (dispatch, change) {
-  if (!change.old_val) {
+  if (change.created) {
     dispatch({ type: ADD_SUCCESS, payload: { game: change.new_val, count: change.count } })
-  } else if (!change.new_val) {
+  } else if (change.deleted) {
     dispatch({ type: DELETE_SUCCESS, payload: { game: change.old_val, count: change.count } })
   } else {
     dispatch({ type: UPDATE_SUCCESS, payload: { game: change.new_val, count: change.count } })
