@@ -1,7 +1,7 @@
 {
-  "name": "3ree",
+  "name": "3ree-monopoly-deal",
   "version": "1.0.0",
-  "description": "An example universal JS application written with the 3REE stack, React + Redux + RethinkDB + Express.",
+  "description": "A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack",
   "main": "server.babel.js",
   "scripts": {
     "build:prod": "NODE_ENV=production webpack",
