@@ -24,7 +24,7 @@ export function getGame (req, res) {
   const promise = service.getGame(req.params.id)
 
   promise
-    .then(result => res.json(result))
+    .then(game => res.json({ game }))
     .catch(err => handleError(err, res))
 }
 
@@ -65,6 +65,6 @@ export function joinGame (req, res) {
   const promise = service.addMember(req.params.id, req.body.username)
 
   promise
-    .then(result => res.json(result))
+    .then(newMember => res.json({ newMember }))
     .catch(err => handleError(err, res))
 }

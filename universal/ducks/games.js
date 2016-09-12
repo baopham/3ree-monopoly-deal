@@ -24,49 +24,48 @@ const ERROR = namespacedConstant('ERROR')
 // Action Creators
 // ------------------------------------
 function getGames (page = 0) {
-  return (dispatch) => {
-    dispatch(loadPageRequest(page))
-
-    return request
-      .get(gamesUrl, { page })
-      .end((err, res) => {
-        dispatch(err ? error(err) : loadSuccess(res.body))
-      })
+  return {
+    types: [LOAD_PAGE_REQUEST, LOAD_SUCCESS, ERROR],
+    page,
+    promise: () => request.get(gamesUrl, { page })
   }
 }
 
 function addGame (game) {
-  return (dispatch, getState) => {
-    dispatch(addRequest(game))
-
-    return request
-      .post(gamesUrl, game)
-      .end((err, res) => {
-        if (err) {
-          dispatch(error(err))
-        } else {
-          // relying on the real-time setup
-        }
-      })
+  return {
+    types: [ADD_REQUEST, null, ERROR],
+    game,
+    promise: () => request.post(gamesUrl, game)
   }
 }
 
-const loadPageRequest = (page) => ({ type: LOAD_PAGE_REQUEST, page })
-const loadSuccess = ({ games, count }) => ({ type: LOAD_SUCCESS, games, count })
-const addRequest = (game) => ({ type: ADD_REQUEST, game })
-const addSuccess = ({ game, count }) => ({ type: ADD_SUCCESS, game, count })
-const deleteRequest = (game) => ({ type: DELETE_REQUEST, game })
-const deleteSuccess = ({ game, count }) => ({ type: DELETE_SUCCESS, game, count })
-const updateRequest = (game) => ({ type: UPDATE_REQUEST, game })
-const updateSuccess = ({ game, count }) => ({ type: UPDATE_SUCCESS, game, count })
-const error = (err) => ({ type: ERROR, error: err })
+function subscribeSocket (socket) {
+  return (dispatch) => {
+    socket.on('game-change', onGameChange.bind(this, dispatch))
+  }
+}
+
+function onGameChange (dispatch, change) {
+  if (!change.old_val) {
+    dispatch({ type: ADD_SUCCESS, payload: { game: change.new_val, count: change.count } })
+  } else if (!change.new_val) {
+    dispatch({ type: DELETE_SUCCESS, payload: { game: change.old_val, count: change.count } })
+  } else {
+    dispatch({ type: UPDATE_SUCCESS, payload: { game: change.new_val, count: change.count } })
+  }
+}
+
+function unsubscribeSocket (socket) {
+  return (dispatch) => {
+    socket.off('game-change')
+  }
+}
 
 export const actions = {
   getGames,
   addGame,
-  addSuccess,
-  deleteSuccess,
-  updateSuccess
+  subscribeSocket,
+  unsubscribeSocket
 }
 
 // ------------------------------------
@@ -74,7 +73,6 @@ export const actions = {
 // ------------------------------------
 const initialState = {
   games: [],
-  _addedIds: {},
   isWorking: false,
   error: null,
   limit: 10,
@@ -87,7 +85,13 @@ const requestActionHandler = (state) => ({ ...state, isWorking: true, error: nul
 const actionHandlers = {
   [LOAD_PAGE_REQUEST]: (state, { page }) => ({ ...state, page }),
 
-  [LOAD_SUCCESS]: (state, { games, count }) => ({ ...state, games, count, isWorking: false, error: null }),
+  [LOAD_SUCCESS]: (state, { payload }) => ({
+    ...state,
+    games: payload.games,
+    count: payload.count,
+    isWorking: false,
+    error: null
+  }),
 
   [ADD_REQUEST]: requestActionHandler,
 
@@ -95,19 +99,19 @@ const actionHandlers = {
 
   [UPDATE_REQUEST]: requestActionHandler,
 
-  [ADD_SUCCESS]: (state, { game, count }) => {
+  [ADD_SUCCESS]: (state, { payload }) => {
     const nextState = deepmerge(state, {
       isWorking: false,
       error: null,
-      games: [game, ...state.games.slice(0, state.limit - 1)],
-      count
+      games: [payload.game, ...state.games.slice(0, state.limit - 1)],
+      count: payload.count
     })
     return nextState
   },
 
-  [DELETE_SUCCESS]: (state, { game, count }) => {
+  [DELETE_SUCCESS]: (state, { payload }) => {
     const nextState = deepmerge(state, { isWorking: false, error: null, count })
-    nextState.games = state.games.filter(g => g.id !== game.id)
+    nextState.games = state.games.filter(g => g.id !== payload.game.id)
 
     return nextState
   },

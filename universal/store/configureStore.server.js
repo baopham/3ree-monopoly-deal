@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import clientMiddleware from './middleware/clientMiddleware'
 import { routerReducer } from 'react-router-redux'
 import devTools from 'remote-redux-devtools'
 
@@ -21,7 +22,7 @@ export default (req, initialState) => {
     rootReducer,
     initialState,
     compose(
-      applyMiddleware(thunkMiddleware),
+      applyMiddleware(clientMiddleware, thunkMiddleware),
       ...enhancers
     )
   )

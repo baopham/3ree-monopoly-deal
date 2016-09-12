@@ -25,38 +25,32 @@ const ERROR = namespacedConstant('ERROR')
 // Action Creators
 // ------------------------------------
 function getGame (id) {
-  return (dispatch) => {
-    dispatch(loadRequest(id))
-
-    return request
-      .get(`${gamesUrl}/${id}`)
-      .end((err, res) => {
-        dispatch(err ? error(err) : loadSuccess(res.body))
-      })
+  return {
+    types: [LOAD_REQUEST, LOAD_SUCCESS, ERROR],
+    id,
+    promise: () => request.get(`${gamesUrl}/${id}`)
   }
 }
 
 function join (username) {
-  return (dispatch, getState) => {
-    const id = getState().currentGame.game.id
-
-    dispatch(joinRequest(username))
-
-    return request
-      .post(`${gamesUrl}/${id}/join`, { username })
-      .end((err, res) => {
-        dispatch(err ? error(err) : joinSuccess(res.body))
-      })
+  return {
+    types: [JOIN_REQUEST, JOIN_SUCCESS, ERROR],
+    username,
+    promise: (dispatch, getState) => {
+      const id = getState().currentGame.game.id
+      return request.post(`${gamesUrl}/${id}/join`, { username })
+    }
   }
 }
 
-function leave (name) {
-  return (dispatch) => {
-    return request
-      .post(`${gamesUrl}/${id}/leave`, { username })
-      .end((err, res) => {
-        dispatch(err ? error(err) : leaveSuccess(res.body))
-      })
+function leave (username) {
+  return {
+    types: [LEAVE_REQUEST, LEAVE_SUCCESS, ERROR],
+    username,
+    promise: (dispatch, getState) => {
+      const id = getState().currentGame.game.id
+      return request.post(`${gamesUrl}/${id}/leave`, { username })
+    }
   }
 }
 
@@ -76,18 +70,11 @@ function giveCardToOtherMember (card, username) {
   // TODO
 }
 
-const loadRequest = (id) => ({ type: LOAD_REQUEST, id })
-const loadSuccess = (game) => ({ type: LOAD_SUCCESS, game })
-const joinRequest = (username) => ({ type: JOIN_REQUEST, username })
-const joinSuccess = (newMember) => ({ type: JOIN_SUCCESS, newMember })
-const drawCardSuccess = (card) => ({ type: DRAW_CARD_SUCCESS, card })
-const discardCardSuccess = (card) => ({ type: DISCARD_CARD_SUCCESS, card })
 const error = (err) => ({ type: ERROR, error: err })
 
 export const actions = {
   getGame,
-  join,
-  loadSuccess
+  join
 }
 
 // ------------------------------------
@@ -105,15 +92,17 @@ const requestActionHandler = (state) => ({ ...state, isWorking: true, error: nul
 const actionHandlers = {
   [LOAD_REQUEST]: requestActionHandler,
 
-  [LOAD_SUCCESS]: (state, { game }) => {
-    const nextState = deepmerge(state, { game, isWorking: false, error: null })
+  [LOAD_SUCCESS]: (state, { payload }) => {
+    const nextState = deepmerge(state, { game: payload.game, isWorking: false, error: null })
 
     return nextState
   },
 
   [JOIN_REQUEST]: requestActionHandler,
 
-  [JOIN_SUCCESS]: (state, { newMember }) => {
+  [JOIN_SUCCESS]: (state, { payload }) => {
+    const newMember = payload.newMember
+
     const nextState = deepmerge(state, { isWorking: false, error: null })
 
     const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
@@ -127,27 +116,7 @@ const actionHandlers = {
     return nextState
   },
 
-  [DRAW_CARD_SUCCESS]: (state, { card }) => {
-    const nextState = deepmerge(state, { isWorking: false, error: null })
-
-    nextState.game.availableCards = nextState.game.availableCards.filter(c => c !== card)
-
-    nextState.game.discardedCards.push(card)
-
-    return nextState
-  },
-
-  [DISCARD_CARD_SUCCESS]: (state, { card }) => {
-    const nextState = deepmerge(state, { isWorking: false, error: null })
-
-    nextState.game.discardedCards = nextState.game.discardedCards.filter(c => c !== card)
-
-    nextState.game.availableCards.push(card)
-
-    return nextState
-  },
-
-  [ERROR]: (state, { err }) => ({ ...state, isWorking: false, error: err })
+  [ERROR]: (state, { error }) => ({ ...state, isWorking: false, error })
 }
 
 export default function reducer (state = initialState, action) {

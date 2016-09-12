@@ -11,11 +11,18 @@ export class GamesContainer extends React.Component {
   static propTypes = {
     games: PropTypes.object.isRequired,
     addGame: PropTypes.func.isRequired,
-    getGames: PropTypes.func.isRequired
+    getGames: PropTypes.func.isRequired,
+    subscribeSocket: PropTypes.func.isRequired,
+    unsubscribeSocket: PropTypes.func.isRequired
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.props.getGames(this.props.games.page)
+    !!global.socket && this.props.subscribeSocket(global.socket)
+  }
+
+  componentWillUnmount () {
+    !!global.socket && this.props.unsubscribeSocket(global.socket)
   }
 
   addGame = () => {

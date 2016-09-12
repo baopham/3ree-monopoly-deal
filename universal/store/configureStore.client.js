@@ -2,6 +2,7 @@
 
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import clientMiddleware from './middleware/clientMiddleware'
 import { routerReducer } from 'react-router-redux'
 import persistState from 'redux-localstorage'
 
@@ -25,7 +26,7 @@ const store = createStore(
   rootReducer,
   initialState,
   compose(
-    applyMiddleware(thunkMiddleware),
+    applyMiddleware(clientMiddleware, thunkMiddleware),
     persistState(['currentGame']),
     ...enhancers
   )
