@@ -17,7 +17,7 @@ export class GameContainer extends React.Component {
     currentGameId: PropTypes.string.isRequired
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.props.getGame(this.props.currentGameId)
   }
 

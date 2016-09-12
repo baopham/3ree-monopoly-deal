@@ -14,7 +14,7 @@ export class GamesContainer extends React.Component {
     getGames: PropTypes.func.isRequired
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.props.getGames(this.props.games.page)
   }
 

@@ -11,6 +11,7 @@ const isDev = (process.env.NODE_ENV !== 'production')
 export function handleRender (req, res) {
   console.log(' [x] Request for', req.url)
 
+  // TODO: use redial
   let initialState = {}
 
   const store = configureStore(req, initialState)
