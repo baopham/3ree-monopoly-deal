@@ -30,7 +30,7 @@ function getGames (page = 0) {
     return request
       .get(gamesUrl, { page })
       .end((err, res) => {
-        err ? dispatch(error(err)) : loadSuccess(res.body)
+        dispatch(err ? error(err) : loadSuccess(res.body))
       })
   }
 }

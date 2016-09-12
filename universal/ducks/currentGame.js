@@ -31,7 +31,7 @@ function getGame (id) {
     return request
       .get(`${gamesUrl}/${id}`)
       .end((err, res) => {
-        err ? dispatch(error(err)) : loadSuccess(res.body)
+        dispatch(err ? error(err) : loadSuccess(res.body))
       })
   }
 }
@@ -45,7 +45,7 @@ function join (username) {
     return request
       .post(`${gamesUrl}/${id}/join`, { username })
       .end((err, res) => {
-        err ? dispatch(error(err)) : joinSuccess(res.body)
+        dispatch(err ? error(err) : joinSuccess(res.body))
       })
   }
 }
@@ -55,7 +55,7 @@ function leave (name) {
     return request
       .post(`${gamesUrl}/${id}/leave`, { username })
       .end((err, res) => {
-        err ? dispatch(error(err)) : leaveSuccess(res.body)
+        dispatch(err ? error(err) : leaveSuccess(res.body))
       })
   }
 }

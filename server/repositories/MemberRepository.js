@@ -53,4 +53,7 @@ export default class MemberRepository {
         return this.insert({ gameId, username, placedCards, cardsOnHand })
       })
   }
+
+  leaveGame (gameId, username) {
+  }
 }

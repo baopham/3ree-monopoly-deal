@@ -12,7 +12,7 @@ export class GamesContainer extends React.Component {
     games: PropTypes.object.isRequired,
     addGame: PropTypes.func.isRequired,
     getGames: PropTypes.func.isRequired
-  };
+  }
 
   componentDidMount () {
     this.props.getGames(this.props.games.page)

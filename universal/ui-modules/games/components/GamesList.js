@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
 
 export default class GamesList extends React.Component {
   static propTypes = {
@@ -11,7 +12,10 @@ export default class GamesList extends React.Component {
     return (
       <ol>
         {games.map((game, i) =>
-          <li key={i}>{JSON.stringify(game)}</li>
+          <li key={i}>
+            <pre>{JSON.stringify(game)}</pre>
+            <Link to={`/games/${game.id}`}>{game.id}</Link>
+          </li>
         )}
       </ol>
     )
