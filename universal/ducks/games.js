@@ -1,7 +1,7 @@
 import { namespace, deepmerge, apiUrl } from './util'
 import * as request from '../request-util'
 
-function namespacedConstant (value) {
+function ns (value) {
   return namespace('GAMES', value)
 }
 
@@ -10,15 +10,15 @@ function namespacedConstant (value) {
 // ------------------------------------
 const gamesUrl = `${apiUrl}/games`
 
-const LOAD_PAGE_REQUEST = namespacedConstant('LOAD_PAGE_REQUEST')
-const LOAD_SUCCESS = namespacedConstant('LOAD_SUCCESS')
-const ADD_REQUEST = namespacedConstant('ADD_REQUEST')
-const ADD_SUCCESS = namespacedConstant('ADD_SUCCESS')
-const DELETE_REQUEST = namespacedConstant('DELETE_REQUEST')
-const DELETE_SUCCESS = namespacedConstant('DELETE_SUCCESS')
-const UPDATE_REQUEST = namespacedConstant('UPDATE_REQUEST')
-const UPDATE_SUCCESS = namespacedConstant('UPDATE_SUCCESS')
-const ERROR = namespacedConstant('ERROR')
+const LOAD_PAGE_REQUEST = ns('LOAD_PAGE_REQUEST')
+const LOAD_SUCCESS = ns('LOAD_SUCCESS')
+const ADD_REQUEST = ns('ADD_REQUEST')
+const ADD_SUCCESS = ns('ADD_SUCCESS')
+const DELETE_REQUEST = ns('DELETE_REQUEST')
+const DELETE_SUCCESS = ns('DELETE_SUCCESS')
+const UPDATE_REQUEST = ns('UPDATE_REQUEST')
+const UPDATE_SUCCESS = ns('UPDATE_SUCCESS')
+const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action Creators

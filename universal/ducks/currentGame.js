@@ -1,7 +1,7 @@
 import { namespace, deepmerge, apiUrl } from './util'
 import * as request from '../request-util'
 
-function namespacedConstant (value) {
+function ns (value) {
   return namespace('GAME', value)
 }
 
@@ -10,16 +10,16 @@ function namespacedConstant (value) {
 // ------------------------------------
 const gamesUrl = `${apiUrl}/games`
 
-const LOAD_REQUEST = namespacedConstant('LOAD_REQUEST')
-const LOAD_SUCCESS = namespacedConstant('LOAD_SUCCESS')
-const JOIN_REQUEST = namespacedConstant('JOIN_REQUEST')
-const JOIN_SUCCESS = namespacedConstant('JOIN_SUCCESS')
-const LEAVE_REQUEST = namespacedConstant('LEAVE_REQUEST')
-const LEAVE_SUCCESS = namespacedConstant('LEAVE_SUCCESS')
-const DRAW_CARD_SUCCESS = namespacedConstant('DRAW_CARD_SUCCESS')
-const DISCARD_CARD_SUCCESS = namespacedConstant('DISCARD_CARD_SUCCESS')
-const GIVE_CARD_TO_OTHER_MEMBER_SUCCESS = namespacedConstant('GIVE_CARD_TO_OTHER_MEMBER_SUCCESS')
-const ERROR = namespacedConstant('ERROR')
+const LOAD_REQUEST = ns('LOAD_REQUEST')
+const LOAD_SUCCESS = ns('LOAD_SUCCESS')
+const JOIN_REQUEST = ns('JOIN_REQUEST')
+const JOIN_SUCCESS = ns('JOIN_SUCCESS')
+const LEAVE_REQUEST = ns('LEAVE_REQUEST')
+const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
+const DRAW_CARD_SUCCESS = ns('DRAW_CARD_SUCCESS')
+const DISCARD_CARD_SUCCESS = ns('DISCARD_CARD_SUCCESS')
+const GIVE_CARD_TO_OTHER_MEMBER_SUCCESS = ns('GIVE_CARD_TO_OTHER_MEMBER_SUCCESS')
+const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action Creators

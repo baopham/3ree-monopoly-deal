@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { CARD_TYPES } from '../../../monopoly-cards'
+import { CARD_TYPES } from '../../../monopoly/cards'
 
 export default class Card extends React.Component {
   static propTypes = {

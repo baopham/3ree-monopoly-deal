@@ -7,7 +7,7 @@ export default class Root extends Component {
     store: PropTypes.object.isRequired,
     routing: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
-  };
+  }
 
   render () {
     const { store, routing, history } = this.props
@@ -21,4 +21,4 @@ export default class Root extends Component {
       </Provider>
     )
   }
-};
+}

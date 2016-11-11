@@ -1,8 +1,7 @@
 import r from 'rethinkdb'
 import GameRepository from '../repositories/GameRepository'
 import MemberRepository from '../repositories/MemberRepository'
-import RealtimeService from './RealtimeService'
-import { newDeck } from '../../universal/monopoly-cards'
+import { newDeck } from '../../universal/monopoly/cards'
 
 export default class GameService {
   constructor () {
