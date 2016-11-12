@@ -4,16 +4,16 @@ import FullWidth from '../../../../components/FullWidth'
 import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../Board'
-import { getCurrentPlayer } from '../../modules/gameSelector'
+import { getCurrentPlayer } from '../../modules/gameSelectors'
 import { actions } from '../../modules/currentGame'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards
-}
+})
 
-export default class Game extends React.Component {
+export class Game extends React.Component {
   static propTypes = {
     game: PropTypes.object.isRequired,
     currentPlayer: PropTypes.object,

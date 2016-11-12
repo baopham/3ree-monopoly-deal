@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import Container from '../../../../components/Container'
-import Game from '../../components/Game'
+import Game from '../Game'
 import { connect } from 'react-redux'
 import { actions } from '../../modules/currentGame'
 
@@ -12,7 +12,6 @@ export class GameContainer extends React.Component {
   static propTypes = {
     currentGame: PropTypes.object.isRequired,
     getGame: PropTypes.func.isRequired,
-    join: PropTypes.func.isRequired,
     params: PropTypes.object.isRequired,
     subscribeSocket: PropTypes.func.isRequired,
     unsubscribeSocket: PropTypes.func.isRequired
@@ -28,13 +27,13 @@ export class GameContainer extends React.Component {
   }
 
   render () {
-    const { join } = this.props
-    const { game, membership } = this.props.currentGame
-    const player = game && membership[game.id]
+    const { game } = this.props.currentGame
 
     return (
       <Container fluid>
-        <Game />
+        {game &&
+          <Game />
+        }
       </Container>
     )
   }

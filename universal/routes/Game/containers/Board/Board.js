@@ -6,9 +6,9 @@ import DrawPile from '../../components/DrawPile'
 import DiscardPile from '../../components/DiscardPile'
 import Members from '../../components/Members'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) => ({
   game: state.currentGame.game,
-}
+})
 
 export class Board extends React.Component {
   static propTypes = {
