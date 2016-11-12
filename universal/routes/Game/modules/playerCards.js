@@ -24,26 +24,35 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Actions
 // ------------------------------------
-function drawCards (gameId) {
+function drawCards () {
   return {
     types: [DRAW_CARDS_REQUEST, DRAW_CARDS_SUCCESS, ERROR],
-    promise: request.get(`${gameUrl}/gameId/draw`)
+    promise: (dispatch, getState) => {
+      const gameId = getState().currentGame.game.id
+      return request.get(`${gameUrl}/gameId/draw`)
+    }
   }
 }
 
-function discardCard (gameId, card) {
+function discardCard (card) {
   return {
     types: [DISCARD_CARD_REQUEST, DISCARD_CARD_SUCCESS, ERROR],
     card,
-    promise: () => request.put(`${gameUrl}/${gameId}/discard`, { card })
+    promise: (dispatch, getState) => {
+      const gameId = getState().currentGame.game.id
+      return request.put(`${gameUrl}/${gameId}/discard`, { card })
+    }
   }
 }
 
-function placeCard (gameId, card) {
+function placeCard (card) {
   return {
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
-    promise: () => request.put(`${gameUrl}/${gameId}/place`, { card })
+    promise: (dispatch, getState) => {
+      const gameId = getState().currentGame.game.id
+      return request.put(`${gameUrl}/${gameId}/place`, { card })
+    }
   }
 }
 
@@ -52,7 +61,10 @@ function giveCardToOtherMember (gameId, card, username) {
     types: [GIVE_CARD_TO_OTHER_MEMBER_REQUEST, GIVE_CARD_TO_OTHER_MEMBER_SUCCESS, ERROR],
     card,
     username,
-    promise: () => request.put(`${gameUrl}/${gameId}/give`, { card, username })
+    promise: (dispatch, getState) => {
+      const gameId = getState().currentGame.game.id
+      return request.put(`${gameUrl}/${gameId}/give`, { card, username })
+    }
   }
 }
 
@@ -73,7 +85,7 @@ const initialState = {
   error: null
 }
 
-const requestActionHandler = (state) => ({ ...state, isWorking: true, error: null })
+const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
 
 export default function reducer (state = initialState, action) {
   switch (action.type) {
@@ -86,7 +98,7 @@ export default function reducer (state = initialState, action) {
     case DRAW_CARDS_SUCCESS:
       return {
         ...state,
-        cardsOnHand: state.cardsOnHand.concat(action.cards)
+        cardsOnHand: state.cardsOnHand.concat(action.payload.cards)
       }
 
     case DISCARD_CARD_SUCCESS:

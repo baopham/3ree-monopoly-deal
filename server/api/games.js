@@ -68,3 +68,11 @@ export function joinGame (req, res) {
     .then(newMember => res.json({ newMember }))
     .catch(err => handleError(err, res))
 }
+
+export function endTurn (req, res) {
+  const promise = service.endTurn(req.params.id)
+
+  promise
+    .then(nextTurn => res.json({ nextTurn }))
+    .catch(err => handleError(err, res))
+}

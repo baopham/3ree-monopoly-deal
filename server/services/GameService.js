@@ -63,4 +63,16 @@ export default class GameService {
   addMember (id, username) {
     return this.memberRepository.joinGame(id, username)
   }
+
+  endTurn (id) {
+    return this.gameRepository.find(id)
+      .then(game => {
+        const members = game.members
+        const currentTurnIndex = members.findIndex(member => member.username === game.currentTurn)
+        const nextTurnIndex = currentTurnIndex + 1 === members.length ? 0 : currentTurnIndex + 1
+        const nextTurn = game.members[nextTurnIndex].username
+
+        return nextTurn
+      })
+  }
 }

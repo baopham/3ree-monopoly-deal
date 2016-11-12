@@ -10,6 +10,7 @@ const Game = thinky.createModel('games', {
   winner: type.string(),
   discardedCards: [type.string()],
   availableCards: [type.string()],
+  currentTurn: [type.string()],
   updatedAt: type.date().default(r.now()),
   createdAt: type.date().default(r.now())
 })

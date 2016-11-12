@@ -16,6 +16,8 @@ const JOIN_REQUEST = ns('JOIN_REQUEST')
 const JOIN_SUCCESS = ns('JOIN_SUCCESS')
 const LEAVE_REQUEST = ns('LEAVE_REQUEST')
 const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
+const END_TURN_REQUEST = ns('END_TURN_REQUEST')
+const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -51,6 +53,16 @@ function leave (username) {
   }
 }
 
+function endTurn () {
+  return {
+    types: [END_TURN_REQUEST, END_TURN_SUCCESS, ERROR],
+    promise: (dispatch, getState) => {
+      const id = getState().currentGame.game.id
+      return request.put(`${gamesUrl}/${id}/end-turn`)
+    }
+  }
+}
+
 const error = (err) => ({ type: ERROR, error: err })
 
 function subscribeSocket (socket, gameId) {
@@ -78,6 +90,7 @@ function unsubscribeSocket (socket) {
 export const actions = {
   getGame,
   join,
+  endTurn,
   subscribeSocket,
   unsubscribeSocket
 }
@@ -90,46 +103,61 @@ const initialState = {
   membership: {},
   username: null,
   isWorking: false,
-  error: null
+  error: null,
+  currentTurn: null
 }
 
 const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
 
-const actionHandlers = {
-  [LOAD_REQUEST]: requestActionHandler,
-
-  [LOAD_SUCCESS]: (state, { payload }) => {
-    const nextState = deepmerge(state, { game: payload.game, isWorking: false, error: null })
-
-    return nextState
-  },
-
-  [JOIN_REQUEST]: (state, { username }) => requestActionHandler,
-
-  [JOIN_SUCCESS]: (state, { payload }) => {
-    const newMember = payload.newMember
-
-    const nextState = deepmerge(state, { isWorking: false, error: null })
-
-    const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
-
-    if (!alreadyJoined) {
-      nextState.game.members.push(newMember)
-    }
-
-    // This is current user.
-    if (newMember.username === state.username) {
-      nextState.membership[nextState.game.id] = newMember
-    }
-
-    return nextState
-  },
-
-  [ERROR]: (state, { error }) => ({ ...state, isWorking: false, error })
-}
-
 export default function reducer (state = initialState, action) {
-  const handler = actionHandlers[action.type]
-  return handler ? handler(state, action) : state
+  switch (action.type) {
+    case LOAD_REQUEST:
+    case JOIN_REQUEST:
+    case END_TURN_REQUEST:
+      return requestActionHandler(state)
+
+    case LOAD_SUCCESS:
+      return deepmerge(state, {
+        game: action.payload.game,
+        isWorking: false,
+        error: null
+      })
+
+    case JOIN_SUCCESS:
+      const newMember = action.payload.newMember
+
+      const nextState = deepmerge(state, { isWorking: false, error: null })
+
+      const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
+
+      if (!alreadyJoined) {
+        nextState.game.members.push(newMember)
+      }
+
+      // This is current user.
+      if (newMember.username === state.username) {
+        nextState.membership[nextState.game.id] = newMember
+      }
+
+      if (!nextState.currentTurn) {
+        nextState.currentTurn = newMember.username
+      }
+
+      return nextState
+
+    case END_TURN_SUCCESS:
+      return deepmerge(state, {
+        currentTurn: action.payload.nextTurn
+      })
+
+    case ERROR:
+      return deepmerge(state, {
+        error: action.error,
+        isWorking: false
+      })
+
+    default:
+      return state
+  }
 }
 

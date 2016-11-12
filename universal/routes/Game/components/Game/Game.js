@@ -12,7 +12,7 @@ export default class Game extends React.Component {
   }
 
   render () {
-    const { game, player, onJoin } = this.props
+    const { game, player, onJoin} = this.props
 
     return (
       <FullWidth fluid>

@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { actions } from '../../modules/currentGame'
 
 const mapStateToProps = (state) => ({
-  currentGame: state.currentGame
+  currentGame: state.currentGame,
+  playerCards: state.playerCards
 })
 
 export class GameContainer extends React.Component {

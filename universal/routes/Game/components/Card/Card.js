@@ -9,12 +9,15 @@ const styles = {
   small: {
     width: 90,
     height: 140
+  },
+  withBorder: {
+    border: '1px solid black'
   }
 }
 
 export default class Card extends React.Component {
   static propTypes = {
-    card: PropTypes.string.isRequired,
+    card: PropTypes.string,
     faceUp: PropTypes.bool,
     size: PropTypes.oneOf(['large', 'small'])
   }
@@ -24,15 +27,27 @@ export default class Card extends React.Component {
     size: 'large'
   }
 
-  render () {
-    const { card, faceUp, size } = this.props
+  getImageSrc () {
+    const { card, faceUp } = this.props
     const src = faceUp ? CARDS[card].image : '/images/cards/back.png'
+    return src
+  }
+
+  render () {
+    const { card, size } = this.props
 
     return (
-      <img
-        style={styles[size]}
-        src={src}
-      />
+      <div>
+        {card &&
+          <img
+            style={styles[size]}
+            src={this.getImageSrc()}
+          />
+        }
+        {!card &&
+          <div style={{...styles[size], ...styles.withBorder}} />
+        }
+      </div>
     )
   }
 }

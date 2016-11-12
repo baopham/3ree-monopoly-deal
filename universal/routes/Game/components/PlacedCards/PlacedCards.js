@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import Card from '../Card'
-import NoCard from '../NoCard'
+import CardPile from '../CardPile'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
 
@@ -28,18 +28,12 @@ export default class PlacedCards extends React.Component {
   render () {
     const { cards } = this.props
     const { bank, properties } = cards
-    const lastBankCard = bank[bank.length - 1]
 
     return (
       <Container fluid>
         <Col md={2}>
           <Panel header="Bank" style={styles.bank}>
-            {lastBankCard &&
-              <Card card={lastBankCard} size="small" faceUp />
-            }
-            {!lastBankCard &&
-              <NoCard />
-            }
+            <CardPile card={bank} size="small" faceUp />
           </Panel>
         </Col>
 

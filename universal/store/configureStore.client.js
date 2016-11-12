@@ -8,7 +8,7 @@ import persistState from 'redux-localstorage'
 
 import games from '../routes/Games/modules/games'
 import currentGame from '../routes/Game/modules/currentGame'
-import player from '../routes/Game/modules/player'
+import playerCards from '../routes/Game/modules/playerCards'
 
 // Grab the state from a global injected into server-generated HTML
 const initialState = window.__INITIAL_STATE__
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
   routing: routerReducer,
   games,
   currentGame,
-  player
+  playerCards
 })
 
 const enhancers = []
