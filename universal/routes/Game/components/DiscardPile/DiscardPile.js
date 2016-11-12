@@ -11,9 +11,17 @@ export default class DiscardPile extends React.Component {
     cards: []
   }
 
+  renderHeader () {
+    return (
+      <div>
+        Discard Pile
+      </div>
+    )
+  }
+
   render () {
     return (
-      <Panel header="Discard Pile">
+      <Panel header={this.renderHeader()}>
         <CardPile cards={this.props.cards} faceUp />
       </Panel>
     )
