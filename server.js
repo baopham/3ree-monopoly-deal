@@ -32,12 +32,17 @@ app.use(bodyParser.json())
 /**
  * API Endpoints
  */
-app.get('/api/1/games', api.games.getGames)
-app.get('/api/1/games/:id', api.games.getGame)
-app.post('/api/1/games', api.games.addGame)
-app.post('/api/1/games/:id', api.games.updateGame)
-app.post('/api/1/games/:id/join', api.games.joinGame)
-app.delete('/api/1/games/:id', api.games.deleteGame)
+app.get('/api/v1/games', api.games.getGames)
+app.get('/api/v1/games/:id', api.games.getGame)
+app.post('/api/v1/games', api.games.addGame)
+app.post('/api/v1/games/:id', api.games.updateGame)
+app.post('/api/v1/games/:id/join', api.games.joinGame)
+app.delete('/api/v1/games/:id', api.games.deleteGame)
+
+app.get('/api/v1/games/:id/draw', api.game.drawCards)
+app.put('/api/v1/games/:id/discard', api.game.discardCards)
+app.put('/api/v1/games/:id/place', api.game.placeCards)
+app.put('/api/v1/games/:id/give', api.game.giveCardToOtherMember)
 
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'static', 'images', 'favicon.ico')))
 app.use(express.static('static'))

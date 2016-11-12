@@ -7,7 +7,6 @@ const Member = thinky.createModel('game_members', {
   id: type.string(),
   username: type.string(),
   gameId: type.string(),
-  cardsOnHand: [type.string()],
   placedCards: type.object(), // { bank: [type.string()], properties: [type.string()] }
 })
 

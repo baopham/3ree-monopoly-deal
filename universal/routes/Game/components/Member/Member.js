@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import PlacedCards from '../PlacedCards'
-import CardsOnHand from '../CardsOnHand'
 
 export default class Member extends React.Component {
   static propTypes = {
@@ -13,7 +12,6 @@ export default class Member extends React.Component {
     return (
       <div>
         <PlacedCards cards={member.placedCards} />
-        <CardsOnHand cards={member.cardsOnHand} />
       </div>
     )
   }

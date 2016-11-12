@@ -93,7 +93,7 @@ const initialState = {
   error: null
 }
 
-const requestActionHandler = (state) => ({ ...state, isWorking: true, error: null })
+const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
 
 const actionHandlers = {
   [LOAD_REQUEST]: requestActionHandler,
@@ -104,7 +104,7 @@ const actionHandlers = {
     return nextState
   },
 
-  [JOIN_REQUEST]: (state, { username }) => ({...state, username, isWorking: true, error: null }),
+  [JOIN_REQUEST]: (state, { username }) => requestActionHandler,
 
   [JOIN_SUCCESS]: (state, { payload }) => {
     const newMember = payload.newMember
@@ -117,6 +117,7 @@ const actionHandlers = {
       nextState.game.members.push(newMember)
     }
 
+    // This is current user.
     if (newMember.username === state.username) {
       nextState.membership[nextState.game.id] = newMember
     }

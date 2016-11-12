@@ -65,7 +65,6 @@ export default class MemberRepository {
 
   joinGame (gameId, username) {
     const placedCards = { bank: [], properties: [] }
-    const cardsOnHand = []
 
     return Member
       .filter({ gameId, username })
@@ -74,7 +73,7 @@ export default class MemberRepository {
         if (result.length) {
           throw new Error('Member already exists')
         }
-        return this.insert({ gameId, username, placedCards, cardsOnHand })
+        return this.insert({ gameId, username, placedCards })
       })
   }
 

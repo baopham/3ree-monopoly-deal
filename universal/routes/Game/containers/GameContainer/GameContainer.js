@@ -30,14 +30,14 @@ export class GameContainer extends React.Component {
   render () {
     const { join } = this.props
     const { game, membership } = this.props.currentGame
-    const currentMember = game && membership[game.id]
+    const player = game && membership[game.id]
 
     return (
       <Container fluid>
         {game &&
           <Game
             game={game}
-            currentMember={currentMember}
+            player={player}
             onJoin={join}
           />
         }

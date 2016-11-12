@@ -4,15 +4,16 @@ import clientMiddleware from './middleware/clientMiddleware'
 import { routerReducer } from 'react-router-redux'
 import devTools from 'remote-redux-devtools'
 
-// TODO: inject reducer
 import games from '../routes/Games/modules/games'
 import currentGame from '../routes/Game/modules/currentGame'
+import player from '../routes/Game/modules/player'
 
 export default (req, initialState) => {
   const rootReducer = combineReducers({
     routing: routerReducer,
     games,
-    currentGame
+    currentGame,
+    player
   })
 
   const enhancers = []
