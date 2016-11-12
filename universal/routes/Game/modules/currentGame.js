@@ -10,6 +10,7 @@ function ns (value) {
 // ------------------------------------
 const gamesUrl = `${apiUrl}/games`
 
+const UPDATE_GAME = ns('UPDATE_GAME')
 const LOAD_REQUEST = ns('LOAD_REQUEST')
 const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const JOIN_REQUEST = ns('JOIN_REQUEST')
@@ -68,6 +69,7 @@ const error = (err) => ({ type: ERROR, error: err })
 function subscribeSocket (socket, gameId) {
   return (dispatch, getState) => {
     socket.on(`game-${gameId}-member-change`, onGameMemberChange.bind(this, dispatch))
+    socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
   }
 }
 
@@ -79,6 +81,10 @@ function onGameMemberChange (dispatch, change) {
   } else {
     dispatch({ type: UPDATE_SUCCESS, payload: { member: change.new_val } })
   }
+}
+
+function onGameChange (dispatch, game) {
+  dispatch({ type: UPDATE_GAME, payload: { game } })
 }
 
 function unsubscribeSocket (socket) {
@@ -110,11 +116,17 @@ const initialState = {
 const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
 
 export default function reducer (state = initialState, action) {
+  let nextState
+
   switch (action.type) {
     case LOAD_REQUEST:
-    case JOIN_REQUEST:
     case END_TURN_REQUEST:
       return requestActionHandler(state)
+
+    case JOIN_REQUEST:
+      nextState = requestActionHandler(state)
+      nextState.username = action.username
+      return nextState
 
     case LOAD_SUCCESS:
       return deepmerge(state, {
@@ -126,7 +138,7 @@ export default function reducer (state = initialState, action) {
     case JOIN_SUCCESS:
       const newMember = action.payload.newMember
 
-      const nextState = deepmerge(state, { isWorking: false, error: null })
+      nextState = deepmerge(state, { isWorking: false, error: null })
 
       const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
 
@@ -148,6 +160,11 @@ export default function reducer (state = initialState, action) {
     case END_TURN_SUCCESS:
       return deepmerge(state, {
         currentTurn: action.payload.nextTurn
+      })
+
+    case UPDATE_GAME:
+      return deepmerge(state, {
+        game: action.payload.game
       })
 
     case ERROR:

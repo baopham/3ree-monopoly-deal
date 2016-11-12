@@ -10,9 +10,11 @@ function handleError (err, res) {
 }
 
 export function drawCards (req, res) {
-  res.json({
-    cards: ['DEAL_BREAKER', 'PROPERTY_BLUE']
-  })
+  const promise = service.drawCards(req.params.id)
+
+  promise
+    .then(cards => res.json({ cards }))
+    .catch(err => handleError(err, res))
 }
 
 export function discardCard (req, res) {

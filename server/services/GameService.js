@@ -1,6 +1,7 @@
 import GameRepository from '../repositories/GameRepository'
 import MemberRepository from '../repositories/MemberRepository'
 import { newDeck } from '../../universal/monopoly/cards'
+import Promise from 'bluebird'
 
 export default class GameService {
   constructor () {
@@ -13,7 +14,7 @@ export default class GameService {
       io.emit('game-change', change)
 
       if (change.updated) {
-        io.emit(`game-${change.new_val.id}-change`, change.new_value)
+        io.emit(`game-${change.new_val.id}-change`, change.new_val)
       }
     })
   }
@@ -73,6 +74,24 @@ export default class GameService {
         const nextTurn = game.members[nextTurnIndex].username
 
         return nextTurn
+      })
+  }
+
+  drawCards (id) {
+    return this.gameRepository.find(id)
+      .then(game => {
+        if (game.availableCards.length < 2) {
+          game.availableCards = newDeck()
+        }
+
+        const [first, second, ...rest] = game.availableCards
+        game.availableCards = rest
+
+        return Promise.join(
+          this.updateGame(id, game),
+          [first, second],
+          (_, drawnCards) => drawnCards
+        )
       })
   }
 }
