@@ -4,17 +4,33 @@ import CardPile from '../CardPile'
 
 export default class DrawPile extends React.Component {
   static propTypes = {
-    cards: PropTypes.array
+    cards: PropTypes.array,
+    drawCardsButton: PropTypes.node
   }
 
   static defaultProps = {
     cards: []
   }
 
-  render () {
+  renderHeader () {
+    const { drawCardsButton } = this.props
+
     return (
-      <Panel header="Draw Pile">
-        <CardPile cards={this.props.cards} />
+      <div>
+        DrawPiles
+        <div className="pull-right">
+          {drawCardsButton}
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    const { cards } = this.props
+
+    return (
+      <Panel header={this.renderHeader()}>
+        <CardPile cards={cards} />
       </Panel>
     )
   }

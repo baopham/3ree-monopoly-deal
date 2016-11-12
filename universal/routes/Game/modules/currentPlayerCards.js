@@ -9,7 +9,7 @@ function ns (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
-const gameUrl = `${apiUrl}/game`
+const gamesUrl = `${apiUrl}/games`
 
 const DRAW_CARDS_REQUEST = ns('DRAW_CARDS_REQUEST')
 const DRAW_CARDS_SUCCESS = ns('DRAW_CARDS_SUCCESS')
@@ -29,7 +29,7 @@ function drawCards () {
     types: [DRAW_CARDS_REQUEST, DRAW_CARDS_SUCCESS, ERROR],
     promise: (dispatch, getState) => {
       const gameId = getState().currentGame.game.id
-      return request.get(`${gameUrl}/gameId/draw`)
+      return request.get(`${gamesUrl}/${gameId}/draw`)
     }
   }
 }
@@ -40,7 +40,7 @@ function discardCard (card) {
     card,
     promise: (dispatch, getState) => {
       const gameId = getState().currentGame.game.id
-      return request.put(`${gameUrl}/${gameId}/discard`, { card })
+      return request.put(`${gamesUrl}/${gameId}/discard`, { card })
     }
   }
 }
@@ -51,7 +51,7 @@ function placeCard (card) {
     card,
     promise: (dispatch, getState) => {
       const gameId = getState().currentGame.game.id
-      return request.put(`${gameUrl}/${gameId}/place`, { card })
+      return request.put(`${gamesUrl}/${gameId}/place`, { card })
     }
   }
 }
@@ -63,7 +63,7 @@ function giveCardToOtherMember (gameId, card, username) {
     username,
     promise: (dispatch, getState) => {
       const gameId = getState().currentGame.game.id
-      return request.put(`${gameUrl}/${gameId}/give`, { card, username })
+      return request.put(`${gamesUrl}/${gameId}/give`, { card, username })
     }
   }
 }

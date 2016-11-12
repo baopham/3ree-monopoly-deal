@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Grid, Row, Col } from 'react-bootstrap'
+import DrawCardsButton from '../DrawCardsButton'
 import Container from '../../../../components/Container'
 import DrawPile from '../../components/DrawPile'
 import DiscardPile from '../../components/DiscardPile'
@@ -21,7 +22,7 @@ export class Board extends React.Component {
     return (
       <Container fluid>
         <Col md={2}>
-          <DrawPile cards={game.availableCards} />
+          <DrawPile cards={game.availableCards} drawCardsButton={<DrawCardsButton />} />
           <DiscardPile cards={game.discardedCards} />
         </Col>
 

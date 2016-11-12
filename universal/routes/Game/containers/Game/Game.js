@@ -27,13 +27,15 @@ export class Game extends React.Component {
     return (
       <FullWidth fluid>
         <h2>Game: {game.name}</h2>
+
+        {currentPlayer &&
+          <CardsOnHand cards={currentPlayerCards.cardsOnHand} />
+        }
+
         <Board />
 
         {!currentPlayer &&
           <JoinForm onJoin={join} />
-        }
-        {currentPlayer &&
-          <CardsOnHand cards={currentPlayerCards.cardsOnHand} />
         }
       </FullWidth>
     )
