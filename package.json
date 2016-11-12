@@ -50,6 +50,7 @@
     "redux-logger": "2.6.x",
     "redux-thunk": "2.1.x",
     "remote-redux-devtools": "^0.4.8",
+    "reselect": "^2.5.4",
     "rethinkdb": "2.3.x",
     "serve-static": "1.10.x",
     "socket.io": "1.5.x",

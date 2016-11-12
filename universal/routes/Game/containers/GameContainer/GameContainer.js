@@ -5,8 +5,7 @@ import { connect } from 'react-redux'
 import { actions } from '../../modules/currentGame'
 
 const mapStateToProps = (state) => ({
-  currentGame: state.currentGame,
-  playerCards: state.playerCards
+  currentGame: state.currentGame
 })
 
 export class GameContainer extends React.Component {
@@ -35,13 +34,7 @@ export class GameContainer extends React.Component {
 
     return (
       <Container fluid>
-        {game &&
-          <Game
-            game={game}
-            player={player}
-            onJoin={join}
-          />
-        }
+        <Game />
       </Container>
     )
   }

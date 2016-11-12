@@ -6,14 +6,14 @@ import devTools from 'remote-redux-devtools'
 
 import games from '../routes/Games/modules/games'
 import currentGame from '../routes/Game/modules/currentGame'
-import playerCards from '../routes/Game/modules/playerCards'
+import currentPlayerCards from '../routes/Game/modules/currentPlayerCards'
 
 export default (req, initialState) => {
   const rootReducer = combineReducers({
     routing: routerReducer,
     games,
     currentGame,
-    playerCards
+    currentPlayerCards
   })
 
   const enhancers = []

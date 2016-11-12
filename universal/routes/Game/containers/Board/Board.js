@@ -1,11 +1,16 @@
 import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { Grid, Row, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
-import DrawPile from '../DrawPile'
-import DiscardPile from '../DiscardPile'
-import Members from '../Members'
+import DrawPile from '../../components/DrawPile'
+import DiscardPile from '../../components/DiscardPile'
+import Members from '../../components/Members'
 
-export default class Board extends React.Component {
+const mapStateToProps = (state) => {
+  game: state.currentGame.game,
+}
+
+export class Board extends React.Component {
   static propTypes = {
     game: PropTypes.object.isRequired
   }
@@ -28,3 +33,6 @@ export default class Board extends React.Component {
   }
 }
 
+export default connect(
+  mapStateToProps
+)(Board)
