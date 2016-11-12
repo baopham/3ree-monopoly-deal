@@ -6,14 +6,16 @@ import clientMiddleware from './middleware/clientMiddleware'
 import { routerReducer } from 'react-router-redux'
 import persistState from 'redux-localstorage'
 
-import ducks from '../ducks'
+import games from '../routes/Games/modules/games'
+import currentGame from '../routes/Game/modules/currentGame'
 
 // Grab the state from a global injected into server-generated HTML
 const initialState = window.__INITIAL_STATE__
 
 const rootReducer = combineReducers({
   routing: routerReducer,
-  ...ducks
+  games,
+  currentGame
 })
 
 const enhancers = []
@@ -31,14 +33,5 @@ const store = createStore(
     ...enhancers
   )
 )
-
-if (module.hot) {
-  module.hot.accept('../ducks', () =>
-    store.replaceReducer(combineReducers({
-      routing: routerReducer,
-      ...require('../ducks')
-    }))
-  )
-}
 
 export default store

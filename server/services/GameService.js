@@ -1,4 +1,3 @@
-import r from 'rethinkdb'
 import GameRepository from '../repositories/GameRepository'
 import MemberRepository from '../repositories/MemberRepository'
 import { newDeck } from '../../universal/monopoly/cards'
@@ -16,10 +15,6 @@ export default class GameService {
       if (change.updated) {
         io.emit(`game-${change.new_val.id}-change`, change.new_value)
       }
-    })
-
-    MemberRepository.watchForChanges((change) => {
-      io.emit(`game-${change.new_val.gameId}-member-change`, change)
     })
   }
 

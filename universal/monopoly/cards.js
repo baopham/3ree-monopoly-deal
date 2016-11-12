@@ -1,69 +1,69 @@
 // ------------------------------------
 // Types
 // ------------------------------------
-export const ACTION_CARD_TYPE = Symbol()
-export const PROPERTY_CARD_TYPE = Symbol()
-export const PROPERTY_WILDCARD_TYPE = Symbol()
-export const RENT_CARD_TYPE = Symbol()
-export const MONEY_CARD_TYPE = Symbol()
+export const ACTION_CARD_TYPE = 'ACTION_CARD_TYPE'
+export const PROPERTY_CARD_TYPE = 'PROPERTY_CARD_TYPE'
+export const PROPERTY_WILDCARD_TYPE = 'PROPERTY_WILDCARD_TYPE'
+export const RENT_CARD_TYPE = 'RENT_CARD_TYPE'
+export const MONEY_CARD_TYPE = 'MONEY_CARD_TYPE'
 
 // ------------------------------------
 // Action cards
 // ------------------------------------
-export const HOUSE = Symbol()
-export const HOTEL = Symbol()
-export const DEAL_BREAKER = Symbol()
-export const DOUBLE_RENT = Symbol()
-export const FORCED_DEAL = Symbol()
-export const SAY_NO = Symbol()
-export const BIRTHDAY = Symbol()
-export const DEBT_COLLECTOR = Symbol()
-export const PASS_GO = Symbol()
-export const SLY_DEAL = Symbol()
+export const HOUSE = 'HOUSE'
+export const HOTEL = 'HOTEL'
+export const DEAL_BREAKER = 'DEAL_BREAKER'
+export const DOUBLE_RENT = 'DOUBLE'
+export const FORCED_DEAL = 'FORCED_DEAL'
+export const SAY_NO = 'SAY_NO'
+export const BIRTHDAY = 'BIRTHDAY'
+export const DEBT_COLLECTOR = 'DEBT_COLLECTOR'
+export const PASS_GO = 'PASS_GO'
+export const SLY_DEAL = 'SLY_DEAL'
 
 // ------------------------------------
 // Property cards
 // ------------------------------------
-export const PROPERTY_BROWN = Symbol()
-export const PROPERTY_BLUE = Symbol()
-export const PROPERTY_GREEN = Symbol()
-export const PROPERTY_LIGHT_BLUE = Symbol()
-export const PROPERTY_ORANGE = Symbol()
-export const PROPERTY_PINK = Symbol()
-export const PROPERTY_BLACK = Symbol()
-export const PROPERTY_RED = Symbol()
-export const PROPERTY_YELLOW = Symbol()
-export const PROPERTY_LIGHT_GREEN = Symbol()
+export const PROPERTY_BROWN = 'PROPERTY_BROWN'
+export const PROPERTY_BLUE = 'PROPERTY_BLUE'
+export const PROPERTY_GREEN = 'PROPERTY_GREEN'
+export const PROPERTY_LIGHT_BLUE = 'PROPERTY_LIGHT_BLUE'
+export const PROPERTY_ORANGE = 'PROPERTY_ORANGE'
+export const PROPERTY_PINK = 'PROPERTY_PINK'
+export const PROPERTY_BLACK = 'PROPERTY_BLACK'
+export const PROPERTY_RED = 'PROPERTY_RED'
+export const PROPERTY_YELLOW = 'PROPERTY_YELLOW'
+export const PROPERTY_LIGHT_GREEN = 'PROPERTY_LIGHT_GREEN'
 
-export const PROPERTY_WILDCARD = Symbol()
-export const PROPERTY_LIGHT_BLUE_OR_BROWN = Symbol()
-export const PROPERTY_PINK_OR_ORANGE = Symbol()
-export const PROPERTY_GREEN_OR_BLACK = Symbol()
-export const PROPERTY_GREEN_OR_BLUE = Symbol()
-export const PROPERTY_LIGHT_BLUE_OR_BLACK = Symbol()
-export const PROPERTY_LIGHT_GREEN_OR_BLACK = Symbol()
-export const PROPERTY_YELLOW_OR_RED = Symbol()
+export const PROPERTY_WILDCARD = 'PROPERTY_WILDCARD'
+export const PROPERTY_LIGHT_BLUE_OR_BROWN = 'PROPERTY_LIGHT_BLUE_OR_BROWN'
+export const PROPERTY_PINK_OR_ORANGE = 'PROPERTY_PINK_OR_ORANGE'
+export const PROPERTY_GREEN_OR_BLACK = 'PROPERTY_GREEN_OR_BLACK'
+export const PROPERTY_GREEN_OR_BLUE = 'PROPERTY_GREEN_OR_BLUE'
+export const PROPERTY_LIGHT_BLUE_OR_BLACK = 'PROPERTY_LIGHT_BLUE_OR_BLACK'
+export const PROPERTY_LIGHT_GREEN_OR_BLACK = 'PROPERTY_LIGHT_GREEN_OR_BLACK'
+export const PROPERTY_YELLOW_OR_RED = 'PROPERTY_YELLOW_OR_RED'
 
 // ------------------------------------
 // Rent cards
 // ------------------------------------
-export const RENT_ALL_COLOUR = Symbol()
-export const RENT_BLUE_OR_GREEN = Symbol()
-export const RENT_LIGHT_BLUE_OR_BROWN = Symbol()
-export const RENT_ORANGE_OR_PINK = Symbol()
-export const RENT_BLACK_OR_LIGHT_GREEN = Symbol()
-export const RENT_RED_OR_YELLOW = Symbol()
+export const RENT_ALL_COLOUR = 'RENT_ALL_COLOUR'
+export const RENT_BLUE_OR_GREEN = 'RENT_BLUE_OR_GREEN'
+export const RENT_LIGHT_BLUE_OR_BROWN = 'RENT_LIGHT_BLUE_OR_BROWN'
+export const RENT_ORANGE_OR_PINK = 'RENT_ORANGE_OR_PINK'
+export const RENT_BLACK_OR_LIGHT_GREEN = 'RENT_BLACK_OR_LIGHT_GREEN'
+export const RENT_RED_OR_YELLOW = 'RENT_RED_OR_YELLOW'
 
 
 // ------------------------------------
 // Store
 // ------------------------------------
-export const MONEY_10M = Symbol()
-export const MONEY_5M = Symbol()
-export const MONEY_4M = Symbol()
-export const MONEY_3M = Symbol()
-export const MONEY_2M = Symbol()
-export const MONEY_1M = Symbol()
+export const MONEY_10M = 'MONEY_10M'
+export const MONEY_5M = 'MONEY_5M'
+export const MONEY_4M = 'MONEY_4M'
+export const MONEY_3M = 'MONEY_3M'
+export const MONEY_2M = 'MONEY_2M'
+export const MONEY_1M = 'MONEY_1M'
 
 export const CARDS = {
   [HOUSE]: {

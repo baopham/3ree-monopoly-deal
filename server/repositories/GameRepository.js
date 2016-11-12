@@ -59,7 +59,7 @@ export default class GameRepository {
   update (id, payload) {
     return Game
       .get(id)
-      .update(payload)
+      .update({ ...payload, updatedAt: r.now() })
       .run()
   }
 

@@ -10,10 +10,6 @@ import store from '../universal/store'
 
 import Root from '../universal/containers/Root'
 
-import '../style/pure.css'
-import '../style/main.styl'
-import '../style/spinner.styl'
-
 const history = syncHistoryWithStore(browserHistory, store)
 
 global.socket = socketClient()
