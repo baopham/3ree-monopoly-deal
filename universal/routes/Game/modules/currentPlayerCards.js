@@ -45,13 +45,14 @@ function discardCard (card) {
   }
 }
 
-function placeCard (card) {
+function placeCard (card, asMoney = false) {
   return {
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
     promise: (dispatch, getState) => {
-      const gameId = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${gameId}/place`, { card })
+      const currentGame = getState().currentGame
+      const username = currentGame.username
+      return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney })
     }
   }
 }
@@ -72,7 +73,6 @@ export const actions = {
   drawCards,
   placeCard,
   discardCard,
-  placeCard,
   giveCardToOtherMember
 }
 
@@ -106,7 +106,7 @@ export default function reducer (state = initialState, action) {
     case GIVE_CARD_TO_OTHER_MEMBER_SUCCESS:
       return {
         ...state,
-        cardsOnHand: _.omit(state.cardsOnHand, action.card)
+        cardsOnHand: state.cardsOnHand.filter(card => card === action.card)
       }
 
     default:

@@ -1,10 +1,11 @@
 import MemberRepository from '../repositories/MemberRepository'
-import { * as monopoly } from '../../universal/monopoly/monopoly'
+import GameRepository from '../repositories/GameRepository'
+import * as monopoly from '../../universal/monopoly/monopoly'
 
 export default class MemberService {
-  constructor (gameId) {
+  constructor () {
     this.memberRepository = new MemberRepository()
-    this.gameId = gameId
+    this.gameRepository = new GameRepository()
   }
 
   static liveUpdates (io) {
@@ -13,32 +14,38 @@ export default class MemberService {
     })
   }
 
-  placeCard (card, asMoney = false) {
-
+  placeCard (gameId, username, card, asMoney = false) {
+    return this.memberRepository
+      .findByGameIdAndUsername(gameId, username)
+      .then(member => {
+        const area = asMoney ? 'bank' : 'properties'
+        member.placedCards[area].push(card)
+        return this.memberRepository.update(member.id, member);
+      })
   }
 
-  discardCard (card) {
-
+  playCard (gameId, card) {
+    return this.discardCard(gameId, card)
   }
 
-  sayNo () {
-
+  discardCard (gameId, card) {
+    return this.gameRepository
+      .find(id)
+      .then(game => {
+        game.discardedCards.push(card)
+        return this.gameRepository(gameId, game)
+      })
   }
 
-  playCard (card) {
-
-  }
-
-  giveCardToOtherMember (otherMemberUsername, card, asMoney = false) {
+  giveCardToOtherMember (gameId, otherMemberUsername, card, asMoney = false) {
     const isMoneyCard = asMoney || monopoly.isMoneyCard(card)
 
-    const otherMember = this.memberRepository.findByGameIdAndUsername(this.gameId, otherMemberUsername)
+    const otherMember = this.memberRepository.findByGameIdAndUsername(gameId, otherMemberUsername)
 
     const area = isMoneyCard ? 'bank' : 'properties'
 
     otherMember.placedCards[area].push(card)
 
-    this.memberRepository.update(otherMember.id, otherMember)
-
+    return this.memberRepository.update(otherMember.id, otherMember)
   }
 }

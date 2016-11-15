@@ -13,3 +13,10 @@ export function post (url, payload) {
     .send(payload)
     .set('Accept', 'application/json')
 }
+
+export function put (url, payload) {
+  return request
+    .put(url)
+    .send(payload)
+    .set('Accept', 'application/json')
+}

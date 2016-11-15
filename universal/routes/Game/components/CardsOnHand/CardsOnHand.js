@@ -1,15 +1,17 @@
 import React, { PropTypes } from 'react'
 import { Panel, Glyphicon } from 'react-bootstrap'
-import Card from '../Card'
 import FullWidth from '../../../../components/FullWidth'
+import CardOnHand from '../CardOnHand'
 
 export default class CardsOnHand extends React.Component {
   static propTypes = {
-    cards: PropTypes.array
+    cards: PropTypes.array,
+    onPlaceCard: PropTypes.func
   }
 
   static defaultProps = {
-    cards: []
+    cards: [],
+    onPlaceCard: () => {}
   }
 
   constructor(...args) {
@@ -42,15 +44,23 @@ export default class CardsOnHand extends React.Component {
   }
 
   render () {
-    const { cards } = this.props
+    const { cards, onPlaceCard } = this.props
 
     return (
       <FullWidth fluid>
-        <Panel header={this.renderHeader()} collapsible onClick={this.togglePanel}>
+        <Panel
+          header={this.renderHeader()}
+          collapsible
+          expanded={this.state.open}
+          onClick={this.togglePanel}
+        >
           <ul className="list-inline">
-            {cards.map((card, i) => 
+            {cards.map((card, i) =>
               <li key={i}>
-                <Card card={card} faceUp />
+                <CardOnHand
+                  card={card}
+                  onPlaceCard={onPlaceCard}
+                />
               </li>
             )}
           </ul>

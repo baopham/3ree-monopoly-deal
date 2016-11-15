@@ -39,7 +39,7 @@ export default class MemberRepository {
   }
 
   find (id) {
-    return Member.get(id).getJoin({ cards: true }).run()
+    return Member.get(id).run()
   }
 
   getCount () {
@@ -78,5 +78,18 @@ export default class MemberRepository {
   }
 
   leaveGame (gameId, username) {
+  }
+
+  findByGameIdAndUsername (gameId, username) {
+    return Member
+      .filter({ gameId, username })
+      .run()
+      .then(result => {
+        if (!result.length) {
+          throw new Error(`No member ${username} found for game: ${gameId}`)
+        }
+        const [member] = result
+        return member
+      })
   }
 }

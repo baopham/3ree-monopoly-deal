@@ -5,7 +5,8 @@ import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../Board'
 import { getCurrentPlayer } from '../../modules/gameSelectors'
-import { actions } from '../../modules/currentGame'
+import { actions as gameActions } from '../../modules/currentGame'
+import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -18,18 +19,28 @@ export class Game extends React.Component {
     game: PropTypes.object.isRequired,
     currentPlayer: PropTypes.object,
     currentPlayerCards: PropTypes.object,
+    placeCard: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired
   }
 
   render () {
-    const { game, currentPlayer, join, currentPlayerCards } = this.props
+    const {
+      game,
+      currentPlayer,
+      join,
+      currentPlayerCards,
+      placeCard
+    } = this.props
 
     return (
       <FullWidth fluid>
         <h2>Game: {game.name}</h2>
 
         {currentPlayer &&
-          <CardsOnHand cards={currentPlayerCards.cardsOnHand} />
+          <CardsOnHand
+            cards={currentPlayerCards.cardsOnHand}
+            onPlaceCard={placeCard}
+          />
         }
 
         <Board />
@@ -44,5 +55,5 @@ export class Game extends React.Component {
 
 export default connect(
   mapStateToProps,
-  actions
+  { ...gameActions, ...playerCardsActions }
 )(Game)

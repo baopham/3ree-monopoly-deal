@@ -79,7 +79,7 @@ function onGameMemberChange (dispatch, change) {
   } else if (change.deleted) {
     dispatch({ type: LEAVE_SUCCESS, payload: { member: change.old_val } })
   } else {
-    dispatch({ type: UPDATE_SUCCESS, payload: { member: change.new_val } })
+    // dispatch({ type: UPDATE_SUCCESS, payload: { member: change.new_val } })
   }
 }
 

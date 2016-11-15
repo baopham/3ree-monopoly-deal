@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import GamesList from '../../components/GamesList'
+import FullWidth from '../../../../components/FullWidth'
 import { Button } from 'react-bootstrap'
 import { actions } from '../../modules/games'
 import { connect } from 'react-redux'
@@ -47,7 +48,7 @@ export class GamesContainer extends React.Component {
     const totalPages = Math.ceil(count / limit)
 
     return (
-      <div>
+      <FullWidth>
         <GamesList games={games} />
         <Button onClick={this.addGame}>
           Add
@@ -62,7 +63,7 @@ export class GamesContainer extends React.Component {
             Previous
           </Button>
         }
-      </div>
+      </FullWidth>
     )
   }
 }
