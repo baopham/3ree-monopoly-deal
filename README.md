@@ -21,7 +21,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 
 ### TODOs
 
-- [  ] Collect all the card images
-- [  ] Notification for each action
-- [  ] Rework on webpack for SCSS and CSS modules
-- [  ] Inject reducer instead
+- [ ] Collect all the card images
+- [ ] Notification for each action
+- [ ] Rework on webpack for SCSS and CSS modules
+- [ ] Inject reducer instead
