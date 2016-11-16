@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Button, Glyphicon } from 'react-bootstrap'
 
-export default class PlaceCardButton extends React.Component {
+export default class PlayCardButton extends React.Component {
   static propTypes = {
     disabled: PropTypes.bool,
     onClick: PropTypes.func.isRequired
@@ -16,11 +16,12 @@ export default class PlaceCardButton extends React.Component {
         onClick={onClick}
         bsStyle="primary"
         bsSize="xsmall"
-        title="Place card in your space"
+        title="Play! Get some money! Place card in the center"
       >
-        <Glyphicon glyph="play" />
+        <Glyphicon glyph="credit-card" />
       </Button>
     )
   }
 }
+
 

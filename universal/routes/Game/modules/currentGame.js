@@ -11,6 +11,7 @@ function ns (value) {
 const gamesUrl = `${apiUrl}/games`
 
 const UPDATE_GAME = ns('UPDATE_GAME')
+const UPDATE_MEMBER = ns('UPDATE_MEMBER')
 const LOAD_REQUEST = ns('LOAD_REQUEST')
 const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const JOIN_REQUEST = ns('JOIN_REQUEST')
@@ -79,7 +80,7 @@ function onGameMemberChange (dispatch, change) {
   } else if (change.deleted) {
     dispatch({ type: LEAVE_SUCCESS, payload: { member: change.old_val } })
   } else {
-    // dispatch({ type: UPDATE_SUCCESS, payload: { member: change.new_val } })
+    dispatch({ type: UPDATE_MEMBER, payload: { member: change.new_val } })
   }
 }
 
@@ -166,6 +167,15 @@ export default function reducer (state = initialState, action) {
       return deepmerge(state, {
         game: action.payload.game
       })
+
+    case UPDATE_MEMBER:
+      nextState = deepmerge(state)
+      nextState.game.members.forEach(member => {
+        if (member.id === action.payload.member.id) {
+          Object.assign(member, action.payload.member)
+        }
+      })
+      return nextState
 
     case ERROR:
       return deepmerge(state, {

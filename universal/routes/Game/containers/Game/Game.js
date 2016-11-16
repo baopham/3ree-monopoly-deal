@@ -4,14 +4,15 @@ import FullWidth from '../../../../components/FullWidth'
 import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../Board'
-import { getCurrentPlayer } from '../../modules/gameSelectors'
+import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
-  currentPlayerCards: state.currentPlayerCards
+  currentPlayerCards: state.currentPlayerCards,
+  isPlayerTurn: isPlayerTurn(state)
 })
 
 export class Game extends React.Component {
@@ -20,7 +21,9 @@ export class Game extends React.Component {
     currentPlayer: PropTypes.object,
     currentPlayerCards: PropTypes.object,
     placeCard: PropTypes.func.isRequired,
-    join: PropTypes.func.isRequired
+    playCard: PropTypes.func.isRequired,
+    join: PropTypes.func.isRequired,
+    isPlayerTurn: PropTypes.bool
   }
 
   render () {
@@ -29,7 +32,9 @@ export class Game extends React.Component {
       currentPlayer,
       join,
       currentPlayerCards,
-      placeCard
+      placeCard,
+      playCard,
+      isPlayerTurn
     } = this.props
 
     return (
@@ -40,6 +45,8 @@ export class Game extends React.Component {
           <CardsOnHand
             cards={currentPlayerCards.cardsOnHand}
             onPlaceCard={placeCard}
+            onPlayCard={playCard}
+            isPlayerTurn={isPlayerTurn}
           />
         }
 

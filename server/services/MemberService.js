@@ -24,16 +24,16 @@ export default class MemberService {
       })
   }
 
-  playCard (gameId, card) {
-    return this.discardCard(gameId, card)
+  playCard (gameId, username, card) {
+    return this.discardCard(gameId, username, card)
   }
 
-  discardCard (gameId, card) {
-    return this.gameRepository
-      .find(id)
-      .then(game => {
-        game.discardedCards.push(card)
-        return this.gameRepository(gameId, game)
+  discardCard (gameId, username, card) {
+    return this.memberRepository
+      .findByGameIdAndUsername(gameId, username)
+      .then(member => {
+        member.game.discardedCards.push(card)
+        return this.gameRepository.update(gameId, member.game)
       })
   }
 

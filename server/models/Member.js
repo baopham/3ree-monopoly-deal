@@ -7,10 +7,11 @@ const Member = thinky.createModel('game_members', {
   id: type.string(),
   username: type.string(),
   gameId: type.string(),
-  placedCards: type.object(), // { bank: [type.string()], properties: [type.string()] }
+  placedCards: type.object() // { bank: [type.string()], properties: [type.string()] }
 })
 
+module.exports = Member
+
 Member.ensureIndex('gameId')
-
-export default Member
-
+const Game = require('./Game')
+Member.belongsTo(Game, 'game', 'gameId', 'id')

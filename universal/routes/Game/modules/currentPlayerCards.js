@@ -17,6 +17,8 @@ const DISCARD_CARD_REQUEST = ns('DISCARD_CARD_REQUEST')
 const DISCARD_CARD_SUCCESS = ns('DISCARD_CARD_SUCCESS')
 const PLACE_CARD_REQUEST = ns('PLACE_CARD_REQUEST')
 const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
+const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
+const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
 const GIVE_CARD_TO_OTHER_MEMBER_REQUEST = ns('GIVE_CARD_TO_OTHER_MEMBER_REQUEST')
 const GIVE_CARD_TO_OTHER_MEMBER_SUCCESS = ns('GIVE_CARD_TO_OTHER_MEMBER_SUCCESS')
 const ERROR = ns('ERROR')
@@ -57,6 +59,18 @@ function placeCard (card, asMoney = false) {
   }
 }
 
+function playCard (card) {
+  return {
+    types: [PLAY_CARD_REQUEST, PLAY_CARD_SUCCESS, ERROR],
+    card,
+    promise: (dispatch, getState) => {
+      const currentGame = getState().currentGame
+      const username = currentGame.username
+      return request.put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username })
+    }
+  }
+}
+
 function giveCardToOtherMember (gameId, card, username) {
   return {
     types: [GIVE_CARD_TO_OTHER_MEMBER_REQUEST, GIVE_CARD_TO_OTHER_MEMBER_SUCCESS, ERROR],
@@ -71,6 +85,7 @@ function giveCardToOtherMember (gameId, card, username) {
 
 export const actions = {
   drawCards,
+  playCard,
   placeCard,
   discardCard,
   giveCardToOtherMember
@@ -92,6 +107,7 @@ export default function reducer (state = initialState, action) {
     case DRAW_CARDS_REQUEST:
     case DISCARD_CARD_REQUEST:
     case PLACE_CARD_REQUEST:
+    case PLAY_CARD_REQUEST:
     case GIVE_CARD_TO_OTHER_MEMBER_REQUEST:
       return requestActionHandler(state)
 
@@ -103,10 +119,17 @@ export default function reducer (state = initialState, action) {
 
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
+    case PLAY_CARD_SUCCESS:
     case GIVE_CARD_TO_OTHER_MEMBER_SUCCESS:
+      const { cardsOnHand } = state
+      const indexToRemove = cardsOnHand.indexOf(action.card)
+
       return {
         ...state,
-        cardsOnHand: state.cardsOnHand.filter(card => card === action.card)
+        cardsOnHand: [
+          ...cardsOnHand.slice(0, indexToRemove),
+          ...cardsOnHand.slice(indexToRemove + 1)
+        ]
       }
 
     default:

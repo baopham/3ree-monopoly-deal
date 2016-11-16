@@ -6,12 +6,15 @@ import CardOnHand from '../CardOnHand'
 export default class CardsOnHand extends React.Component {
   static propTypes = {
     cards: PropTypes.array,
-    onPlaceCard: PropTypes.func
+    onPlaceCard: PropTypes.func,
+    onPlayCard: PropTypes.func,
+    isPlayerTurn: PropTypes.bool
   }
 
   static defaultProps = {
     cards: [],
-    onPlaceCard: () => {}
+    onPlaceCard: () => {},
+    onPlayCard: () => {}
   }
 
   constructor(...args) {
@@ -44,7 +47,12 @@ export default class CardsOnHand extends React.Component {
   }
 
   render () {
-    const { cards, onPlaceCard } = this.props
+    const {
+      cards,
+      onPlaceCard,
+      onPlayCard,
+      isPlayerTurn
+    } = this.props
 
     return (
       <FullWidth fluid>
@@ -54,12 +62,14 @@ export default class CardsOnHand extends React.Component {
           expanded={this.state.open}
           onClick={this.togglePanel}
         >
-          <ul className="list-inline">
+          <ul className="list-inline" style={{ minHeight: 250 }}>
             {cards.map((card, i) =>
               <li key={i}>
                 <CardOnHand
                   card={card}
                   onPlaceCard={onPlaceCard}
+                  onPlayCard={onPlayCard}
+                  isPlayerTurn={isPlayerTurn}
                 />
               </li>
             )}

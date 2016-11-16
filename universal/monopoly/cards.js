@@ -140,7 +140,7 @@ export const CARDS = {
     count: 2,
     value: 1,
     needs: 2,
-    image: '/images/cards/property_brown.png',
+    image: '/images/cards/property-brown.png',
     type: PROPERTY_CARD_TYPE
   },
 

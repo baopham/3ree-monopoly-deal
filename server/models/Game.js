@@ -1,5 +1,4 @@
 import thinky from '../thinky'
-import Member from './Member'
 
 const type = thinky.type
 const r = thinky.r
@@ -15,6 +14,7 @@ const Game = thinky.createModel('games', {
   createdAt: type.date().default(r.now())
 })
 
-Game.hasMany(Member, 'members', 'id', 'gameId')
+module.exports = Game
 
-export default Game
+const Member = require('./Member')
+Game.hasMany(Member, 'members', 'id', 'gameId')

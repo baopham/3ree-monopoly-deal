@@ -2,6 +2,8 @@ import _ from 'lodash'
 import {
   CARDS,
   MONEY_CARD_TYPE,
+  ACTION_CARD_TYPE,
+  RENT_CARD_TYPE,
   SAY_NO
 } from './cards'
 
@@ -16,4 +18,9 @@ export function totalValue (cards = []) {
 export function isMoneyCard (card) {
   card = getCardObject(card)
   return card.type === MONEY_CARD_TYPE
+}
+
+export function canPlayCard (card) {
+  card = getCardObject(card)
+  return card.type === ACTION_CARD_TYPE || card.type === RENT_CARD_TYPE
 }

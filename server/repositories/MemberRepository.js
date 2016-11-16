@@ -83,6 +83,7 @@ export default class MemberRepository {
   findByGameIdAndUsername (gameId, username) {
     return Member
       .filter({ gameId, username })
+      .getJoin({ game: true })
       .run()
       .then(result => {
         if (!result.length) {

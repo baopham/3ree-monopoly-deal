@@ -47,7 +47,7 @@ export class DrawCardsButton extends React.Component {
 
   shouldDisable () {
     const { currentTurn, currentPlayer } = this.props
-    const isDisabled = currentPlayer && !this.state.hasDrawnCards && currentTurn !== currentPlayer.username
+    const isDisabled = currentTurn !== currentPlayer.username || this.state.hasDrawnCards
     return isDisabled
   }
 

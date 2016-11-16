@@ -33,15 +33,19 @@ export default class PlacedCards extends React.Component {
       <Container fluid>
         <Col md={2}>
           <Panel header="Bank" style={styles.bank}>
-            <CardPile card={bank} size="small" faceUp />
+            <CardPile cards={bank} size="small" faceUp />
           </Panel>
         </Col>
 
         <Col md={10}>
           <Panel header="Properties" style={styles.properties}>
-            {properties.map((card, i) =>
-              <Card card={card} key={i} size="small" faceUp />
-            )}
+            <ul className="list-inline">
+              {properties.map((card, i) =>
+                <li key={i}>
+                  <Card card={card} key={i} size="small" faceUp />
+                </li>
+              )}
+            </ul>
           </Panel>
         </Col>
       </Container>

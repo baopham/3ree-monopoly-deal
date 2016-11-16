@@ -31,6 +31,14 @@ export function placeCard (req, res) {
     .catch(err => handleError(err, res))
 }
 
+export function playCard (req, res) {
+  const promise = memberService.playCard(req.params.id, req.body.username, req.body.card)
+
+  promise
+    .then(() => res.json({ success: true }))
+    .catch(err => handleError(err, res))
+}
+
 export function giveCardToOtherMember (req, res) {
   res.json()
 }
