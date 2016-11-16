@@ -16,7 +16,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 
 - Currently, only the client knows about what cards the player is holding
 - Rules are loosely applied
-- Mayber should store the current turn in the server
+- Maybe should store the current turn in the server
 
 
 ### TODOs
