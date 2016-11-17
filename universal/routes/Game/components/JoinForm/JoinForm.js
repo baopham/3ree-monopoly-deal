@@ -7,7 +7,9 @@ export default class JoinForm extends React.Component {
 
   componentDidMount () {
     const username = window.prompt('Enter a username to join this game')
-    this.props.onJoin(username)
+    if (username && username.trim()) {
+      this.props.onJoin(username.trim())
+    }
   }
 
   render () {

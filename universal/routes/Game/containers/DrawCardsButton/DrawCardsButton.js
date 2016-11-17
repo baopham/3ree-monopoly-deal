@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Button, Glyphicon } from 'react-bootstrap'
-import { getCurrentPlayer } from '../../modules/gameSelectors'
+import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions } from '../../modules/currentPlayerCards'
 
 const mapStateToProps = (state) => ({
-  currentTurn: state.currentGame.currentTurn,
+  isPlayerTurn: isPlayerTurn(state),
   currentPlayer: getCurrentPlayer(state)
 })
 
 export class DrawCardsButton extends React.Component {
   static propTypes = {
-    currentTurn: PropTypes.string,
+    isPlayerTurn: PropTypes.bool,
     currentPlayer: PropTypes.object,
     drawCards: PropTypes.func.isRequired
   }
@@ -20,18 +20,16 @@ export class DrawCardsButton extends React.Component {
     super(...args)
 
     this.state = {
-      hasDrawnCards: false,
-      currentTurn: null
+      hasDrawnCards: false
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    const { currentTurn } = this.props
+    const { isPlayerTurn } = this.props
 
-    if (currentTurn !== this.state.currentTurn) {
+    if (!isPlayerTurn) {
       this.setState({
-        hasDrawnCards: false,
-        currentTurn: currentTurn
+        hasDrawnCards: false
       })
     }
   }
@@ -40,14 +38,13 @@ export class DrawCardsButton extends React.Component {
     this.props.drawCards()
 
     this.setState({
-      hasDrawnCards: true,
-      currentTurn: this.state.currentTurn
+      hasDrawnCards: true
     })
   }
 
   shouldDisable () {
-    const { currentTurn, currentPlayer } = this.props
-    const isDisabled = currentTurn !== currentPlayer.username || this.state.hasDrawnCards
+    const { isPlayerTurn, currentPlayer } = this.props
+    const isDisabled = !isPlayerTurn || this.state.hasDrawnCards
     return isDisabled
   }
 

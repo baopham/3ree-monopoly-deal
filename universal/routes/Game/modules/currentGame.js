@@ -16,6 +16,7 @@ const LOAD_REQUEST = ns('LOAD_REQUEST')
 const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const JOIN_REQUEST = ns('JOIN_REQUEST')
 const JOIN_SUCCESS = ns('JOIN_SUCCESS')
+const JOIN_ERROR = ns('JOIN_ERROR')
 const LEAVE_REQUEST = ns('LEAVE_REQUEST')
 const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
 const END_TURN_REQUEST = ns('END_TURN_REQUEST')
@@ -35,7 +36,7 @@ function getGame (id) {
 
 function join (username) {
   return {
-    types: [JOIN_REQUEST, JOIN_SUCCESS, ERROR],
+    types: [JOIN_REQUEST, JOIN_SUCCESS, JOIN_ERROR],
     username,
     promise: (dispatch, getState) => {
       const id = getState().currentGame.game.id
@@ -129,8 +130,15 @@ export default function reducer (state = initialState, action) {
       nextState.username = action.username
       return nextState
 
-    case LOAD_SUCCESS:
+    case JOIN_ERROR:
       return deepmerge(state, {
+        username: null,
+        error: action.error,
+        isWorking: false
+      })
+
+    case LOAD_SUCCESS:
+      return deepmerge(initialState, {
         game: action.payload.game,
         isWorking: false,
         error: null
