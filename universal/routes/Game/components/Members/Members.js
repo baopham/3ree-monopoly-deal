@@ -12,8 +12,8 @@ export default class Members extends React.Component {
 
     return (
       <div>
-        {members.map((member, i) =>
-          <Panel key={i} header={`Player: ${member.username}`}>
+        {members.map(member =>
+          <Panel key={member.id} header={`Player: ${member.username}`}>
             <Member member={member} />
           </Panel>
         )}
