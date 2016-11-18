@@ -16,9 +16,9 @@ export default class PlayCardButton extends React.Component {
         onClick={onClick}
         bsStyle="primary"
         bsSize="xsmall"
-        title="Play! Get some money! Place card in the center"
+        title="Place card in the center"
       >
-        <Glyphicon glyph="credit-card" />
+        <Glyphicon glyph="play" />
       </Button>
     )
   }

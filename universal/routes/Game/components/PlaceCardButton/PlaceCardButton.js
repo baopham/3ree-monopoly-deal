@@ -18,7 +18,7 @@ export default class PlaceCardButton extends React.Component {
         bsSize="xsmall"
         title="Place card in your space"
       >
-        <Glyphicon glyph="play" />
+        <Glyphicon glyph="download-alt" />
       </Button>
     )
   }
