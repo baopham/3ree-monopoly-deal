@@ -111,8 +111,7 @@ const initialState = {
   membership: {},
   username: null,
   isWorking: false,
-  error: null,
-  currentTurn: null
+  error: null
 }
 
 const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
@@ -138,7 +137,7 @@ export default function reducer (state = initialState, action) {
       })
 
     case LOAD_SUCCESS:
-      return deepmerge(initialState, {
+      return deepmerge(state, {
         game: action.payload.game,
         isWorking: false,
         error: null
@@ -151,7 +150,7 @@ export default function reducer (state = initialState, action) {
 
       const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
 
-      if (!alreadyJoined) {
+      if (!alreadyJoined && newMember) {
         nextState.game.members.push(newMember)
       }
 
@@ -160,16 +159,16 @@ export default function reducer (state = initialState, action) {
         nextState.membership[nextState.game.id] = newMember
       }
 
-      if (!nextState.currentTurn) {
-        nextState.currentTurn = newMember.username
+      if (!nextState.game.currentTurn) {
+        nextState.game.currentTurn = newMember.username
       }
 
       return nextState
 
     case END_TURN_SUCCESS:
-      return deepmerge(state, {
-        currentTurn: action.payload.nextTurn
-      })
+      nextState = deepmerge(state)
+      nextState.game.currentTurn = action.payload.nextTurn
+      return nextState
 
     case UPDATE_GAME:
       return deepmerge(state, {

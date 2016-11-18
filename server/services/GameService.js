@@ -61,8 +61,17 @@ export default class GameService {
     return this.gameRepository.delete(id)
   }
 
-  addMember (id, username) {
-    return this.memberRepository.joinGame(id, username)
+  addMember (gameId, username) {
+    return this.memberRepository.joinGame(gameId, username)
+      .then(() => {
+        return this.gameRepository.find(gameId)
+      })
+      .then(game => {
+        if (!game.currentTurn) {
+          game.currentTurn = username
+          return this.gameRepository.update(gameId, game)
+        }
+      })
   }
 
   endTurn (id) {
@@ -73,8 +82,10 @@ export default class GameService {
         const nextTurnIndex = currentTurnIndex + 1 === members.length ? 0 : currentTurnIndex + 1
         const nextTurn = game.members[nextTurnIndex].username
 
-        return nextTurn
+        game.currentTurn = nextTurn
+        return this.updateGame(game.id, game)
       })
+      .then(game => game.currentTurn)
   }
 
   drawCards (id) {

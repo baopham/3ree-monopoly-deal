@@ -5,7 +5,8 @@ const getCurrentGame = (state) => state.currentGame
 export const getCurrentPlayer = createSelector(
   [getCurrentGame],
   (currentGame) => {
-    return currentGame.game.members.find(member => member.username === currentGame.username)
+    const membership = currentGame.membership[currentGame.game.id] || {}
+    return currentGame.game.members.find(member => member.id === membership.id)
   }
 )
 
@@ -13,7 +14,7 @@ export const isPlayerTurn = createSelector(
   [getCurrentGame, getCurrentPlayer],
   (currentGame, currentPlayer) => {
     return currentPlayer &&
-      currentGame.currentTurn &&
-      currentGame.currentTurn === currentPlayer.username
+      currentGame.game.currentTurn &&
+      currentGame.game.currentTurn === currentPlayer.username
   }
 )

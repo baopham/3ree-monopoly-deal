@@ -60,7 +60,7 @@ export class DrawCardsButton extends React.Component {
         bsSize="xsmall"
         className={className}
       >
-        <Glyphicon glyph="play-circle" />
+        <Glyphicon glyph="new-window" />
       </Button>
     )
   }

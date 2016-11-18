@@ -5,7 +5,8 @@ import CardPile from '../CardPile'
 export default class DrawPile extends React.Component {
   static propTypes = {
     cards: PropTypes.array,
-    drawCardsButton: PropTypes.node
+    drawCardsButton: PropTypes.node,
+    endTurnButton: PropTypes.node
   }
 
   static defaultProps = {
@@ -13,12 +14,13 @@ export default class DrawPile extends React.Component {
   }
 
   renderHeader () {
-    const { drawCardsButton } = this.props
+    const { drawCardsButton, endTurnButton } = this.props
 
     return (
       <div>
         Draw Piles
         <div className="pull-right">
+          {endTurnButton}
           {drawCardsButton}
         </div>
       </div>
