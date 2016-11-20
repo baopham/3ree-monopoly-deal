@@ -1,24 +1,13 @@
 /* global __DEV__ */
 
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import clientMiddleware from './middleware/clientMiddleware'
-import { routerReducer } from 'react-router-redux'
 import persistState from 'redux-localstorage'
-
-import games from '../routes/Games/modules/games'
-import currentGame from '../routes/Game/modules/currentGame'
-import currentPlayerCards from '../routes/Game/modules/currentPlayerCards'
+import rootReducer from './rootReducer'
 
 // Grab the state from a global injected into server-generated HTML
 const initialState = window.__INITIAL_STATE__
-
-const rootReducer = combineReducers({
-  routing: routerReducer,
-  games,
-  currentGame,
-  currentPlayerCards
-})
 
 const enhancers = []
 
@@ -35,5 +24,11 @@ const store = createStore(
     ...enhancers
   )
 )
+
+if (__DEV__ && module.hot) {
+  module.hot.accept('./rootReducer', () =>
+    store.replaceReducer(require('./rootReducer').default)
+  )
+}
 
 export default store
