@@ -62,15 +62,24 @@ export default class GameService {
   }
 
   addMember (gameId, username) {
-    return this.memberRepository.joinGame(gameId, username)
-      .then(() => {
+    const joinPromise = this.memberRepository.joinGame(gameId, username)
+    const promiseContext = {}
+
+    return joinPromise
+      .then(newMember => {
+        promiseContext.newMember = newMember
         return this.gameRepository.find(gameId)
       })
       .then(game => {
-        if (!game.currentTurn) {
-          game.currentTurn = username
-          return this.gameRepository.update(gameId, game)
+        if (game.currentTurn) {
+          return;
         }
+
+        game.currentTurn = username
+        return this.gameRepository.update(gameId, game)
+      })
+      .then(() => {
+        return promiseContext.newMember
       })
   }
 
