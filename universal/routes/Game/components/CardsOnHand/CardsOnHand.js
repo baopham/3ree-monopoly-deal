@@ -8,6 +8,7 @@ export default class CardsOnHand extends React.Component {
     cards: PropTypes.array,
     onPlaceCard: PropTypes.func,
     onPlayCard: PropTypes.func,
+    onDrawCards: PropTypes.func,
     isPlayerTurn: PropTypes.bool
   }
 
@@ -51,6 +52,7 @@ export default class CardsOnHand extends React.Component {
       cards,
       onPlaceCard,
       onPlayCard,
+      onDrawCards,
       isPlayerTurn
     } = this.props
 
@@ -70,6 +72,7 @@ export default class CardsOnHand extends React.Component {
                   card={card}
                   onPlaceCard={onPlaceCard}
                   onPlayCard={onPlayCard}
+                  onDrawCards={onDrawCards}
                   isPlayerTurn={isPlayerTurn}
                 />
               </li>

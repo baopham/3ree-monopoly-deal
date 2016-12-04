@@ -22,6 +22,7 @@ export class Game extends React.Component {
     currentPlayerCards: PropTypes.object,
     placeCard: PropTypes.func.isRequired,
     playCard: PropTypes.func.isRequired,
+    drawCards: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool
   }
@@ -34,6 +35,7 @@ export class Game extends React.Component {
       currentPlayerCards,
       placeCard,
       playCard,
+      drawCards,
       isPlayerTurn
     } = this.props
 
@@ -46,6 +48,7 @@ export class Game extends React.Component {
             cards={currentPlayerCards.cardsOnHand}
             onPlaceCard={placeCard}
             onPlayCard={playCard}
+            onDrawCards={drawCards}
             isPlayerTurn={isPlayerTurn}
           />
         }
