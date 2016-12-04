@@ -66,6 +66,7 @@ export default class CardsOnHand extends React.Component {
             {cards.map((card, i) =>
               <li key={i}>
                 <CardOnHand
+                  cards={cards}
                   card={card}
                   onPlaceCard={onPlaceCard}
                   onPlayCard={onPlayCard}

@@ -6,6 +6,7 @@ import { isMoneyCard, canPlayCard } from '../../../../monopoly/monopoly'
 
 export default class CardOnHand extends React.Component {
   static propTypes = {
+    cards: PropTypes.array.isRequired,
     card: PropTypes.string.isRequired,
     onPlaceCard: PropTypes.func.isRequired,
     onPlayCard: PropTypes.func.isRequired,
@@ -25,9 +26,9 @@ export default class CardOnHand extends React.Component {
   }
 
   render () {
-    const { card, isPlayerTurn } = this.props
+    const { cards, card, isPlayerTurn } = this.props
     const cannotPlaceCard = !isPlayerTurn
-    const cannotPlayCard = !isPlayerTurn || !canPlayCard(card)
+    const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, cards)
 
     return (
       <div>

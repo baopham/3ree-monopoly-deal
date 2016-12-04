@@ -11,6 +11,7 @@ if (process.env.NODE_ENV === 'development') {
   entry = [
     'webpack-dev-server/client?http://localhost:3001',
     'webpack/hot/only-dev-server',
+    'babel-polyfill',
     './client/app'
   ]
   output = {
@@ -40,7 +41,10 @@ if (process.env.NODE_ENV === 'development') {
     }
   ]
 } else {
-  entry = './client/app'
+  entry = [
+    'babel-polyfill',
+    './client/app'
+  ]
   output = {
     path: path.join(__dirname, [ '/', config.get('buildDirectory') ].join('')),
     filename: 'bundle.js'

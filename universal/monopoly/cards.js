@@ -65,7 +65,7 @@ export const MONEY_3M = 'MONEY_3M'
 export const MONEY_2M = 'MONEY_2M'
 export const MONEY_1M = 'MONEY_1M'
 
-export const CARDS = {
+export const CARDS = setName({
   [HOUSE]: {
     count: 3,
     value: 3,
@@ -360,7 +360,7 @@ export const CARDS = {
     image: '/images/cards/money-5m.png',
     type: MONEY_CARD_TYPE
   }
-}
+})
 
 export function newDeck () {
   let cards = []
@@ -384,5 +384,11 @@ export function shuffle (cards) {
     cards[j] = x
   }
 
+  return cards
+}
+
+// Side effect
+function setName (cards) {
+  Object.keys(cards).map(key => cards[key].key = key)
   return cards
 }

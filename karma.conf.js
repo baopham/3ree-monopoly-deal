@@ -9,10 +9,15 @@ module.exports = function (config) {
     colors: true,
     frameworks: [ 'mocha', 'sinon', 'chai' ], // Mocha is our testing framework of choice
     files: [
-      'tests.webpack.js'
+      'node_modules/babel-polyfill/dist/polyfill.js',
+      'universal/**/*.spec.js',
+      'server/**/*.spec.js',
+      'client/**/*.spec.js'
     ],
     preprocessors: {
-      'tests.webpack.js': [ 'webpack' ] // Preprocess with webpack and our sourcemap loader
+      'universal/**/*.spec.js': [ 'webpack' ],
+      'server/**/*.spec.js': [ 'webpack' ],
+      'client/**/*.spec.js': [ 'webpack' ]
     },
     reporters: [ 'mocha' ],
     webpack: { // Simplified Webpack configuration
