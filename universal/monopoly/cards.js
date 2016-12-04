@@ -56,7 +56,7 @@ export const RENT_RED_OR_YELLOW = 'RENT_RED_OR_YELLOW'
 
 
 // ------------------------------------
-// Store
+// Money
 // ------------------------------------
 export const MONEY_10M = 'MONEY_10M'
 export const MONEY_5M = 'MONEY_5M'
@@ -361,6 +361,8 @@ export const CARDS = setName({
     type: MONEY_CARD_TYPE
   }
 })
+
+export const MAX_CARDS_IN_HAND = 7
 
 export function newDeck () {
   let cards = []

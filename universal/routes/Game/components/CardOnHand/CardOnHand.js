@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import Card from '../Card'
 import PlaceCardButton from '../PlaceCardButton'
 import PlayCardButton from '../PlayCardButton'
+import DiscardCardButton from '../DiscardCardButton'
 import { isMoneyCard, canPlayCard } from '../../../../monopoly/monopoly'
 import { PASS_GO } from '../../../../monopoly/cards'
 
@@ -12,6 +13,8 @@ export default class CardOnHand extends React.Component {
     onPlaceCard: PropTypes.func.isRequired,
     onPlayCard: PropTypes.func.isRequired,
     onDrawCards: PropTypes.func.isRequired,
+    onDiscardCard: PropTypes.func.isRequired,
+    needsToDiscard: PropTypes.bool,
     isPlayerTurn: PropTypes.bool
   }
 
@@ -30,8 +33,20 @@ export default class CardOnHand extends React.Component {
     }
   }
 
+  onDiscardCard = (e) => {
+    e.stopPropagation()
+    const { card } = this.props
+    this.props.onDiscardCard(card)
+  }
+
   render () {
-    const { cards, card, isPlayerTurn } = this.props
+    const {
+      cards,
+      card,
+      needsToDiscard,
+      isPlayerTurn
+    } = this.props
+
     const cannotPlaceCard = !isPlayerTurn
     const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, cards)
 
@@ -46,6 +61,11 @@ export default class CardOnHand extends React.Component {
           disabled={cannotPlayCard}
           onClick={this.onPlayCard}
         />
+        {needsToDiscard &&
+          <DiscardCardButton
+            onClick={this.onDiscardCard}
+          />
+        }
       </div>
     )
   }
