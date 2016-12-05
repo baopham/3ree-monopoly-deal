@@ -9,6 +9,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 1. Install rethinkdb
 1. Run `npm install`
 1. Run `rethinkdb` in the root directory
+1. Run `npm run db:setup`
 1. Run `npm start`
 
 

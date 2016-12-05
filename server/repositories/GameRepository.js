@@ -43,7 +43,7 @@ export default class GameRepository {
   }
 
   find (id) {
-    return Game.get(id).getJoin({ members: true }).run()
+    return Game.get(id).getJoin({ players: true }).run()
   }
 
   getCount () {
@@ -66,10 +66,10 @@ export default class GameRepository {
   delete (id) {
     return Game
       .get(id)
-      .getJoin({ members: true })
+      .getJoin({ players: true })
       .run()
       .then(game => {
-        game.deleteAll({ members: true })
+        game.deleteAll({ players: true })
         return game
       })
   }

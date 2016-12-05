@@ -5,7 +5,7 @@
   "main": "server.babel.js",
   "scripts": {
     "build:prod": "NODE_ENV=production webpack",
-    "db-setup": "node dbSetup.babel.js",
+    "db:setup": "node dbSetup.babel.js",
     "lint": "eslint client server universal test server.js dbSetup.js",
     "lint:fix": "npm run lint -- --fix",
     "start": "NODE_ENV=development node start-dev.js",

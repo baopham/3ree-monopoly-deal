@@ -1,7 +1,8 @@
 import GameService from '../services/GameService'
-import MemberService from '../services/MemberService'
+import PlayerService from '../services/PlayerService'
 
 export default function setup (io) {
   GameService.liveUpdates(io)
-  MemberService.liveUpdates(io)
+  PlayerService.liveUpdates(io)
 }
+

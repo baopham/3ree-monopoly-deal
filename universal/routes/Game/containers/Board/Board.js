@@ -6,7 +6,7 @@ import EndTurnButton from '../EndTurnButton'
 import Container from '../../../../components/Container'
 import DrawPile from '../../components/DrawPile'
 import DiscardPile from '../../components/DiscardPile'
-import Members from '../../components/Members'
+import Players from '../../components/Players'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -32,7 +32,7 @@ export class Board extends React.Component {
         </Col>
 
         <Col md={10}>
-          <Members members={game.members} />
+          <Players players={game.players} />
         </Col>
       </Container>
     )

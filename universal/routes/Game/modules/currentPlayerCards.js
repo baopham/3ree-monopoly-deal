@@ -19,8 +19,8 @@ const PLACE_CARD_REQUEST = ns('PLACE_CARD_REQUEST')
 const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
 const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
 const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
-const GIVE_CARD_TO_OTHER_MEMBER_REQUEST = ns('GIVE_CARD_TO_OTHER_MEMBER_REQUEST')
-const GIVE_CARD_TO_OTHER_MEMBER_SUCCESS = ns('GIVE_CARD_TO_OTHER_MEMBER_SUCCESS')
+const GIVE_CARD_TO_OTHER_PLAYER_REQUEST = ns('GIVE_CARD_TO_OTHER_PLAYER_REQUEST')
+const GIVE_CARD_TO_OTHER_PLAYER_SUCCESS = ns('GIVE_CARD_TO_OTHER_PLAYER_SUCCESS')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -81,9 +81,9 @@ function endTurn () {
   }
 }
 
-function giveCardToOtherMember (gameId, card, username) {
+function giveCardToOtherPlayer (gameId, card, username) {
   return {
-    types: [GIVE_CARD_TO_OTHER_MEMBER_REQUEST, GIVE_CARD_TO_OTHER_MEMBER_SUCCESS, ERROR],
+    types: [GIVE_CARD_TO_OTHER_PLAYER_REQUEST, GIVE_CARD_TO_OTHER_PLAYER_SUCCESS, ERROR],
     card,
     username,
     promise: (dispatch, getState) => {
@@ -99,7 +99,7 @@ export const actions = {
   placeCard,
   endTurn,
   discardCard,
-  giveCardToOtherMember
+  giveCardToOtherPlayer
 }
 
 // ------------------------------------
@@ -119,7 +119,7 @@ export default function reducer (state = initialState, action) {
     case DISCARD_CARD_REQUEST:
     case PLACE_CARD_REQUEST:
     case PLAY_CARD_REQUEST:
-    case GIVE_CARD_TO_OTHER_MEMBER_REQUEST:
+    case GIVE_CARD_TO_OTHER_PLAYER_REQUEST:
       return requestActionHandler(state)
 
     case DRAW_CARDS_SUCCESS:
@@ -131,7 +131,7 @@ export default function reducer (state = initialState, action) {
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
     case PLAY_CARD_SUCCESS:
-    case GIVE_CARD_TO_OTHER_MEMBER_SUCCESS:
+    case GIVE_CARD_TO_OTHER_PLAYER_SUCCESS:
       const { cardsOnHand } = state
       const indexToRemove = cardsOnHand.indexOf(action.card)
 

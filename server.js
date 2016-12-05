@@ -44,7 +44,7 @@ app.get('/api/v1/games/:id/draw', api.game.drawCards)
 app.put('/api/v1/games/:id/discard', api.game.discardCard)
 app.put('/api/v1/games/:id/place', api.game.placeCard)
 app.put('/api/v1/games/:id/play', api.game.playCard)
-app.put('/api/v1/games/:id/give', api.game.giveCardToOtherMember)
+app.put('/api/v1/games/:id/give', api.game.giveCardToOtherPlayer)
 app.put('/api/v1/games/:id/end-turn', api.game.endTurn)
 
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'static', 'images', 'favicon.ico')))

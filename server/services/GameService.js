@@ -1,12 +1,12 @@
 import GameRepository from '../repositories/GameRepository'
-import MemberRepository from '../repositories/MemberRepository'
+import PlayerRepository from '../repositories/PlayerRepository'
 import { newDeck } from '../../universal/monopoly/cards'
 import Promise from 'bluebird'
 
 export default class GameService {
   constructor () {
     this.gameRepository = new GameRepository()
-    this.memberRepository = new MemberRepository()
+    this.playerRepository = new PlayerRepository()
   }
 
   static liveUpdates (io) {
@@ -19,13 +19,7 @@ export default class GameService {
     })
   }
 
-  validateAndSanitize (game) {
-    // TODO
-    return true
-  }
-
   getGames (page = 0, limit = 10) {
-    console.log(`Getting games page: ${page}, limit: ${limit}`)
     page = parseInt(page, 10)
     limit = parseInt(limit, 10)
 
@@ -41,8 +35,6 @@ export default class GameService {
   }
 
   addGame (game) {
-    this.validateAndSanitize(game)
-
     game.availableCards = newDeck()
     game.discardedCards = []
 
@@ -50,8 +42,6 @@ export default class GameService {
   }
 
   updateGame (id, game) {
-    this.validateAndSanitize(game)
-
     game.updatedAt = new Date()
 
     return this.gameRepository.update(id, game)
@@ -61,13 +51,13 @@ export default class GameService {
     return this.gameRepository.delete(id)
   }
 
-  addMember (gameId, username) {
-    const joinPromise = this.memberRepository.joinGame(gameId, username)
+  addPlayer (gameId, username) {
+    const joinPromise = this.playerRepository.joinGame(gameId, username)
     const promiseContext = {}
 
     return joinPromise
-      .then(newMember => {
-        promiseContext.newMember = newMember
+      .then(newPlayer => {
+        promiseContext.newPlayer = newPlayer
         return this.gameRepository.find(gameId)
       })
       .then(game => {
@@ -79,17 +69,17 @@ export default class GameService {
         return this.gameRepository.update(gameId, game)
       })
       .then(() => {
-        return promiseContext.newMember
+        return promiseContext.newPlayer
       })
   }
 
   endTurn (id) {
     return this.gameRepository.find(id)
       .then(game => {
-        const members = game.members
-        const currentTurnIndex = members.findIndex(member => member.username === game.currentTurn)
-        const nextTurnIndex = currentTurnIndex + 1 === members.length ? 0 : currentTurnIndex + 1
-        const nextTurn = game.members[nextTurnIndex].username
+        const players = game.players
+        const currentTurnIndex = players.findIndex(player => player.username === game.currentTurn)
+        const nextTurnIndex = currentTurnIndex + 1 === players.length ? 0 : currentTurnIndex + 1
+        const nextTurn = game.players[nextTurnIndex].username
 
         game.currentTurn = nextTurn
         return this.updateGame(game.id, game)

@@ -1,9 +1,9 @@
 import GameService from '../services/GameService'
-import MemberService from '../services/MemberService'
+import PlayerService from '../services/PlayerService'
 import Promise from 'bluebird'
 
 const gameService = new GameService()
-const memberService = new MemberService()
+const playerService = new PlayerService()
 
 function handleError (err, res) {
   console.error(err)
@@ -24,7 +24,7 @@ export function discardCard (req, res) {
 }
 
 export function placeCard (req, res) {
-  const promise = memberService.placeCard(req.params.id, req.body.username, req.body.card, req.body.asMoney)
+  const promise = playerService.placeCard(req.params.id, req.body.username, req.body.card, req.body.asMoney)
 
   promise
     .then(() => res.json({ success: true }))
@@ -32,22 +32,22 @@ export function placeCard (req, res) {
 }
 
 export function playCard (req, res) {
-  const promise = memberService.playCard(req.params.id, req.body.username, req.body.card)
+  const promise = playerService.playCard(req.params.id, req.body.username, req.body.card)
 
   promise
     .then(() => res.json({ success: true }))
     .catch(err => handleError(err, res))
 }
 
-export function giveCardToOtherMember (req, res) {
+export function giveCardToOtherPlayer (req, res) {
   res.json()
 }
 
 export function joinGame (req, res) {
-  const promise = gameService.addMember(req.params.id, req.body.username)
+  const promise = gameService.addPlayer(req.params.id, req.body.username)
 
   promise
-    .then(newMember => res.json({ newMember }))
+    .then(newPlayer => res.json({ newPlayer }))
     .catch(err => handleError(err, res))
 }
 

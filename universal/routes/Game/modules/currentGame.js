@@ -11,7 +11,7 @@ function ns (value) {
 const gamesUrl = `${apiUrl}/games`
 
 const UPDATE_GAME = ns('UPDATE_GAME')
-const UPDATE_MEMBER = ns('UPDATE_MEMBER')
+const UPDATE_PLAYER = ns('UPDATE_PLAYER')
 const LOAD_REQUEST = ns('LOAD_REQUEST')
 const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const JOIN_REQUEST = ns('JOIN_REQUEST')
@@ -70,18 +70,18 @@ const error = (err) => ({ type: ERROR, error: err })
 
 function subscribeSocket (socket, gameId) {
   return (dispatch, getState) => {
-    socket.on(`game-${gameId}-member-change`, onGameMemberChange.bind(this, dispatch))
+    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch))
     socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
   }
 }
 
-function onGameMemberChange (dispatch, change) {
+function onGamePlayerChange (dispatch, change) {
   if (change.created) {
-    dispatch({ type: JOIN_SUCCESS, payload: { newMember: change.new_val } })
+    dispatch({ type: JOIN_SUCCESS, payload: { newPlayer: change.new_val } })
   } else if (change.deleted) {
-    dispatch({ type: LEAVE_SUCCESS, payload: { member: change.old_val } })
+    dispatch({ type: LEAVE_SUCCESS, payload: { player: change.old_val } })
   } else {
-    dispatch({ type: UPDATE_MEMBER, payload: { member: change.new_val } })
+    dispatch({ type: UPDATE_PLAYER, payload: { player: change.new_val } })
   }
 }
 
@@ -91,7 +91,7 @@ function onGameChange (dispatch, game) {
 
 function unsubscribeSocket (socket) {
   return (dispatch, getState) => {
-    socket.off(`game-${getState().currentGame.game.id}-member-change`)
+    socket.off(`game-${getState().currentGame.game.id}-player-change`)
   }
 }
 
@@ -144,23 +144,23 @@ export default function reducer (state = initialState, action) {
       })
 
     case JOIN_SUCCESS:
-      const newMember = action.payload.newMember
+      const newPlayer = action.payload.newPlayer
 
       nextState = deepmerge(state, { isWorking: false, error: null })
 
-      const alreadyJoined = nextState.game.members.filter(member => member.id === newMember.id).length
+      const alreadyJoined = nextState.game.players.filter(player => player.id === newPlayer.id).length
 
-      if (!alreadyJoined && newMember) {
-        nextState.game.members.push(newMember)
+      if (!alreadyJoined && newPlayer) {
+        nextState.game.players.push(newPlayer)
       }
 
       // This is current user.
-      if (newMember.username === state.username) {
-        nextState.membership[nextState.game.id] = newMember
+      if (newPlayer.username === state.username) {
+        nextState.membership[nextState.game.id] = newPlayer
       }
 
       if (!nextState.game.currentTurn) {
-        nextState.game.currentTurn = newMember.username
+        nextState.game.currentTurn = newPlayer.username
       }
 
       return nextState
@@ -175,11 +175,11 @@ export default function reducer (state = initialState, action) {
         game: action.payload.game
       })
 
-    case UPDATE_MEMBER:
+    case UPDATE_PLAYER:
       nextState = deepmerge(state)
-      nextState.game.members.forEach(member => {
-        if (member.id === action.payload.member.id) {
-          Object.assign(member, action.payload.member)
+      nextState.game.players.forEach(player => {
+        if (player.id === action.payload.player.id) {
+          Object.assign(player, action.payload.player)
         }
       })
       return nextState

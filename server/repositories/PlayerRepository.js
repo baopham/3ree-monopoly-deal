@@ -1,13 +1,13 @@
-import Member from '../models/Member'
+import Player from '../models/Player'
 import thinky from '../thinky'
 
 const r = thinky.r
 
-export default class MemberRepository {
-  static table = Member.getTableName()
+export default class PlayerRepository {
+  static table = Player.getTableName()
 
   static watchForChanges (changeHandler) {
-    Member
+    Player
       .changes()
       .then(feed => {
         feed.each((error, doc) => {
@@ -31,7 +31,7 @@ export default class MemberRepository {
   }
 
   getAll (page = 0, limit = 10) {
-    return Member
+    return Player
       .orderBy(r.desc('createdAt'))
       .skip(page * limit)
       .limit(limit)
@@ -39,25 +39,25 @@ export default class MemberRepository {
   }
 
   find (id) {
-    return Member.get(id).run()
+    return Player.get(id).run()
   }
 
   getCount () {
-    return Member.count().run()
+    return Player.count().run()
   }
 
   insert (payload) {
-    const member = new Member(payload)
+    const player = new Player(payload)
 
-    return member.save()
+    return player.save()
   }
 
   update (id, payload) {
-    return Member.get(id).update(payload).execute()
+    return Player.get(id).update(payload).execute()
   }
 
   delete (id) {
-    return Member
+    return Player
       .get(id)
       .delete()
       .run()
@@ -66,12 +66,12 @@ export default class MemberRepository {
   joinGame (gameId, username) {
     const placedCards = { bank: [], properties: [] }
 
-    return Member
+    return Player
       .filter({ gameId, username })
       .run()
       .then(result => {
         if (result.length) {
-          throw new Error('Member already exists')
+          throw new Error('Player already exists')
         }
         return this.insert({ gameId, username, placedCards })
       })
@@ -81,16 +81,16 @@ export default class MemberRepository {
   }
 
   findByGameIdAndUsername (gameId, username) {
-    return Member
+    return Player
       .filter({ gameId, username })
       .getJoin({ game: true })
       .run()
       .then(result => {
         if (!result.length) {
-          throw new Error(`No member ${username} found for game: ${gameId}`)
+          throw new Error(`No player ${username} found for game: ${gameId}`)
         }
-        const [member] = result
-        return member
+        const [player] = result
+        return player
       })
   }
 }

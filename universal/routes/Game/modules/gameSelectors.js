@@ -6,7 +6,7 @@ export const getCurrentPlayer = createSelector(
   [getCurrentGame],
   (currentGame) => {
     const membership = currentGame.membership[currentGame.game.id] || {}
-    return currentGame.game.members.find(member => member.id === membership.id)
+    return currentGame.game.players.find(player => player.id === membership.id)
   }
 )
 

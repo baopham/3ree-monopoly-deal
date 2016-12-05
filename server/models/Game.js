@@ -16,5 +16,7 @@ const Game = thinky.createModel('games', {
 
 module.exports = Game
 
-const Member = require('./Member')
-Game.hasMany(Member, 'members', 'id', 'gameId')
+const Player = require('./Player')
+Game.hasMany(Player, 'players', 'id', 'gameId')
+
+
