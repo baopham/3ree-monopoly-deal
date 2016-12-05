@@ -1,4 +1,3 @@
-import GameContainer from './containers/GameContainer'
+import GameRoute from './containers/GameRoute'
 
-export default GameContainer
-
+export default GameRoute

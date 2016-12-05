@@ -9,7 +9,7 @@ const mapStateToProps = (state) => ({
   games: state.games
 })
 
-export class GamesContainer extends React.Component {
+export class GamesRoute extends React.Component {
   static propTypes = {
     games: PropTypes.object.isRequired,
     addGame: PropTypes.func.isRequired,
@@ -71,5 +71,6 @@ export class GamesContainer extends React.Component {
 export default connect(
   mapStateToProps,
   actions
-)(GamesContainer)
+)(GamesRoute)
+
 
