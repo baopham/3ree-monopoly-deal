@@ -20,14 +20,24 @@ export function isMoneyCard (card) {
   return card.type === MONEY_CARD_TYPE
 }
 
+export function isRentCard (card) {
+  card = getCardObject(card)
+  return card.type === RENT_CARD_TYPE
+}
+
+export function isActionCard(card) {
+  card = getCardObject(card)
+  return card.type === ACTION_CARD_TYPE
+}
+
 export function canPlayCard (card, cardsOnHand) {
   card = getCardObject(card)
 
-  if (card.type === ACTION_CARD_TYPE) {
+  if (isActionCard(card)) {
     return true
   }
 
-  if (card.type === RENT_CARD_TYPE) {
+  if (isRentCard(card)) {
     return cardsOnHand.some((c) => {
       const forCards = card.forCards || []
       return forCards.includes(getCardObject(c).key)
