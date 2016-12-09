@@ -5,6 +5,8 @@ import {
   RENT_CARD_TYPE
 } from './cards'
 
+export const MAX_NUMBER_OF_ACTIONS = 3
+
 export function getCardObject (card) {
   return typeof card === 'string' ? CARDS[card] : card
 }

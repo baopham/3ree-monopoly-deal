@@ -51,7 +51,7 @@ export function joinGame (req, res) {
 }
 
 export function endTurn (req, res) {
-  const promise = gameService.endTurn(req.params.id)
+  const promise = playerService.endTurn(req.params.id)
 
   promise
     .then(nextTurn => res.json({ nextTurn }))

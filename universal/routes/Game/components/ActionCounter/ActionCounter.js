@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { Badge } from 'react-bootstrap'
+import { Label } from 'react-bootstrap'
+import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
 
 export default class ActionCounter extends React.Component {
   static propTypes = {
@@ -7,11 +8,17 @@ export default class ActionCounter extends React.Component {
   };
 
   render () {
+    const { className, count } = this.props
+
     return (
-      <p>
-        <Badge>
-          {this.props.count}
-        </Badge>
+      <p className={className}>
+        Played
+        {' '}
+        <Label bsStyle={count >= MAX_NUMBER_OF_ACTIONS - 1 ? 'danger' : 'info'}>
+          {count}
+        </Label>
+        {' '}
+        actions
       </p>
     )
   }

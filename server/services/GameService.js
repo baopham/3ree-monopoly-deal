@@ -73,20 +73,6 @@ export default class GameService {
       })
   }
 
-  endTurn (id) {
-    return this.gameRepository.find(id)
-      .then(game => {
-        const players = game.players
-        const currentTurnIndex = players.findIndex(player => player.username === game.currentTurn)
-        const nextTurnIndex = currentTurnIndex + 1 === players.length ? 0 : currentTurnIndex + 1
-        const nextTurn = game.players[nextTurnIndex].username
-
-        game.currentTurn = nextTurn
-        return this.updateGame(game.id, game)
-      })
-      .then(game => game.currentTurn)
-  }
-
   drawCards (id) {
     return this.gameRepository.find(id)
       .then(game => {
