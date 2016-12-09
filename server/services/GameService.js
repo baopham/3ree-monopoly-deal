@@ -62,7 +62,7 @@ export default class GameService {
       })
       .then(game => {
         if (game.currentTurn) {
-          return;
+          return
         }
 
         game.currentTurn = username

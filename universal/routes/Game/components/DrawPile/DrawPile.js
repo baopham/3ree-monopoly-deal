@@ -19,7 +19,7 @@ export default class DrawPile extends React.Component {
     return (
       <div>
         Draw Piles
-        <div className="pull-right">
+        <div className='pull-right'>
           {endTurnButton}
           {drawCardsButton}
         </div>

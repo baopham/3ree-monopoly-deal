@@ -14,14 +14,13 @@ export default class PlayCardButton extends React.Component {
       <Button
         disabled={disabled}
         onClick={onClick}
-        bsStyle="primary"
-        bsSize="xsmall"
-        title="Place card in the center"
+        bsStyle='primary'
+        bsSize='xsmall'
+        title='Place card in the center'
       >
-        <Glyphicon glyph="play" />
+        <Glyphicon glyph='play' />
       </Button>
     )
   }
 }
-
 

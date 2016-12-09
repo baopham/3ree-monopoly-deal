@@ -14,14 +14,13 @@ export default class DiscardCardButton extends React.Component {
       <Button
         disabled={disabled}
         onClick={onClick}
-        bsStyle="primary"
-        bsSize="xsmall"
-        title="Discard your card"
+        bsStyle='primary'
+        bsSize='xsmall'
+        title='Discard your card'
       >
-        <Glyphicon glyph="trash" />
+        <Glyphicon glyph='trash' />
       </Button>
     )
   }
 }
-
 

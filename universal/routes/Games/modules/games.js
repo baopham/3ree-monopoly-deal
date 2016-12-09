@@ -110,7 +110,7 @@ const actionHandlers = {
   },
 
   [DELETE_SUCCESS]: (state, { payload }) => {
-    const nextState = deepmerge(state, { isWorking: false, error: null, count })
+    const nextState = deepmerge(state, { isWorking: false, error: null })
     nextState.games = state.games.filter(g => g.id !== payload.game.id)
 
     return nextState

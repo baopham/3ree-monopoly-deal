@@ -31,7 +31,7 @@ export default class CardsOnHand extends React.Component {
     onDiscardCard: () => {}
   }
 
-  constructor(...args) {
+  constructor (...args) {
     super(...args)
 
     this.state = {
@@ -56,10 +56,10 @@ export default class CardsOnHand extends React.Component {
     return (
       <span>
         {this.state.open &&
-          <Glyphicon glyph="chevron-up" />
+          <Glyphicon glyph='chevron-up' />
         }
         {!this.state.open &&
-          <Glyphicon glyph="chevron-down" />
+          <Glyphicon glyph='chevron-down' />
         }
         {' '}
         Hand
@@ -87,11 +87,11 @@ export default class CardsOnHand extends React.Component {
         >
           <div>
             {this.state.needsToDiscard &&
-              <Alert bsStyle="danger">
+              <Alert bsStyle='danger'>
                 You have more then {MAX_CARDS_IN_HAND} cards! Please discard.
               </Alert>
             }
-            <ul className="list-inline" style={styles.cardsOnHand}>
+            <ul className='list-inline' style={styles.cardsOnHand}>
               {cards.map((card, i) =>
                 <li key={i} style={styles.card}>
                   <CardOnHand

@@ -45,7 +45,7 @@ export default class Card extends React.Component {
           />
         }
         {!card &&
-          <div style={{...styles[size], ...styles.withBorder}} />
+          <div style={{ ...styles[size], ...styles.withBorder }} />
         }
       </div>
     )

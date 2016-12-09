@@ -36,6 +36,9 @@ export class Game extends React.Component {
       join,
       currentPlayerCards,
       drawCards,
+      placeCard,
+      playCard,
+      endTurn,
       discardCard,
       isPlayerTurn
     } = this.props
@@ -59,7 +62,6 @@ export class Game extends React.Component {
           game={game}
           onEndTurn={endTurn}
           onDrawCards={drawCards}
-          currentPlayer={currentPlayer}
           isPlayerTurn={isPlayerTurn}
         />
 

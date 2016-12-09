@@ -19,4 +19,3 @@ module.exports = Game
 const Player = require('./Player')
 Game.hasMany(Player, 'players', 'id', 'gameId')
 
-

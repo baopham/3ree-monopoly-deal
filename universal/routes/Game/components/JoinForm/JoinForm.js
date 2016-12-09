@@ -14,9 +14,8 @@ export default class JoinForm extends React.Component {
 
   render () {
     return (
-      <div></div>
+      <div />
     )
   }
 }
-
 

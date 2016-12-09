@@ -18,7 +18,7 @@ export default class GameRepository {
 
           const change = {
             deleted: doc.isSaved() === false,
-            created: doc.getOldValue() === null,
+            created: doc.getOldValue() === null
           }
 
           change.updated = !change.deleted && !change.created

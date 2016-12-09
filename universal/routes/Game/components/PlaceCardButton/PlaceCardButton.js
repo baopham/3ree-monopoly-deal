@@ -14,11 +14,11 @@ export default class PlaceCardButton extends React.Component {
       <Button
         disabled={disabled}
         onClick={onClick}
-        bsStyle="primary"
-        bsSize="xsmall"
-        title="Place card in your space"
+        bsStyle='primary'
+        bsSize='xsmall'
+        title='Place card in your space'
       >
-        <Glyphicon glyph="save" />
+        <Glyphicon glyph='save' />
       </Button>
     )
   }

@@ -1,6 +1,5 @@
 import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
-import Promise from 'bluebird'
 
 const gameService = new GameService()
 const playerService = new PlayerService()

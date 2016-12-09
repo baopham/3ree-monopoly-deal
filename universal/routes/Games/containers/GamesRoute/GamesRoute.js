@@ -73,4 +73,3 @@ export default connect(
   actions
 )(GamesRoute)
 
-

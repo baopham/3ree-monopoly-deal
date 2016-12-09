@@ -1,14 +1,12 @@
+/* eslint-env node, mocha */
 import { expect } from 'chai'
 import {
-  CARDS,
   RENT_BLUE_OR_GREEN,
   PROPERTY_BLUE,
   PROPERTY_RED,
-  BIRTHDAY,
-  RENT_CARD_TYPE,
+  BIRTHDAY
 } from './cards'
 import * as monopoly from './monopoly'
-
 
 describe('monopoly', function () {
   describe('#canPlayCard', function () {

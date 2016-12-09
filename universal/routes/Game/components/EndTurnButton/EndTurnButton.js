@@ -17,13 +17,13 @@ export default class EndTurnButton extends React.Component {
     return (
       <Button
         disabled={!isPlayerTurn}
-        bsStyle="danger"
-        bsSize="xsmall"
-        title="End Turn"
+        bsStyle='danger'
+        bsSize='xsmall'
+        title='End Turn'
         onClick={onEndTurn}
         className={className}
       >
-        <Glyphicon glyph="stop" />
+        <Glyphicon glyph='stop' />
       </Button>
     )
   }

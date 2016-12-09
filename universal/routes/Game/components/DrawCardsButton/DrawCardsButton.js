@@ -4,7 +4,6 @@ import { Button, Glyphicon } from 'react-bootstrap'
 export default class DrawCardsButton extends React.Component {
   static propTypes = {
     isPlayerTurn: PropTypes.bool,
-    currentPlayer: PropTypes.object,
     onDrawCards: PropTypes.func.isRequired
   }
 
@@ -35,7 +34,7 @@ export default class DrawCardsButton extends React.Component {
   }
 
   shouldDisable () {
-    const { isPlayerTurn, currentPlayer } = this.props
+    const { isPlayerTurn } = this.props
     const isDisabled = !isPlayerTurn || this.state.hasDrawnCards
     return isDisabled
   }
@@ -48,11 +47,11 @@ export default class DrawCardsButton extends React.Component {
       <Button
         disabled={isDisabled}
         onClick={this.onClick}
-        bsStyle="primary"
-        bsSize="xsmall"
+        bsStyle='primary'
+        bsSize='xsmall'
         className={className}
       >
-        <Glyphicon glyph="new-window" />
+        <Glyphicon glyph='new-window' />
       </Button>
     )
   }

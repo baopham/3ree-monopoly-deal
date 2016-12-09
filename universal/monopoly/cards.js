@@ -54,7 +54,6 @@ export const RENT_ORANGE_OR_PINK = 'RENT_ORANGE_OR_PINK'
 export const RENT_BLACK_OR_LIGHT_GREEN = 'RENT_BLACK_OR_LIGHT_GREEN'
 export const RENT_RED_OR_YELLOW = 'RENT_RED_OR_YELLOW'
 
-
 // ------------------------------------
 // Money
 // ------------------------------------
@@ -391,6 +390,6 @@ export function shuffle (cards) {
 
 // Side effect
 function setName (cards) {
-  Object.keys(cards).map(key => cards[key].key = key)
+  Object.keys(cards).map(key => (cards[key].key = key))
   return cards
 }

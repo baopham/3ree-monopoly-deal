@@ -17,7 +17,6 @@ const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const JOIN_REQUEST = ns('JOIN_REQUEST')
 const JOIN_SUCCESS = ns('JOIN_SUCCESS')
 const JOIN_ERROR = ns('JOIN_ERROR')
-const LEAVE_REQUEST = ns('LEAVE_REQUEST')
 const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
 const END_TURN_REQUEST = ns('END_TURN_REQUEST')
 const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
@@ -45,17 +44,6 @@ function join (username) {
   }
 }
 
-function leave (username) {
-  return {
-    types: [LEAVE_REQUEST, LEAVE_SUCCESS, ERROR],
-    username,
-    promise: (dispatch, getState) => {
-      const id = getState().currentGame.game.id
-      return request.post(`${gamesUrl}/${id}/leave`, { username })
-    }
-  }
-}
-
 function endTurn () {
   return {
     types: [END_TURN_REQUEST, END_TURN_SUCCESS, ERROR],
@@ -65,8 +53,6 @@ function endTurn () {
     }
   }
 }
-
-const error = (err) => ({ type: ERROR, error: err })
 
 function subscribeSocket (socket, gameId) {
   return (dispatch, getState) => {

@@ -44,4 +44,3 @@ export default connect(
   actions
 )(GameRoute)
 
-

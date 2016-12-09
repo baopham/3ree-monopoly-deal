@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Col } from 'react-bootstrap'
 import DrawCardsButton from '../DrawCardsButton'
 import EndTurnButton from '../EndTurnButton'
 import Container from '../../../../components/Container'
@@ -12,7 +12,6 @@ export default class Board extends React.Component {
     game: PropTypes.object.isRequired,
     onEndTurn: PropTypes.func.isRequired,
     onDrawCards: PropTypes.func.isRequired,
-    currentPlayer: PropTypes.object,
     isPlayerTurn: PropTypes.bool
   }
 
@@ -20,7 +19,6 @@ export default class Board extends React.Component {
     const {
       game,
       isPlayerTurn,
-      currentPlayer,
       onEndTurn,
       onDrawCards
     } = this.props
@@ -28,7 +26,6 @@ export default class Board extends React.Component {
     const drawCardsButton = (
       <DrawCardsButton
         isPlayerTurn={isPlayerTurn}
-        currentPlayer={currentPlayer}
         onDrawCards={onDrawCards}
       />
     )

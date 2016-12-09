@@ -20,7 +20,7 @@ export default class PlayerService {
       .then(player => {
         const area = asMoney ? 'bank' : 'properties'
         player.placedCards[area].push(card)
-        return this.playerRepository.update(player.id, player);
+        return this.playerRepository.update(player.id, player)
       })
   }
 

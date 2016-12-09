@@ -1,10 +1,8 @@
-import _ from 'lodash'
 import {
   CARDS,
   MONEY_CARD_TYPE,
   ACTION_CARD_TYPE,
-  RENT_CARD_TYPE,
-  SAY_NO
+  RENT_CARD_TYPE
 } from './cards'
 
 export function getCardObject (card) {
@@ -25,7 +23,7 @@ export function isRentCard (card) {
   return card.type === RENT_CARD_TYPE
 }
 
-export function isActionCard(card) {
+export function isActionCard (card) {
   card = getCardObject(card)
   return card.type === ACTION_CARD_TYPE
 }

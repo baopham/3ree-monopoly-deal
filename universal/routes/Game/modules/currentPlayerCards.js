@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 
