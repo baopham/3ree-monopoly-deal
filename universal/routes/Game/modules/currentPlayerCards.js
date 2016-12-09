@@ -71,16 +71,6 @@ function playCard (card) {
   }
 }
 
-function endTurn () {
-  return {
-    types: [END_TURN_REQUEST, END_TURN_SUCCESS, ERROR],
-    promise: (dispatch, getState) => {
-      const currentGame = getState().currentGame
-      return request.put(`${gamesUrl}/${currentGame.game.id}/end-turn`)
-    }
-  }
-}
-
 function giveCardToOtherPlayer (gameId, card, username) {
   return {
     types: [GIVE_CARD_TO_OTHER_PLAYER_REQUEST, GIVE_CARD_TO_OTHER_PLAYER_SUCCESS, ERROR],
@@ -97,7 +87,6 @@ export const actions = {
   drawCards,
   playCard,
   placeCard,
-  endTurn,
   discardCard,
   giveCardToOtherPlayer
 }

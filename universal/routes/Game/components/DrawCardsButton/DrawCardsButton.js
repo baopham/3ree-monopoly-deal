@@ -1,19 +1,11 @@
 import React, { PropTypes } from 'react'
-import { connect } from 'react-redux'
 import { Button, Glyphicon } from 'react-bootstrap'
-import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
-import { actions } from '../../modules/currentPlayerCards'
 
-const mapStateToProps = (state) => ({
-  isPlayerTurn: isPlayerTurn(state),
-  currentPlayer: getCurrentPlayer(state)
-})
-
-export class DrawCardsButton extends React.Component {
+export default class DrawCardsButton extends React.Component {
   static propTypes = {
     isPlayerTurn: PropTypes.bool,
     currentPlayer: PropTypes.object,
-    drawCards: PropTypes.func.isRequired
+    onDrawCards: PropTypes.func.isRequired
   }
 
   constructor (...args) {
@@ -35,7 +27,7 @@ export class DrawCardsButton extends React.Component {
   }
 
   onClick = () => {
-    this.props.drawCards()
+    this.props.onDrawCards()
 
     this.setState({
       hasDrawnCards: true
@@ -65,8 +57,3 @@ export class DrawCardsButton extends React.Component {
     )
   }
 }
-
-export default connect(
-  mapStateToProps,
-  actions
-)(DrawCardsButton)

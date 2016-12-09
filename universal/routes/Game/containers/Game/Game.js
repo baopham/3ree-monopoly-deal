@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import FullWidth from '../../../../components/FullWidth'
 import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
-import Board from '../Board'
+import Board from '../../components/Board'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
@@ -25,6 +25,7 @@ export class Game extends React.Component {
     drawCards: PropTypes.func.isRequired,
     discardCard: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
+    endTurn: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool
   }
 
@@ -34,8 +35,6 @@ export class Game extends React.Component {
       currentPlayer,
       join,
       currentPlayerCards,
-      placeCard,
-      playCard,
       drawCards,
       discardCard,
       isPlayerTurn
@@ -56,7 +55,13 @@ export class Game extends React.Component {
           />
         }
 
-        <Board />
+        <Board
+          game={game}
+          onEndTurn={endTurn}
+          onDrawCards={drawCards}
+          currentPlayer={currentPlayer}
+          isPlayerTurn={isPlayerTurn}
+        />
 
         {!currentPlayer &&
           <JoinForm onJoin={join} />
