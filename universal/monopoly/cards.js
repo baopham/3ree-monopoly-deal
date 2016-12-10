@@ -41,6 +41,7 @@ export const PROPERTY_LIGHT_BLUE_OR_BROWN = 'PROPERTY_LIGHT_BLUE_OR_BROWN'
 export const PROPERTY_PINK_OR_ORANGE = 'PROPERTY_PINK_OR_ORANGE'
 export const PROPERTY_GREEN_OR_BLACK = 'PROPERTY_GREEN_OR_BLACK'
 export const PROPERTY_GREEN_OR_BLUE = 'PROPERTY_GREEN_OR_BLUE'
+export const PROPERTY_BLUE_OR_GREEN = 'PROPERTY_BLUE_OR_GREEN'
 export const PROPERTY_LIGHT_BLUE_OR_BLACK = 'PROPERTY_LIGHT_BLUE_OR_BLACK'
 export const PROPERTY_LIGHT_GREEN_OR_BLACK = 'PROPERTY_LIGHT_GREEN_OR_BLACK'
 export const PROPERTY_YELLOW_OR_RED = 'PROPERTY_YELLOW_OR_RED'
@@ -228,7 +229,17 @@ export const CARDS: MapOfCards = setKey({
     value: 4,
     image: '/images/cards/property-green-or-blue.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_GREEN, PROPERTY_BLUE]
+    treatAs: PROPERTY_GREEN,
+    oposite: PROPERTY_BLUE_OR_GREEN
+  },
+
+  [PROPERTY_BLUE_OR_GREEN]: {
+    count: 0,
+    value: 4,
+    image: '/images/cards/property-blue-or-green.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_BLUE,
+    oposite: PROPERTY_GREEN_OR_BLUE
   },
 
   [PROPERTY_LIGHT_BLUE_OR_BROWN]: {

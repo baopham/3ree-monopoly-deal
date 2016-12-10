@@ -4,5 +4,7 @@ type Card = {
   image: string,
   type: string,
   key: string,
-  forCards?: string[]
+  forCards?: string[],
+  treatAs?: string,
+  oposite?: string
 }
