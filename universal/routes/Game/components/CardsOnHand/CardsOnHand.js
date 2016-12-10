@@ -15,7 +15,8 @@ const styles = {
 
 export default class CardsOnHand extends React.Component {
   static propTypes = {
-    cards: PropTypes.array,
+    cardsOnHand: PropTypes.array,
+    placedCards: PropTypes.object,
     onPlaceCard: PropTypes.func,
     onPlayCard: PropTypes.func,
     onDrawCards: PropTypes.func,
@@ -24,7 +25,8 @@ export default class CardsOnHand extends React.Component {
   }
 
   static defaultProps = {
-    cards: [],
+    cardsOnHand: [],
+    placedCards: { bank: [], properties: [] },
     onPlaceCard: () => {},
     onPlayCard: () => {},
     onDrawCards: () => {},
@@ -36,13 +38,13 @@ export default class CardsOnHand extends React.Component {
 
     this.state = {
       open: true,
-      needsToDiscard: this.props.cards.length > MAX_CARDS_IN_HAND
+      needsToDiscard: this.props.cardsOnHand.length > MAX_CARDS_IN_HAND
     }
   }
 
   componentWillReceiveProps (nextProps) {
     this.setState({
-      needsToDiscard: nextProps.cards.length > MAX_CARDS_IN_HAND
+      needsToDiscard: nextProps.cardsOnHand.length > MAX_CARDS_IN_HAND
     })
   }
 
@@ -69,7 +71,8 @@ export default class CardsOnHand extends React.Component {
 
   render () {
     const {
-      cards,
+      cardsOnHand,
+      placedCards,
       onPlaceCard,
       onPlayCard,
       onDrawCards,
@@ -92,10 +95,10 @@ export default class CardsOnHand extends React.Component {
               </Alert>
             }
             <ul className='list-inline' style={styles.cardsOnHand}>
-              {cards.map((card, i) =>
+              {cardsOnHand.map((card, i) =>
                 <li key={i} style={styles.card}>
                   <CardOnHand
-                    cards={cards}
+                    placedCards={placedCards}
                     card={card}
                     onPlaceCard={onPlaceCard}
                     onPlayCard={onPlayCard}

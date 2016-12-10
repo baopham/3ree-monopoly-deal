@@ -1,3 +1,4 @@
+/* @flow */
 // ------------------------------------
 // Types
 // ------------------------------------
@@ -64,7 +65,7 @@ export const MONEY_3M = 'MONEY_3M'
 export const MONEY_2M = 'MONEY_2M'
 export const MONEY_1M = 'MONEY_1M'
 
-export const CARDS = setName({
+export const CARDS: MapOfCards = setKey({
   [HOUSE]: {
     count: 3,
     value: 3,
@@ -363,7 +364,7 @@ export const CARDS = setName({
 
 export const MAX_CARDS_IN_HAND = 7
 
-export function newDeck () {
+export function newDeck (): Card[] {
   let cards = []
 
   Object.keys(CARDS).map(key => {
@@ -375,7 +376,7 @@ export function newDeck () {
   return shuffle(cards)
 }
 
-export function shuffle (cards) {
+export function shuffle (cards: Card[]): Card[] {
   let j, x, i
 
   for (i = cards.length; i; i--) {
@@ -389,7 +390,7 @@ export function shuffle (cards) {
 }
 
 // Side effect
-function setName (cards) {
+function setKey (cards: Object): MapOfCards {
   Object.keys(cards).map(key => (cards[key].key = key))
   return cards
 }

@@ -49,7 +49,8 @@ export class Game extends React.Component {
 
         {currentPlayer &&
           <CardsOnHand
-            cards={currentPlayerCards.cardsOnHand}
+            cardsOnHand={currentPlayerCards.cardsOnHand}
+            placedCards={currentPlayer.placedCards}
             onPlaceCard={placeCard}
             onPlayCard={playCard}
             onDrawCards={drawCards}

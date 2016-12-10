@@ -8,7 +8,7 @@ import { PASS_GO } from '../../../../monopoly/cards'
 
 export default class CardOnHand extends React.Component {
   static propTypes = {
-    cards: PropTypes.array.isRequired,
+    placedCards: PropTypes.object.isRequired,
     card: PropTypes.string.isRequired,
     onPlaceCard: PropTypes.func.isRequired,
     onPlayCard: PropTypes.func.isRequired,
@@ -41,14 +41,14 @@ export default class CardOnHand extends React.Component {
 
   render () {
     const {
-      cards,
+      placedCards,
       card,
       needsToDiscard,
       isPlayerTurn
     } = this.props
 
     const cannotPlaceCard = !isPlayerTurn
-    const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, cards)
+    const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, placedCards)
 
     return (
       <div>
