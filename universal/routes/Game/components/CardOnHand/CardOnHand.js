@@ -28,6 +28,7 @@ export default class CardOnHand extends React.Component {
     e.stopPropagation()
     const { card } = this.props
     this.props.onPlayCard(card)
+    // TODO: fix actionCounter not being updated when playing pass go
     if (card === PASS_GO) {
       this.props.onDrawCards(card)
     }

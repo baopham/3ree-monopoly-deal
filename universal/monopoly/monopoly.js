@@ -3,7 +3,9 @@ import {
   CARDS,
   MONEY_CARD_TYPE,
   ACTION_CARD_TYPE,
-  RENT_CARD_TYPE
+  RENT_CARD_TYPE,
+  RENT_ALL_COLOUR,
+  FORCED_DEAL
 } from './cards'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
@@ -34,11 +36,19 @@ export function isActionCard (card: StringOrCard) {
 export function canPlayCard (stringOrCard: StringOrCard, placedCards: PlacedCards) {
   const card = getCardObject(stringOrCard)
 
-  if (isActionCard(card)) {
+  if (card.key === FORCED_DEAL && placedCards.properties.length) {
+    return true
+  }
+
+  if (card.key !== FORCED_DEAL && isActionCard(card)) {
     return true
   }
 
   if (isRentCard(card)) {
+    if (card.key === RENT_ALL_COLOUR && placedCards.properties.length) {
+      return true
+    }
+
     return placedCards.properties.some((c: string) => {
       const forCards = card.forCards || []
       return forCards.includes(getCardObject(c).key)

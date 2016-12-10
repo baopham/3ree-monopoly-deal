@@ -29,6 +29,18 @@ export class Game extends React.Component {
     isPlayerTurn: PropTypes.bool
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (this.props.currentPlayer.actionCounter === nextProps.currentPlayer.actionCounter) {
+      return
+    }
+
+    const { currentPlayer, endTurn } = nextProps
+
+    if (currentPlayer && currentPlayer.actionCounter === 3) {
+      endTurn()
+    }
+  }
+
   render () {
     const {
       game,
