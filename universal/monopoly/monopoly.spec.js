@@ -3,6 +3,8 @@
 import { expect } from 'chai'
 import {
   RENT_BLUE_OR_GREEN,
+  PROPERTY_BLUE_OR_GREEN,
+  PROPERTY_PINK_OR_ORANGE,
   PROPERTY_BLUE,
   PROPERTY_RED,
   BIRTHDAY,
@@ -87,6 +89,32 @@ describe('monopoly', function () {
           ]
         }
         expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+      })
+    })
+
+    describe('Given the card is a rent card', function () {
+      describe('Given player has wildcard properties', function () {
+        it('should return true if one or more of the wildcard properties are rentable', function () {
+          const card = RENT_BLUE_OR_GREEN
+          const placedCards: PlacedCards = {
+            bank: [],
+            properties: [
+              PROPERTY_BLUE_OR_GREEN
+            ]
+          }
+          expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+        })
+
+        it('should return false if none of the wildcard properties are rentable', function () {
+          const card = RENT_BLUE_OR_GREEN
+          const placedCards: PlacedCards = {
+            bank: [],
+            properties: [
+              PROPERTY_PINK_OR_ORANGE
+            ]
+          }
+          expect(monopoly.canPlayCard(card, placedCards)).to.be.false
+        })
       })
     })
   })

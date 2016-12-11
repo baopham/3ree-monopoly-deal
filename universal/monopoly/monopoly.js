@@ -50,8 +50,10 @@ export function canPlayCard (stringOrCard: StringOrCard, placedCards: PlacedCard
     }
 
     return placedCards.properties.some((c: string) => {
+      const property = getCardObject(c)
       const forCards = card.forCards || []
-      return forCards.includes(getCardObject(c).key)
+      const propertyKey = property.treatAs ? property.treatAs : property.key
+      return forCards.includes(propertyKey)
     })
   }
 

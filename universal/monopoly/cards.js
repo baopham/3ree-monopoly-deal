@@ -37,14 +37,27 @@ export const PROPERTY_YELLOW = 'PROPERTY_YELLOW'
 export const PROPERTY_LIGHT_GREEN = 'PROPERTY_LIGHT_GREEN'
 
 export const PROPERTY_WILDCARD = 'PROPERTY_WILDCARD'
+
 export const PROPERTY_LIGHT_BLUE_OR_BROWN = 'PROPERTY_LIGHT_BLUE_OR_BROWN'
+export const PROPERTY_BROWN_OR_LIGHT_BLUE = 'PROPERTY_BROWN_OR_LIGHT_BLUE'
+
 export const PROPERTY_PINK_OR_ORANGE = 'PROPERTY_PINK_OR_ORANGE'
+export const PROPERTY_ORANGE_OR_PINK = 'PROPERTY_ORANGE_OR_PINK'
+
 export const PROPERTY_GREEN_OR_BLACK = 'PROPERTY_GREEN_OR_BLACK'
+export const PROPERTY_BLACK_OR_GREEN = 'PROPERTY_BLACK_OR_GREEN'
+
 export const PROPERTY_GREEN_OR_BLUE = 'PROPERTY_GREEN_OR_BLUE'
 export const PROPERTY_BLUE_OR_GREEN = 'PROPERTY_BLUE_OR_GREEN'
+
 export const PROPERTY_LIGHT_BLUE_OR_BLACK = 'PROPERTY_LIGHT_BLUE_OR_BLACK'
+export const PROPERTY_BLACK_OR_LIGHT_BLUE = 'PROPERTY_BLACK_OR_LIGHT_BLUE'
+
 export const PROPERTY_LIGHT_GREEN_OR_BLACK = 'PROPERTY_LIGHT_GREEN_OR_BLACK'
+export const PROPERTY_BLACK_OR_LIGHT_GREEN = 'PROPERTY_BLACK_OR_LIGHT_GREEN'
+
 export const PROPERTY_YELLOW_OR_RED = 'PROPERTY_YELLOW_OR_RED'
+export const PROPERTY_RED_OR_YELLOW = 'PROPERTY_RED_OR_YELLOW'
 
 // ------------------------------------
 // Rent cards
@@ -230,7 +243,7 @@ export const CARDS: MapOfCards = setKey({
     image: '/images/cards/property-green-or-blue.png',
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_GREEN,
-    oposite: PROPERTY_BLUE_OR_GREEN
+    flipTo: PROPERTY_BLUE_OR_GREEN
   },
 
   [PROPERTY_BLUE_OR_GREEN]: {
@@ -239,7 +252,7 @@ export const CARDS: MapOfCards = setKey({
     image: '/images/cards/property-blue-or-green.png',
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BLUE,
-    oposite: PROPERTY_GREEN_OR_BLUE
+    flipTo: PROPERTY_GREEN_OR_BLUE
   },
 
   [PROPERTY_LIGHT_BLUE_OR_BROWN]: {
@@ -247,7 +260,17 @@ export const CARDS: MapOfCards = setKey({
     value: 1,
     image: '/images/cards/property-light-blue-or-brown.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_LIGHT_BLUE, PROPERTY_BROWN]
+    treatAs: PROPERTY_LIGHT_BLUE,
+    flipTo: PROPERTY_BROWN_OR_LIGHT_BLUE
+  },
+
+  [PROPERTY_BROWN_OR_LIGHT_BLUE]: {
+    count: 0,
+    value: 1,
+    image: '/images/cards/property-brown-or-light-blue.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_BROWN,
+    flipTo: PROPERTY_LIGHT_BLUE_OR_BROWN
   },
 
   [PROPERTY_PINK_OR_ORANGE]: {
@@ -255,7 +278,17 @@ export const CARDS: MapOfCards = setKey({
     value: 2,
     image: '/images/cards/property-pink-or-orange.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_PINK, PROPERTY_ORANGE]
+    treatAs: PROPERTY_PINK,
+    flipTo: PROPERTY_ORANGE_OR_PINK
+  },
+
+  [PROPERTY_ORANGE_OR_PINK]: {
+    count: 0,
+    value: 2,
+    image: '/images/cards/property-orange-or-pink.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_ORANGE,
+    flipTo: PROPERTY_PINK_OR_ORANGE
   },
 
   [PROPERTY_GREEN_OR_BLACK]: {
@@ -263,7 +296,17 @@ export const CARDS: MapOfCards = setKey({
     value: 4,
     image: '/images/cards/property-green-or-black.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_GREEN, PROPERTY_BLACK]
+    treatAs: PROPERTY_GREEN,
+    flipTo: PROPERTY_BLACK_OR_GREEN
+  },
+
+  [PROPERTY_BLACK_OR_GREEN]: {
+    count: 0,
+    value: 4,
+    image: '/images/cards/property-black-or-green.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_BLACK,
+    flipTo: PROPERTY_GREEN_OR_BLACK
   },
 
   [PROPERTY_LIGHT_BLUE_OR_BLACK]: {
@@ -271,7 +314,17 @@ export const CARDS: MapOfCards = setKey({
     value: 4,
     image: '/images/cards/property-light-blue-or-black.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_LIGHT_BLUE, PROPERTY_BLACK]
+    treatAs: PROPERTY_LIGHT_BLUE,
+    flipTo: PROPERTY_BLACK_OR_LIGHT_BLUE
+  },
+
+  [PROPERTY_BLACK_OR_LIGHT_BLUE]: {
+    count: 0,
+    value: 4,
+    image: '/images/cards/property-black-or-light-blue.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_BLACK,
+    flipTo: PROPERTY_LIGHT_BLUE_OR_BLACK
   },
 
   [PROPERTY_LIGHT_GREEN_OR_BLACK]: {
@@ -279,7 +332,17 @@ export const CARDS: MapOfCards = setKey({
     value: 2,
     image: '/images/cards/property-light-green-or-black.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_LIGHT_GREEN, PROPERTY_BLACK]
+    treatAs: PROPERTY_LIGHT_GREEN,
+    flipTo: PROPERTY_BLACK_OR_LIGHT_GREEN
+  },
+
+  [PROPERTY_BLACK_OR_LIGHT_GREEN]: {
+    count: 0,
+    value: 2,
+    image: '/images/cards/property-black-or-light-green.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_BLACK,
+    flipTo: PROPERTY_LIGHT_GREEN_OR_BLACK
   },
 
   [PROPERTY_YELLOW_OR_RED]: {
@@ -287,7 +350,17 @@ export const CARDS: MapOfCards = setKey({
     value: 3,
     image: '/images/cards/property-yellow-or-red.png',
     type: PROPERTY_WILDCARD_TYPE,
-    forCards: [PROPERTY_YELLOW, PROPERTY_RED]
+    treatAs: PROPERTY_YELLOW,
+    flipTo: PROPERTY_RED_OR_YELLOW
+  },
+
+  [PROPERTY_RED_OR_YELLOW]: {
+    count: 0,
+    value: 3,
+    image: '/images/cards/property-red-or-yellow.png',
+    type: PROPERTY_WILDCARD_TYPE,
+    treatAs: PROPERTY_RED,
+    flipTo: PROPERTY_YELLOW_OR_RED
   },
 
   [RENT_ALL_COLOUR]: {

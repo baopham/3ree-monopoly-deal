@@ -6,5 +6,5 @@ type Card = {
   key: string,
   forCards?: string[],
   treatAs?: string,
-  oposite?: string
+  flipTo?: string
 }
