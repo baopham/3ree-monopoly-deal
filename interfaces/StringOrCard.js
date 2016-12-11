@@ -1,1 +1,0 @@
-type StringOrCard = string | Card

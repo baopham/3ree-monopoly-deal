@@ -1,0 +1,1 @@
+type CardKey = string

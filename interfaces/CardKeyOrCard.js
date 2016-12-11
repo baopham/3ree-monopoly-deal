@@ -1,0 +1,1 @@
+type CardKeyOrCard = string | Card

@@ -1,4 +1,4 @@
-declare type PlacedCards = {
+type PlacedCards = {
   bank: string[],
   properties: string[]
 }
