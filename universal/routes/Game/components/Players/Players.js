@@ -13,7 +13,7 @@ export default class Players extends React.Component {
       <div>
         Player: {player.username}
         <ActionCounter
-          className="pull-right"
+          className='pull-right'
           count={player.actionCounter}
         />
       </div>
