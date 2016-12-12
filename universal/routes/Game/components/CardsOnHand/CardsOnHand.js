@@ -15,22 +15,14 @@ const styles = {
 
 export default class CardsOnHand extends React.Component {
   static propTypes = {
-    cardsOnHand: PropTypes.array,
-    placedCards: PropTypes.object,
-    onPlaceCard: PropTypes.func,
-    onPlayCard: PropTypes.func,
-    onDrawCards: PropTypes.func,
-    onDiscardCard: PropTypes.func,
+    cardsOnHand: PropTypes.array.isRequired,
+    placedCards: PropTypes.object.isRequired,
+    onPlaceCard: PropTypes.func.isRequired,
+    onPlayCard: PropTypes.func.isRequired,
+    onDrawCards: PropTypes.func.isRequired,
+    onDiscardCard: PropTypes.func.isRequired,
+    onFlipCard: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool
-  }
-
-  static defaultProps = {
-    cardsOnHand: [],
-    placedCards: { bank: [], properties: [] },
-    onPlaceCard: () => {},
-    onPlayCard: () => {},
-    onDrawCards: () => {},
-    onDiscardCard: () => {}
   }
 
   constructor (...args) {
@@ -77,6 +69,7 @@ export default class CardsOnHand extends React.Component {
       onPlayCard,
       onDrawCards,
       onDiscardCard,
+      onFlipCard,
       isPlayerTurn
     } = this.props
 
@@ -104,6 +97,7 @@ export default class CardsOnHand extends React.Component {
                     onPlayCard={onPlayCard}
                     onDrawCards={onDrawCards}
                     onDiscardCard={onDiscardCard}
+                    onFlipCard={onFlipCard}
                     needsToDiscard={this.state.needsToDiscard}
                     isPlayerTurn={isPlayerTurn}
                   />

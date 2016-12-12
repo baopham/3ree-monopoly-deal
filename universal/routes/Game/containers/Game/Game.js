@@ -24,20 +24,23 @@ export class Game extends React.Component {
     playCard: PropTypes.func.isRequired,
     drawCards: PropTypes.func.isRequired,
     discardCard: PropTypes.func.isRequired,
+    flipCard: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
     endTurn: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool
   }
 
   componentWillReceiveProps (nextProps) {
+    if (!this.props.currentPlayer || !nextProps.currentPlayer) {
+      return
+    }
+
     if (this.props.currentPlayer.actionCounter === nextProps.currentPlayer.actionCounter) {
       return
     }
 
-    const { currentPlayer, endTurn } = nextProps
-
-    if (currentPlayer && currentPlayer.actionCounter === 3) {
-      endTurn()
+    if (nextProps.currentPlayer.actionCounter === 3) {
+      this.props.endTurn()
     }
   }
 
@@ -52,6 +55,7 @@ export class Game extends React.Component {
       playCard,
       endTurn,
       discardCard,
+      flipCard,
       isPlayerTurn
     } = this.props
 
@@ -67,16 +71,21 @@ export class Game extends React.Component {
             onPlayCard={playCard}
             onDrawCards={drawCards}
             onDiscardCard={discardCard}
+            onFlipCard={flipCard}
+            currentPlayer={currentPlayer}
             isPlayerTurn={isPlayerTurn}
           />
         }
 
-        <Board
-          game={game}
-          onEndTurn={endTurn}
-          onDrawCards={drawCards}
-          isPlayerTurn={isPlayerTurn}
-        />
+        {currentPlayer &&
+          <Board
+            game={game}
+            onEndTurn={endTurn}
+            onDrawCards={drawCards}
+            isPlayerTurn={isPlayerTurn}
+            currentPlayer={currentPlayer}
+          />
+        }
 
         {!currentPlayer &&
           <JoinForm onJoin={join} />

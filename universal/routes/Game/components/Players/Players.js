@@ -5,7 +5,8 @@ import ActionCounter from '../ActionCounter'
 
 export default class Players extends React.Component {
   static propTypes = {
-    players: PropTypes.array.isRequired
+    players: PropTypes.array.isRequired,
+    currentPlayer: PropTypes.object.isRequired
   }
 
   renderHeader (player) {
@@ -21,12 +22,16 @@ export default class Players extends React.Component {
   }
 
   render () {
-    const { players } = this.props
+    const { currentPlayer, players } = this.props
 
     return (
       <div>
         {players.map(player =>
-          <Panel key={player.id} header={this.renderHeader(player)}>
+          <Panel
+            key={player.id}
+            header={this.renderHeader(player)}
+            bsStyle={currentPlayer.username === player.username ? 'success' : 'default'}
+          >
             <Player player={player} />
           </Panel>
         )}

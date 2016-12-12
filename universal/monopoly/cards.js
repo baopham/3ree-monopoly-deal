@@ -448,7 +448,7 @@ export const CARDS: MapOfCards = setKey({
 
 export const MAX_CARDS_IN_HAND = 7
 
-export function newDeck (): Card[] {
+export function newDeck (): CardKey[] {
   let cards = []
 
   Object.keys(CARDS).map(key => {
@@ -460,7 +460,7 @@ export function newDeck (): Card[] {
   return shuffle(cards)
 }
 
-export function shuffle (cards: Card[]): Card[] {
+export function shuffle (cards: CardKey[]): CardKey[] {
   let j, x, i
 
   for (i = cards.length; i; i--) {

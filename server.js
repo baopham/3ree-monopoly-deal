@@ -44,6 +44,7 @@ app.get('/api/v1/games/:id/draw', api.game.drawCards)
 app.put('/api/v1/games/:id/discard', api.game.discardCard)
 app.put('/api/v1/games/:id/place', api.game.placeCard)
 app.put('/api/v1/games/:id/play', api.game.playCard)
+app.put('/api/v1/games/:id/flip', api.game.flipCard)
 app.put('/api/v1/games/:id/give', api.game.giveCardToOtherPlayer)
 app.put('/api/v1/games/:id/end-turn', api.game.endTurn)
 

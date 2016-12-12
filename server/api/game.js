@@ -11,7 +11,7 @@ function handleError (err, res) {
 }
 
 export function drawCards (req, res) {
-  const promise = gameService.drawCards(req.params.id)
+  const promise = playerService.drawCards(req.params.id)
 
   promise
     .then(cards => res.json({ cards }))
@@ -55,5 +55,13 @@ export function endTurn (req, res) {
 
   promise
     .then(nextTurn => res.json({ nextTurn }))
+    .catch(err => handleError(err, res))
+}
+
+export function flipCard (req, res) {
+  const promise = playerService.flipCard(req.params.id, req.body.username, req.body.card)
+
+  promise
+    .then(flippedCard => res.json({ flippedCard }))
     .catch(err => handleError(err, res))
 }

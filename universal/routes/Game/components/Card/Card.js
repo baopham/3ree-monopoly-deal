@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { CARDS } from '../../../../monopoly/cards'
+import { getCardImageSrc } from '../../../../monopoly/monopoly'
 
 const styles = {
   large: {
@@ -29,7 +29,7 @@ export default class Card extends React.Component {
 
   getImageSrc () {
     const { card, faceUp } = this.props
-    const src = faceUp ? CARDS[card].image : '/images/cards/back.png'
+    const src = faceUp ? getCardImageSrc(card) : '/images/cards/back.png'
     return src
   }
 
@@ -40,6 +40,7 @@ export default class Card extends React.Component {
       <div>
         {card &&
           <img
+            title={card}
             style={styles[size]}
             src={this.getImageSrc()}
           />

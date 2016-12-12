@@ -3,8 +3,8 @@ import Card from '../Card'
 import PlaceCardButton from '../PlaceCardButton'
 import PlayCardButton from '../PlayCardButton'
 import DiscardCardButton from '../DiscardCardButton'
-import { isMoneyCard, canPlayCard } from '../../../../monopoly/monopoly'
-import { PASS_GO } from '../../../../monopoly/cards'
+import FlipCardButton from '../FlipCardButton'
+import { isMoneyCard, isActionCard, canPlayCard, canFlipCard } from '../../../../monopoly/monopoly'
 
 export default class CardOnHand extends React.Component {
   static propTypes = {
@@ -14,6 +14,7 @@ export default class CardOnHand extends React.Component {
     onPlayCard: PropTypes.func.isRequired,
     onDrawCards: PropTypes.func.isRequired,
     onDiscardCard: PropTypes.func.isRequired,
+    onFlipCard: PropTypes.func.isRequired,
     needsToDiscard: PropTypes.bool,
     isPlayerTurn: PropTypes.bool
   }
@@ -21,23 +22,25 @@ export default class CardOnHand extends React.Component {
   onPlaceCard = (e) => {
     e.stopPropagation()
     const { card } = this.props
-    this.props.onPlaceCard(card, isMoneyCard(card))
+    this.props.onPlaceCard(card, isMoneyCard(card) || isActionCard(card))
   }
 
   onPlayCard = (e) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onPlayCard(card)
-    // TODO: fix actionCounter not being updated when playing pass go
-    if (card === PASS_GO) {
-      this.props.onDrawCards(card)
-    }
   }
 
   onDiscardCard = (e) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onDiscardCard(card)
+  }
+
+  onFlipCard = (e) => {
+    e.stopPropagation()
+    const { card } = this.props
+    this.props.onFlipCard(card)
   }
 
   render () {
@@ -50,6 +53,7 @@ export default class CardOnHand extends React.Component {
 
     const cannotPlaceCard = !isPlayerTurn
     const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, placedCards)
+    const showFlipCardButton = canFlipCard(card)
 
     return (
       <div>
@@ -62,6 +66,11 @@ export default class CardOnHand extends React.Component {
           disabled={cannotPlayCard}
           onClick={this.onPlayCard}
         />
+        {showFlipCardButton &&
+          <FlipCardButton
+            onClick={this.onFlipCard}
+          />
+        }
         {needsToDiscard &&
           <DiscardCardButton
             onClick={this.onDiscardCard}

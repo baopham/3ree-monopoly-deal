@@ -1,7 +1,6 @@
 import GameRepository from '../repositories/GameRepository'
 import PlayerRepository from '../repositories/PlayerRepository'
 import { newDeck } from '../../universal/monopoly/cards'
-import Promise from 'bluebird'
 
 export default class GameService {
   constructor () {
@@ -70,24 +69,6 @@ export default class GameService {
       })
       .then(() => {
         return promiseContext.newPlayer
-      })
-  }
-
-  drawCards (id) {
-    return this.gameRepository.find(id)
-      .then(game => {
-        if (game.availableCards.length < 2) {
-          game.availableCards = newDeck()
-        }
-
-        const [first, second, ...rest] = game.availableCards
-        game.availableCards = rest
-
-        return Promise.join(
-          this.updateGame(id, game),
-          [first, second],
-          (_, drawnCards) => drawnCards
-        )
       })
   }
 }
