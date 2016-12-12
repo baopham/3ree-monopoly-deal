@@ -57,7 +57,6 @@ export default class JoinForm extends React.Component {
             <FormControl
               type='text'
               autoFocus
-              onKeyPress={() => {}}
               value={this.state.username}
               onChange={this.handleChange}
             >
