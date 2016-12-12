@@ -4,7 +4,13 @@ import PlaceCardButton from '../PlaceCardButton'
 import PlayCardButton from '../PlayCardButton'
 import DiscardCardButton from '../DiscardCardButton'
 import FlipCardButton from '../FlipCardButton'
-import { isMoneyCard, isActionCard, canPlayCard, canFlipCard } from '../../../../monopoly/monopoly'
+import {
+  isMoneyCard,
+  isActionCard,
+  isRentCard,
+  canPlayCard,
+  canFlipCard
+} from '../../../../monopoly/monopoly'
 
 export default class CardOnHand extends React.Component {
   static propTypes = {
@@ -22,7 +28,7 @@ export default class CardOnHand extends React.Component {
   onPlaceCard = (e) => {
     e.stopPropagation()
     const { card } = this.props
-    this.props.onPlaceCard(card, isMoneyCard(card) || isActionCard(card))
+    this.props.onPlaceCard(card, isMoneyCard(card) || isActionCard(card) || isRentCard(card))
   }
 
   onPlayCard = (e) => {
