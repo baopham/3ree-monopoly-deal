@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react'
-import Card from '../Card'
 import CardPile from '../CardPile'
+import PropertySet from '../PropertySet'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
+import { groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
 
 const styles = {
   properties: {
@@ -28,6 +29,7 @@ export default class PlacedCards extends React.Component {
   render () {
     const { cards } = this.props
     const { bank, properties } = cards
+    const propertySets = groupPropertiesIntoSets(properties)
 
     return (
       <Container fluid>
@@ -40,9 +42,11 @@ export default class PlacedCards extends React.Component {
         <Col md={10}>
           <Panel header='Properties' style={styles.properties}>
             <ul className='list-inline'>
-              {properties.map((card, i) =>
+              {propertySets.map((set, i) =>
                 <li key={i}>
-                  <Card card={card} key={i} size='small' faceUp />
+                  <PropertySet
+                    propertySet={set}
+                   />
                 </li>
               )}
             </ul>

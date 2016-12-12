@@ -12,7 +12,7 @@ export default class JoinForm extends React.Component {
     onJoin: PropTypes.func.isRequired
   }
 
-  constructor(...args) {
+  constructor (...args) {
     super(...args)
 
     this.state = {
@@ -59,8 +59,7 @@ export default class JoinForm extends React.Component {
               autoFocus
               value={this.state.username}
               onChange={this.handleChange}
-            >
-            </FormControl>
+             />
           </FormGroup>
         </Modal.Body>
 

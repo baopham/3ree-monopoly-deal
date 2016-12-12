@@ -8,6 +8,7 @@ import {
   RENT_ALL_COLOUR,
   FORCED_DEAL
 } from './cards'
+import PropertySet from './PropertySet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
 
@@ -73,4 +74,46 @@ export function flipCard (cardKeyOrCard: CardKeyOrCard): CardKey {
 
 export function getCardImageSrc (cardKeyOrCard: CardKeyOrCard): string {
   return getCardObject(cardKeyOrCard).image
+}
+
+export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
+  const sets: PropertySet[] = []
+  const groups = new Map()
+
+  cardKeys.forEach((cardKey: CardKey): void => {
+    const card = getCardObject(cardKey)
+    let treatAs = card.key
+
+    if (card.type === PROPERTY_WILDCARD_TYPE) {
+      treatAs = card.treatAs
+
+      if (!treatAs) {
+        // TODO: handle wildcard
+        return
+      }
+    }
+
+    const group = groups.get(treatAs) || []
+    group.push(cardKey)
+    groups.set(treatAs, group)
+  })
+
+  groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
+    const card = getCardObject(treatAs)
+    const numberOfPropertiesRequired = card.needs
+    let set = new PropertySet([], numberOfPropertiesRequired)
+    sets.push(set)
+
+    cardKeys.forEach(cardKey => {
+      if (set.addProperty(cardKey)) {
+        return
+      }
+
+      set = new PropertySet([], numberOfPropertiesRequired)
+      sets.push(set)
+      set.addProperty(cardKey)
+    })
+  })
+
+  return sets
 }
