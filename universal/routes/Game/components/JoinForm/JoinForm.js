@@ -43,26 +43,26 @@ export default class JoinForm extends React.Component {
 
   render () {
     return (
-      <Modal.Dialog>
+      <Modal.Dialog autoFocus>
         <Modal.Header>
           <Modal.Title>Join Game</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <form>
-            <FormGroup
-              controlId='join-form'
-              validationState={this.getValidationState()}
+          <FormGroup
+            controlId='join-form'
+            validationState={this.getValidationState()}
+          >
+            <ControlLabel>Username</ControlLabel>
+            <FormControl
+              type='text'
+              autoFocus
+              onKeyPress={() => {}}
+              value={this.state.username}
+              onChange={this.handleChange}
             >
-              <ControlLabel>Username</ControlLabel>
-              <FormControl
-                type='text'
-                value={this.state.username}
-                onChange={this.handleChange}
-              >
-              </FormControl>
-            </FormGroup>
-          </form>
+            </FormControl>
+          </FormGroup>
         </Modal.Body>
 
         <Modal.Footer>
