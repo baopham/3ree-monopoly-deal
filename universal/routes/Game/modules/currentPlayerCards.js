@@ -1,5 +1,6 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
+import { PASS_GO } from '../../../monopoly/cards'
 
 function ns (value) {
   return namespace('PLAYER', value)
@@ -74,7 +75,7 @@ function playCard (card) {
       .then(
         res => {
           dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
-          dispatch(drawCards())
+          card === PASS_GO && dispatch(drawCards())
         },
         error => dispatch({ type: ERROR, error })
       )
