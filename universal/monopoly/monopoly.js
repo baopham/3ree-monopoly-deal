@@ -2,6 +2,7 @@
 import {
   CARDS,
   PROPERTY_WILDCARD_TYPE,
+  PROPERTY_WILDCARD,
   MONEY_CARD_TYPE,
   ACTION_CARD_TYPE,
   RENT_CARD_TYPE,
@@ -79,18 +80,15 @@ export function getCardImageSrc (cardKeyOrCard: CardKeyOrCard): string {
 export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   const sets: PropertySet[] = []
   const groups = new Map()
+  const cardKeysWithoutWildcards = cardKeys.filter(c => c !== PROPERTY_WILDCARD)
 
-  cardKeys.forEach((cardKey: CardKey): void => {
+  // Property groups (without wildcards)
+  cardKeysWithoutWildcards.forEach((cardKey: CardKey): void => {
     const card = getCardObject(cardKey)
     let treatAs = card.key
 
     if (card.type === PROPERTY_WILDCARD_TYPE) {
       treatAs = card.treatAs
-
-      if (!treatAs) {
-        // TODO: handle wildcard
-        return
-      }
     }
 
     const group = groups.get(treatAs) || []
@@ -98,6 +96,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
     groups.set(treatAs, group)
   })
 
+  // Property sets (without using wildcards)
   groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
     const card = getCardObject(treatAs)
     const numberOfPropertiesRequired = card.needs
@@ -114,6 +113,21 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
       set.addProperty(cardKey)
     })
   })
+
+  // Now, try to use the wildcards
+  const wildcards = cardKeys.filter(c => c.key === PROPERTY_WILDCARD)
+  const unusedWildcards = wildcards.filter((cardKey: CardKey) => {
+    const used = sets.some((set: PropertySet) => {
+      return set.addProperty(cardKey)
+    })
+
+    return !used
+  })
+
+  // Finally, a set for unused wildcards
+  if (unusedWildcards.length) {
+    sets.push(new PropertySet(unusedWildcards, Infinity))
+  }
 
   return sets
 }
