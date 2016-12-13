@@ -59,3 +59,5 @@ app.get('*', uni.handleRender)
 setupRealtime(io)
 
 httpServer.listen(port)
+
+console.log(`HTTP server listening on port ${port}`)
