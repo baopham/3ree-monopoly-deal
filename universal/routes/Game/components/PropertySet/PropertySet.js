@@ -10,7 +10,7 @@ export default class PropertySet extends React.Component {
 
   render () {
     const { propertySet } = this.props
-    const bsStyle = propertySet.isFullSet() ? 'success' : 'default'
+    const bsStyle = propertySet.isFullSet() ? 'primary' : 'default'
 
     return (
       <Panel bsStyle={bsStyle}>
