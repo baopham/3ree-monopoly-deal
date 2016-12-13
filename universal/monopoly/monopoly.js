@@ -10,6 +10,7 @@ import {
   FORCED_DEAL
 } from './cards'
 import PropertySet from './PropertySet'
+import WildcardSet from './WildcardSet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
 
@@ -126,7 +127,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
 
   // Finally, a set for unused wildcards
   if (unusedWildcards.length) {
-    sets.push(new PropertySet(unusedWildcards, Infinity))
+    sets.push(new WildcardSet(unusedWildcards, Infinity))
   }
 
   return sets
