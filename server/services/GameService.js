@@ -41,8 +41,6 @@ export default class GameService {
   }
 
   updateGame (id, game) {
-    game.updatedAt = new Date()
-
     return this.gameRepository.update(id, game)
   }
 
@@ -65,10 +63,8 @@ export default class GameService {
         }
 
         game.currentTurn = username
-        return this.gameRepository.update(gameId, game)
+        return game.save()
       })
-      .then(() => {
-        return promiseContext.newPlayer
-      })
+      .then(() => promiseContext.newPlayer)
   }
 }

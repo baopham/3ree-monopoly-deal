@@ -27,7 +27,7 @@ export default class PlayerService {
         const area = asMoney ? 'bank' : 'properties'
         player.placedCards[area].push(card)
         player.actionCounter = player.actionCounter + 1
-        return this.playerRepository.update(player.id, player)
+        return player.save()
       })
   }
 
@@ -38,10 +38,7 @@ export default class PlayerService {
         player.game.discardedCards.push(card)
         player.actionCounter = player.actionCounter + 1
 
-        return Promise.all([
-          this.gameService.updateGame(gameId, player.game),
-          this.playerRepository.update(player.id, player)
-        ])
+        return player.saveAll()
       })
   }
 
@@ -50,7 +47,7 @@ export default class PlayerService {
       .findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
         player.game.discardedCards.push(card)
-        return this.gameService.updateGame(gameId, player.game)
+        return player.game.save()
       })
   }
 
@@ -67,8 +64,8 @@ export default class PlayerService {
         currentPlayer.actionCounter = 0
 
         return Promise.all([
-          this.gameService.updateGame(gameId, game),
-          this.playerRepository.update(currentPlayer.id, currentPlayer)
+          game.save(),
+          currentPlayer.save()
         ])
       })
       .then(([game, player]) => game.currentTurn)
@@ -85,7 +82,7 @@ export default class PlayerService {
         game.availableCards = rest
 
         return Promise.join(
-          this.gameService.updateGame(gameId, game),
+          game.save(),
           [first, second],
           (_, drawnCards) => drawnCards
         )
@@ -98,15 +95,7 @@ export default class PlayerService {
     card: CardKey,
     asMoney: boolean = false
   ): Promise<*> {
-    const isMoneyCard = asMoney || monopoly.isMoneyCard(card)
-
-    const otherPlayer = this.playerRepository.findByGameIdAndUsername(gameId, otherPlayerUsername)
-
-    const area = isMoneyCard ? 'bank' : 'properties'
-
-    otherPlayer.placedCards[area].push(card)
-
-    return this.playerRepository.update(otherPlayer.id, otherPlayer)
+    // TODO
   }
 
   flipCard (gameId: string, username: Username, cardToFlip: CardKey): Promise<CardKey> {
@@ -124,7 +113,7 @@ export default class PlayerService {
         const cardToFlipIndex = player.placedCards.properties.findIndex(c => c === cardToFlip)
         player.placedCards.properties[cardToFlipIndex] = flippedCard
 
-        return this.playerRepository.update(player.id, player)
+        return player.save()
       })
       .then(() => flippedCard)
   }
