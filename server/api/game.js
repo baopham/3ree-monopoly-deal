@@ -24,7 +24,11 @@ export function drawCards (req: AppRequest, res: express$Response) {
 }
 
 export function discardCard (req: AppRequest, res: express$Response) {
-  res.json()
+  const promise = playerService.discardCard(req.params.id, req.body.username, req.body.card)
+
+  promise
+    .then(() => res.json())
+    .catch(err => handleError(err, res))
 }
 
 export function placeCard (req: AppRequest, res: express$Response) {
