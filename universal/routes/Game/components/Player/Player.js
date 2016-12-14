@@ -3,17 +3,20 @@ import PlacedCards from '../PlacedCards'
 
 export default class Player extends React.Component {
   static propTypes = {
-    player: PropTypes.object.isRequired
+    player: PropTypes.object.isRequired,
+    onWinning: PropTypes.func.isRequired
   }
 
   render () {
-    const { player } = this.props
+    const { player, onWinning } = this.props
 
     return (
       <div>
-        <PlacedCards cards={player.placedCards} />
+        <PlacedCards
+          cards={player.placedCards}
+          onWinning={onWinning}
+        />
       </div>
     )
   }
 }
-

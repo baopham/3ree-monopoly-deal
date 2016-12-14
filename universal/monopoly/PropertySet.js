@@ -1,9 +1,11 @@
 /* @flow */
 export default class PropertySet {
+  identifier: CardKey
   properties: CardKey[]
   numberOfPropertiesRequired: number
 
-  constructor (properties: CardKey[], numberOfPropertiesRequired: number) {
+  constructor (identifier: CardKey, properties: CardKey[], numberOfPropertiesRequired: number) {
+    this.identifier = identifier
     this.properties = properties
     this.numberOfPropertiesRequired = numberOfPropertiesRequired
   }

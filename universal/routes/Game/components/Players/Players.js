@@ -6,7 +6,8 @@ import ActionCounter from '../ActionCounter'
 export default class Players extends React.Component {
   static propTypes = {
     players: PropTypes.array.isRequired,
-    currentPlayer: PropTypes.object.isRequired
+    currentPlayer: PropTypes.object.isRequired,
+    onWinning: PropTypes.func.isRequired
   }
 
   renderHeader (player) {
@@ -22,7 +23,7 @@ export default class Players extends React.Component {
   }
 
   render () {
-    const { currentPlayer, players } = this.props
+    const { currentPlayer, players, onWinning } = this.props
 
     return (
       <div>
@@ -32,7 +33,10 @@ export default class Players extends React.Component {
             header={this.renderHeader(player)}
             bsStyle={currentPlayer.username === player.username ? 'success' : 'default'}
           >
-            <Player player={player} />
+            <Player
+              player={player}
+              onWinning={onWinning}
+            />
           </Panel>
         )}
       </div>

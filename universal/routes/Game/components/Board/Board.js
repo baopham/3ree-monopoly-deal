@@ -12,6 +12,7 @@ export default class Board extends React.Component {
     game: PropTypes.object.isRequired,
     onEndTurn: PropTypes.func.isRequired,
     onDrawCards: PropTypes.func.isRequired,
+    onWinning: PropTypes.func.isRequired,
     currentPlayer: PropTypes.object.isRequired,
     isPlayerTurn: PropTypes.bool
   }
@@ -22,7 +23,8 @@ export default class Board extends React.Component {
       isPlayerTurn,
       onEndTurn,
       currentPlayer,
-      onDrawCards
+      onDrawCards,
+      onWinning
     } = this.props
 
     const drawCardsButton = (
@@ -54,10 +56,10 @@ export default class Board extends React.Component {
           <Players
             currentPlayer={currentPlayer}
             players={game.players}
+            onWinning={onWinning}
           />
         </Col>
       </Container>
     )
   }
 }
-

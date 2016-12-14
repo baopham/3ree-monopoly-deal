@@ -15,6 +15,7 @@ import PropertySet from './PropertySet'
 import WildcardSet from './WildcardSet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
+export const NUMBER_OF_FULL_SETS_TO_WIN = 3
 
 export function getCardObject (cardKeyOrCard: CardKeyOrCard): Card {
   return typeof cardKeyOrCard === 'string' ? CARDS[cardKeyOrCard] : cardKeyOrCard
@@ -103,7 +104,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
     const card = getCardObject(treatAs)
     const numberOfPropertiesRequired = card.needs
-    let set = new PropertySet([], numberOfPropertiesRequired)
+    let set = new PropertySet(treatAs, [], numberOfPropertiesRequired)
     sets.push(set)
 
     cardKeys.forEach(cardKey => {
@@ -111,7 +112,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
         return
       }
 
-      set = new PropertySet([], numberOfPropertiesRequired)
+      set = new PropertySet(treatAs, [], numberOfPropertiesRequired)
       sets.push(set)
       set.addProperty(cardKey)
     })
@@ -129,7 +130,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
 
   // Finally, a set for unused wildcards
   if (unusedWildcards.length) {
-    sets.push(new WildcardSet(unusedWildcards, Infinity))
+    sets.push(new WildcardSet(PROPERTY_WILDCARD, unusedWildcards))
   }
 
   return sets
@@ -151,4 +152,16 @@ export function cardRequiresPayment (cardKey: CardKey) {
 
 export function cardPaymentAmount (cardKey: CardKey): number {
   return getCardObject(cardKey).paymentAmount
+}
+
+export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
+  const fullSetIdentifiersOfDifferentColors: string[] = propertySets.reduce((acc, set) => {
+    if (!set.isFullSet() || acc.includes(set.identifier)) {
+      return acc
+    }
+
+    return acc.concat([set.identifier])
+  }, [])
+
+  return fullSetIdentifiersOfDifferentColors.length >= NUMBER_OF_FULL_SETS_TO_WIN
 }

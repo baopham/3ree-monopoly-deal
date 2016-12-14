@@ -3,7 +3,7 @@ import CardPile from '../CardPile'
 import PropertySet from '../PropertySet'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
-import { groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
+import { hasEnoughFullSetsToWin, groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
 
 const styles = {
   properties: {
@@ -16,7 +16,8 @@ const styles = {
 
 export default class PlacedCards extends React.Component {
   static propTypes = {
-    cards: PropTypes.object
+    cards: PropTypes.object,
+    onWinning: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -26,10 +27,23 @@ export default class PlacedCards extends React.Component {
     }
   }
 
+  constructor (...args) {
+    super(...args)
+
+    this.propertySets = groupPropertiesIntoSets(this.props.cards.properties)
+  }
+
+  componentWillUpdate (nextProps) {
+    this.propertySets = groupPropertiesIntoSets(nextProps.cards.properties)
+
+    if (hasEnoughFullSetsToWin(this.propertySets)) {
+      this.props.onWinning()
+    }
+  }
+
   render () {
     const { cards } = this.props
-    const { bank, properties } = cards
-    const propertySets = groupPropertiesIntoSets(properties)
+    const { bank } = cards
 
     return (
       <Container fluid>
@@ -42,7 +56,7 @@ export default class PlacedCards extends React.Component {
         <Col md={10}>
           <Panel header='Properties' style={styles.properties}>
             <ul className='list-inline'>
-              {propertySets.map((set, i) =>
+              {this.propertySets.map((set, i) =>
                 <li key={i}>
                   <PropertySet
                     propertySet={set}
@@ -56,4 +70,3 @@ export default class PlacedCards extends React.Component {
     )
   }
 }
-

@@ -45,6 +45,11 @@ export class Game extends React.Component {
     }
   }
 
+  onWinning = () => {
+    // TODO
+    alert('YOU WIN')
+  }
+
   render () {
     const {
       game,
@@ -83,6 +88,7 @@ export class Game extends React.Component {
             game={game}
             onEndTurn={endTurn}
             onDrawCards={drawCards}
+            onWinning={this.onWinning}
             isPlayerTurn={isPlayerTurn}
             currentPlayer={currentPlayer}
           />
