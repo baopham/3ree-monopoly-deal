@@ -116,7 +116,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   })
 
   // Now, try to use the wildcards
-  const wildcards = cardKeys.filter(c => c.key === PROPERTY_WILDCARD)
+  const wildcards = cardKeys.filter(c => c === PROPERTY_WILDCARD)
   const unusedWildcards = wildcards.filter((cardKey: CardKey) => {
     const used = sets.some((set: PropertySet) => {
       return set.addProperty(cardKey)

@@ -7,5 +7,7 @@ type Game = {
   currentTurn: Username,
   players: Player[],
   updatedAt: string,
-  createdAt: string
+  createdAt: string,
+  save: Function,
+  saveAll: Function
 }

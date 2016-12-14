@@ -4,5 +4,7 @@ type Player = {
   gameId: string,
   actionCounter: number,
   placedCards: PlacedCards,
-  game: Game
+  game: Game,
+  save: Function,
+  saveAll: Function
 }

@@ -27,7 +27,6 @@
     "npm": ">=3.8.6"
   },
   "dependencies": {
-    "bluebird": "3.1.x",
     "body-parser": "1.14.x",
     "classnames": "2.2.x",
     "compression": "^1.6.2",
@@ -43,7 +42,7 @@
     "react": "15.0.x",
     "react-bootstrap": "^0.30.6",
     "react-dom": "15.0.x",
-    "react-redux": "4.4.x",
+    "react-redux": "5.0.x",
     "react-router": "2.4.x",
     "react-router-redux": "4.0.x",
     "redux": "3.5.x",

@@ -1,7 +1,6 @@
 /* @flow */
 import PlayerRepository from '../repositories/PlayerRepository'
 import GameService from './GameService'
-import Promise from 'bluebird'
 import * as monopoly from '../../universal/monopoly/monopoly'
 import { newDeck } from '../../universal/monopoly/cards'
 
@@ -81,12 +80,12 @@ export default class PlayerService {
         const [first, second, ...rest] = game.availableCards
         game.availableCards = rest
 
-        return Promise.join(
+        return Promise.all([
           game.save(),
-          [first, second],
-          (_, drawnCards) => drawnCards
-        )
+          [first, second]
+        ])
       })
+      .then(([_, drawnCards]) => drawnCards)
   }
 
   giveCardToOtherPlayer (
@@ -94,11 +93,11 @@ export default class PlayerService {
     otherPlayerUsername: Username,
     card: CardKey,
     asMoney: boolean = false
-  ): Promise<*> {
+  ): void {
     // TODO
   }
 
-  flipCard (gameId: string, username: Username, cardToFlip: CardKey): Promise<CardKey> {
+  flipCard (gameId: string, username: Username, cardToFlip: CardKey): Promise<CardKey> | Promise<*> {
     const card: Card = monopoly.getCardObject(cardToFlip)
 
     if (!monopoly.canFlipCard(card)) {

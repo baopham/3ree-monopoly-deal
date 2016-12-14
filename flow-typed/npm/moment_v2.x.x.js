@@ -1,5 +1,5 @@
-// flow-typed signature: d64a0b521e9f5d2fd65462d221c65373
-// flow-typed version: 1453ac8ae2/moment_v2.x.x/flow_>=v0.28.x
+// flow-typed signature: 72f8059b10adb65fb2e3c41cccd0de9e
+// flow-typed version: a483128858/moment_v2.x.x/flow_>=v0.28.x
 
 type moment$MomentOptions = {
   y?: number|string,
@@ -173,7 +173,7 @@ declare class moment$Moment {
   static min(...dates: Array<moment$Moment>): moment$Moment;
   static min(dates: Array<moment$Moment>): moment$Moment;
   add(value: number|moment$MomentDuration|moment$Moment|Object, unit?: string): this;
-  subtract(value: number|moment$MomentDuration|moment$Moment|string, unit?: string): this;
+  subtract(value: number|moment$MomentDuration|moment$Moment|string|Object, unit?: string): this;
   startOf(unit: string): this;
   endOf(unit: string): this;
   local(): this;

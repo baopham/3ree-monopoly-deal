@@ -1,4 +1,4 @@
-// flow-typed signature: cd98e112aa47b9a5f7c101b20a6a8aa5
+// flow-typed signature: 6dbc0ba6311e875233693de0b9fd3bed
 // flow-typed version: <<STUB>>/xss_v0.2.x/flow_v0.36.0
 
 /**
@@ -22,6 +22,14 @@ declare module 'xss' {
  * require those files directly. Feel free to delete any files that aren't
  * needed.
  */
+declare module 'xss/dist/xss' {
+  declare module.exports: any;
+}
+
+declare module 'xss/dist/xss.min' {
+  declare module.exports: any;
+}
+
 declare module 'xss/lib/cli' {
   declare module.exports: any;
 }
@@ -47,6 +55,12 @@ declare module 'xss/lib/xss' {
 }
 
 // Filename aliases
+declare module 'xss/dist/xss.js' {
+  declare module.exports: $Exports<'xss/dist/xss'>;
+}
+declare module 'xss/dist/xss.min.js' {
+  declare module.exports: $Exports<'xss/dist/xss.min'>;
+}
 declare module 'xss/lib/cli.js' {
   declare module.exports: $Exports<'xss/lib/cli'>;
 }

@@ -1,4 +1,4 @@
-// flow-typed signature: 91c2f21e683ca579115208c943c5e462
+// flow-typed signature: fb3771d52c75415f836bd016e31df18d
 // flow-typed version: <<STUB>>/babel-loader_v^6.2.5/flow_v0.36.0
 
 /**
@@ -26,11 +26,7 @@ declare module 'babel-loader/lib/fs-cache' {
   declare module.exports: any;
 }
 
-declare module 'babel-loader/lib/helpers/exists' {
-  declare module.exports: any;
-}
-
-declare module 'babel-loader/lib/helpers/read' {
+declare module 'babel-loader/lib/index' {
   declare module.exports: any;
 }
 
@@ -38,22 +34,34 @@ declare module 'babel-loader/lib/resolve-rc' {
   declare module.exports: any;
 }
 
+declare module 'babel-loader/lib/utils/exists' {
+  declare module.exports: any;
+}
+
+declare module 'babel-loader/lib/utils/read' {
+  declare module.exports: any;
+}
+
+declare module 'babel-loader/lib/utils/relative' {
+  declare module.exports: any;
+}
+
 // Filename aliases
-declare module 'babel-loader/index' {
-  declare module.exports: $Exports<'babel-loader'>;
-}
-declare module 'babel-loader/index.js' {
-  declare module.exports: $Exports<'babel-loader'>;
-}
 declare module 'babel-loader/lib/fs-cache.js' {
   declare module.exports: $Exports<'babel-loader/lib/fs-cache'>;
 }
-declare module 'babel-loader/lib/helpers/exists.js' {
-  declare module.exports: $Exports<'babel-loader/lib/helpers/exists'>;
-}
-declare module 'babel-loader/lib/helpers/read.js' {
-  declare module.exports: $Exports<'babel-loader/lib/helpers/read'>;
+declare module 'babel-loader/lib/index.js' {
+  declare module.exports: $Exports<'babel-loader/lib/index'>;
 }
 declare module 'babel-loader/lib/resolve-rc.js' {
   declare module.exports: $Exports<'babel-loader/lib/resolve-rc'>;
+}
+declare module 'babel-loader/lib/utils/exists.js' {
+  declare module.exports: $Exports<'babel-loader/lib/utils/exists'>;
+}
+declare module 'babel-loader/lib/utils/read.js' {
+  declare module.exports: $Exports<'babel-loader/lib/utils/read'>;
+}
+declare module 'babel-loader/lib/utils/relative.js' {
+  declare module.exports: $Exports<'babel-loader/lib/utils/relative'>;
 }
