@@ -7,6 +7,7 @@ import Board from '../../components/Board'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
+import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -39,7 +40,7 @@ export class Game extends React.Component {
       return
     }
 
-    if (nextProps.currentPlayer.actionCounter === 3) {
+    if (nextProps.currentPlayer.actionCounter === MAX_NUMBER_OF_ACTIONS) {
       this.props.endTurn()
     }
   }
