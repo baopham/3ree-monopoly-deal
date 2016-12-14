@@ -4,6 +4,7 @@ type Card = {
   image: string,
   type: string,
   key: string,
+  paymentAmount: number,
   needs: number,
   forCards: string[],
   treatAs: string,

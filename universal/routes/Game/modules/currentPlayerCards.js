@@ -1,6 +1,8 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { PASS_GO } from '../../../monopoly/cards'
+import { cardRequiresPayment, cardPaymentAmount } from '../../../monopoly/monopoly'
+import { actions as paymentActions } from './payment'
 
 function ns (value) {
   return namespace('PLAYER', value)
@@ -43,8 +45,9 @@ function discardCard (card) {
     types: [DISCARD_CARD_REQUEST, DISCARD_CARD_SUCCESS, ERROR],
     card,
     promise: (dispatch, getState) => {
-      const gameId = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${gameId}/discard`, { card })
+      const currentGame = getState().currentGame
+      const username = currentGame.username
+      return request.put(`${gamesUrl}/${currentGame.game.id}/discard`, { username, card })
     }
   }
 }
@@ -72,13 +75,24 @@ function playCard (card) {
 
     return request
       .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username })
-      .then(
-        res => {
-          dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
-          card === PASS_GO && dispatch(drawCards())
-        },
-        error => dispatch({ type: ERROR, error })
-      )
+      .then(handleSuccessRequest, handleErrorRequest)
+
+    function handleSuccessRequest (res) {
+      dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
+      card === PASS_GO && dispatch(drawCards())
+      if (cardRequiresPayment(card)) {
+        const payee = username
+        const payers = currentGame.game.players
+          .filter(player => player.username !== payee)
+          .map(player => player.username)
+        const amount = cardPaymentAmount(card)
+        dispatch(paymentActions.requestForPayment(payee, payers, card, amount))
+      }
+    }
+
+    function handleErrorRequest (error) {
+      dispatch({ type: ERROR, error })
+    }
   }
 }
 
@@ -94,25 +108,12 @@ function flipCard (card) {
   }
 }
 
-function giveCardToOtherPlayer (gameId, card, username) {
-  return {
-    types: [GIVE_CARD_TO_OTHER_PLAYER_REQUEST, GIVE_CARD_TO_OTHER_PLAYER_SUCCESS, ERROR],
-    card,
-    username,
-    promise: (dispatch, getState) => {
-      const gameId = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${gameId}/give`, { card, username })
-    }
-  }
-}
-
 export const actions = {
   drawCards,
   playCard,
   placeCard,
   flipCard,
-  discardCard,
-  giveCardToOtherPlayer
+  discardCard
 }
 
 // ------------------------------------

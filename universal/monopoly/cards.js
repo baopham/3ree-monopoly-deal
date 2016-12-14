@@ -104,6 +104,7 @@ export const CARDS: MapOfCards = setKey({
   [DEBT_COLLECTOR]: {
     count: 3,
     value: 3,
+    paymentAmount: 5,
     image: '/images/cards/debt-collector.png',
     type: ACTION_CARD_TYPE
   },
@@ -125,6 +126,7 @@ export const CARDS: MapOfCards = setKey({
   [BIRTHDAY]: {
     count: 3,
     value: 2,
+    paymentAmount: 2,
     image: '/images/cards/birthday.png',
     type: ACTION_CARD_TYPE
   },

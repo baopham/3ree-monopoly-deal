@@ -7,7 +7,9 @@ import {
   ACTION_CARD_TYPE,
   RENT_CARD_TYPE,
   RENT_ALL_COLOUR,
-  FORCED_DEAL
+  FORCED_DEAL,
+  BIRTHDAY,
+  DEBT_COLLECTOR
 } from './cards'
 import PropertySet from './PropertySet'
 import WildcardSet from './WildcardSet'
@@ -131,4 +133,22 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   }
 
   return sets
+}
+
+export function cardRequiresPayment (cardKey: CardKey) {
+  const card = getCardObject(cardKey)
+
+  if (isRentCard(card)) {
+    return true
+  }
+
+  if (isActionCard(card)) {
+    return cardKey === BIRTHDAY || cardKey === DEBT_COLLECTOR
+  }
+
+  return false
+}
+
+export function cardPaymentAmount (cardKey: CardKey): number {
+  return getCardObject(cardKey).paymentAmount
 }
