@@ -1,7 +1,11 @@
+/* @flow */
 import GameService from '../services/GameService'
-import Promise from 'bluebird'
 
 const service = new GameService()
+
+declare class AppRequest extends AppRequest {
+  body: any
+}
 
 function handleError (err, res) {
   console.error(err)
@@ -9,18 +13,18 @@ function handleError (err, res) {
   res.json({ error: err })
 }
 
-export function getGames (req, res) {
-  const promise = Promise.props({
-    games: service.getGames(req.query.page),
-    count: service.getCount()
-  })
+export function getGames (req: AppRequest, res: express$Response) {
+  const promise = Promise.all([
+    service.getGames(req.query.page),
+    service.getCount()
+  ])
 
   promise
-    .then(result => res.json(result))
+    .then(([games, count]) => res.json({ games, count }))
     .catch(err => handleError(err, res))
 }
 
-export function getGame (req, res) {
+export function getGame (req: AppRequest, res: express$Response) {
   const promise = service.getGame(req.params.id)
 
   promise
@@ -28,35 +32,35 @@ export function getGame (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function addGame (req, res) {
-  const promise = Promise.props({
-    game: service.addGame(req.body),
-    count: service.getCount()
-  })
+export function addGame (req: AppRequest, res: express$Response) {
+  const promise = Promise.all([
+    service.addGame(req.body),
+    service.getCount()
+  ])
 
   promise
-    .then(result => res.json(result))
+    .then(([game, count]) => res.json({ game, count }))
     .catch(err => handleError(err, res))
 }
 
-export function updateGame (req, res) {
-  const promise = Promise.props({
-    game: service.updateGame(req.params.id, req.body),
-    count: service.getCount()
-  })
+export function updateGame (req: AppRequest, res: express$Response) {
+  const promise = Promise.all([
+    service.updateGame(req.params.id, req.body),
+    service.getCount()
+  ])
 
   promise
-    .then(result => res.json(result))
+    .then(([game, count]) => res.json({ game, count }))
     .catch(err => handleError(err, res))
 }
 
-export function deleteGame (req, res) {
-  const promise = Promise.props({
-    game: service.deleteGame(req.params.id),
-    count: service.getCount()
-  })
+export function deleteGame (req: AppRequest, res: express$Response) {
+  const promise = Promise.all([
+    service.deleteGame(req.params.id),
+    service.getCount()
+  ])
 
   promise
-    .then(result => res.json(result))
+    .then(([game, count]) => res.json({ game, count }))
     .catch(err => handleError(err, res))
 }

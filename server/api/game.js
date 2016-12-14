@@ -1,8 +1,13 @@
+/* @flow */
 import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
+
+declare class AppRequest extends AppRequest {
+  body: any
+}
 
 function handleError (err, res) {
   console.error(err)
@@ -10,7 +15,7 @@ function handleError (err, res) {
   res.json({ error: err })
 }
 
-export function drawCards (req, res) {
+export function drawCards (req: AppRequest, res: express$Response) {
   const promise = playerService.drawCards(req.params.id)
 
   promise
@@ -18,11 +23,11 @@ export function drawCards (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function discardCard (req, res) {
+export function discardCard (req: AppRequest, res: express$Response) {
   res.json()
 }
 
-export function placeCard (req, res) {
+export function placeCard (req: AppRequest, res: express$Response) {
   const promise = playerService.placeCard(req.params.id, req.body.username, req.body.card, req.body.asMoney)
 
   promise
@@ -30,7 +35,7 @@ export function placeCard (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function playCard (req, res) {
+export function playCard (req: AppRequest, res: express$Response) {
   const promise = playerService.playCard(req.params.id, req.body.username, req.body.card)
 
   promise
@@ -38,11 +43,11 @@ export function playCard (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function giveCardToOtherPlayer (req, res) {
+export function giveCardToOtherPlayer (req: AppRequest, res: express$Response) {
   res.json()
 }
 
-export function joinGame (req, res) {
+export function joinGame (req: AppRequest, res: express$Response) {
   const promise = gameService.addPlayer(req.params.id, req.body.username)
 
   promise
@@ -50,7 +55,7 @@ export function joinGame (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function endTurn (req, res) {
+export function endTurn (req: AppRequest, res: express$Response) {
   const promise = playerService.endTurn(req.params.id)
 
   promise
@@ -58,7 +63,7 @@ export function endTurn (req, res) {
     .catch(err => handleError(err, res))
 }
 
-export function flipCard (req, res) {
+export function flipCard (req: AppRequest, res: express$Response) {
   const promise = playerService.flipCard(req.params.id, req.body.username, req.body.card)
 
   promise
