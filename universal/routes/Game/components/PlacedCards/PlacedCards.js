@@ -41,6 +41,10 @@ export default class PlacedCards extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    this.propertySets = null
+  }
+
   render () {
     const { cards } = this.props
     const { bank } = cards
