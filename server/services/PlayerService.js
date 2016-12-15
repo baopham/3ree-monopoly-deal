@@ -30,12 +30,19 @@ export default class PlayerService {
       })
   }
 
-  playCard (gameId: string, username: Username, card: CardKey): Promise<*> {
+  playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
-        player.game.discardedCards.push(card)
+        player.game.discardedCards.push(cardKey)
         player.actionCounter = player.actionCounter + 1
+
+        if (monopoly.cardRequiresPayment(cardKey)) {
+          player.payeeInfo = {
+            cardPlayed: cardKey,
+            amount: monopoly.cardPaymentAmount(cardKey)
+          }
+        }
 
         return player.saveAll()
       })
@@ -117,4 +124,3 @@ export default class PlayerService {
       .then(() => flippedCard)
   }
 }
-

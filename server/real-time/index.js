@@ -5,4 +5,3 @@ export default function setup (io) {
   GameService.liveUpdates(io)
   PlayerService.liveUpdates(io)
 }
-

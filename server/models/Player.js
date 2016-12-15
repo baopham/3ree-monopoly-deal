@@ -7,7 +7,8 @@ const Player = thinky.createModel('game_players', {
   username: type.string(),
   gameId: type.string(),
   actionCounter: type.number().default(0),
-  placedCards: type.object() // { bank: [type.string()], properties: [type.string()] }
+  placedCards: type.object(),
+  payeeInfo: type.object()
 })
 
 module.exports = Player
@@ -15,4 +16,3 @@ module.exports = Player
 Player.ensureIndex('gameId')
 const Game = require('./Game')
 Player.belongsTo(Game, 'game', 'gameId', 'id')
-

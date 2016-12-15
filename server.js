@@ -14,7 +14,7 @@ const app = express()
 const httpServer = http.createServer(app)
 const port = config.get('express.port') || 3000
 
-var io = socketIO(httpServer)
+const io = socketIO(httpServer)
 
 app.set('views', path.join(__dirname, 'server', 'views'))
 app.set('view engine', 'ejs')

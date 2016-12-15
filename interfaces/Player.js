@@ -5,6 +5,7 @@ type Player = {
   actionCounter: number,
   placedCards: PlacedCards,
   game: Game,
+  payeeInfo: PayeeInfo,
   save: Function,
   saveAll: Function
 }

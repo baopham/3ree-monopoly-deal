@@ -1,5 +1,6 @@
 import Player from '../models/Player'
 import thinky from '../thinky'
+import _ from 'lodash'
 
 const r = thinky.r
 
@@ -24,6 +25,7 @@ export default class PlayerRepository {
           change.updated = !change.deleted && !change.created
           change.old_val = doc.getOldValue()
           change.new_val = doc
+          change.payeeInfoUpdated = change.updated && !_.isEqual(change.new_val.payeeInfo, change.old_val.payeeInfo)
 
           changeHandler(change)
         })

@@ -1,5 +1,6 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
+import { actions as paymentActions } from './payment'
 
 function ns (value) {
   return namespace('GAME', value)
@@ -56,18 +57,26 @@ function endTurn () {
 
 function subscribeSocket (socket, gameId) {
   return (dispatch, getState) => {
-    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch))
+    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
     socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
   }
 }
 
-function onGamePlayerChange (dispatch, change) {
+function onGamePlayerChange (dispatch, getState, change) {
   if (change.created) {
     dispatch({ type: JOIN_SUCCESS, payload: { newPlayer: change.new_val } })
   } else if (change.deleted) {
     dispatch({ type: LEAVE_SUCCESS, payload: { player: change.old_val } })
-  } else {
+  } else if (change.updated) {
     dispatch({ type: UPDATE_PLAYER, payload: { player: change.new_val } })
+  }
+
+  if (change.payeeInfoUpdated) {
+    dispatch(paymentActions.updatePayment({
+      payee: change.new_val.username,
+      payers: getState().currentGame.game.players.filter(p => p.username !== change.new_val.username).map(p => p.username),
+      ...change.new_val.payeeInfo,
+    }))
   }
 }
 
@@ -180,4 +189,3 @@ export default function reducer (state = initialState, action) {
       return state
   }
 }
-

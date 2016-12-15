@@ -10,6 +10,7 @@ function ns (value) {
 const PAYMENT_REQUEST = ns('PAYMENT_REQUEST')
 const PAY = ns('PAY')
 const ERROR = ns('ERROR')
+const PAYMENT_UPDATE = ns('PAYMENT_UPDATE')
 
 // ------------------------------------
 // Action creators
@@ -45,6 +46,16 @@ function pay (payer, amount) {
   }
 }
 
+function updatePayment ({ payee, amount, payers, cardPlayed }) {
+  return {
+    type: PAYMENT_UPDATE,
+    payee,
+    amount,
+    payers,
+    cardPlayed
+  }
+}
+
 function error (message) {
   return {
     type: ERROR,
@@ -54,7 +65,8 @@ function error (message) {
 
 export const actions = {
   requestForPayment,
-  pay
+  pay,
+  updatePayment
 }
 
 // ------------------------------------
@@ -93,6 +105,14 @@ export default function reducer (state = initialState, action) {
         ]
       }
     }
+
+    case PAYMENT_UPDATE:
+      return {
+        payee: action.payee,
+        amount: action.amount,
+        payers: action.payers,
+        cardPlayed: action.cardPlayed
+      }
 
     case ERROR:
       return deepmerge({}, state, { error: action.message })
