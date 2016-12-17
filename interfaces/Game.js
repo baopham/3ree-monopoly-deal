@@ -5,6 +5,7 @@ type Game = {
   discardedCards: CardKey[],
   availableCards: CardKey[],
   currentTurn: Username,
+  lastCardPlayedBy: Username,
   players: Player[],
   updatedAt: string,
   createdAt: string,

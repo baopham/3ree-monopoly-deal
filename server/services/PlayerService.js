@@ -43,6 +43,7 @@ export default class PlayerService {
 
     return Promise.all(promises)
       .then(([player: Player, usernames: Username[]]) => {
+        player.game.lastCardPlayedBy = username
         player.game.discardedCards.push(cardKey)
         player.actionCounter = player.actionCounter + 1
 
@@ -63,6 +64,7 @@ export default class PlayerService {
       .findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
         player.game.discardedCards.push(card)
+        player.game.lastCardPlayedBy = username
         return player.game.save()
       })
   }

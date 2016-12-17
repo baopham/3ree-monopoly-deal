@@ -49,7 +49,10 @@ export default class Board extends React.Component {
             drawCardsButton={drawCardsButton}
             endTurnButton={endTurnButton}
           />
-          <DiscardPile cards={game.discardedCards} />
+          <DiscardPile
+            lastCardPlayedBy={game.lastCardPlayedBy}
+            cards={game.discardedCards}
+          />
         </Col>
 
         <Col md={10}>

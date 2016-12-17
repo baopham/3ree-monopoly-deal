@@ -4,6 +4,7 @@ import CardPile from '../CardPile'
 
 export default class DiscardPile extends React.Component {
   static propTypes = {
+    lastCardPlayedBy: PropTypes.string,
     cards: PropTypes.array
   }
 
@@ -20,11 +21,17 @@ export default class DiscardPile extends React.Component {
   }
 
   render () {
+    const { cards, lastCardPlayedBy } = this.props
+
     return (
       <Panel header={this.renderHeader()}>
-        <CardPile cards={this.props.cards} faceUp />
+        {lastCardPlayedBy &&
+          <p>
+            <strong>{lastCardPlayedBy}</strong> played:
+          </p>
+        }
+        <CardPile cards={cards} faceUp />
       </Panel>
     )
   }
 }
-
