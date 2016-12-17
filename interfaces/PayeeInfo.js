@@ -1,4 +1,5 @@
 type PayeeInfo = {
-  cardPlayed: CardKey,
-  amount: number
+  cardPlayed: ?CardKey,
+  amount: ?number,
+  payers: ?Username[]
 }

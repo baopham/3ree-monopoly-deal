@@ -33,7 +33,7 @@ export const isPlayerTurn = createSelector(
 export const getRequiredPayment = createSelector(
   [getCurrentGame, getCurrentGame, getPayment],
   (currentGame: CurrentGameState, currentPlayer: Player, payment: PaymentState) => {
-    const needToPay = payment.amount && payment.payers.includes(currentPlayer.username)
+    const needToPay = payment.amount && payment.payers && payment.payers.includes(currentPlayer.username)
     return needToPay ? payment : null
   }
 )

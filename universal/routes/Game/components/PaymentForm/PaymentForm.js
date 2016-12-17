@@ -41,13 +41,9 @@ export default class PaymentForm extends React.Component {
 
   unselectCard (card, index) {
     const { selectedCards } = this.state
-    const indexToRemove = selectedCards.findIndex(([c, i]) => c === card && i === index)
 
     this.setState({
-      selectedCards: [
-        ...selectedCards.slice(0, indexToRemove),
-        ...selectedCards.slice(indexToRemove + 1)
-      ]
+      selectedCards: selectedCards.filter(([c, i]) => c !== card || i !== index)
     })
   }
 

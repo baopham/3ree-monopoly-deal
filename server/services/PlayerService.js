@@ -31,16 +31,26 @@ export default class PlayerService {
   }
 
   playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
-    return this.playerRepository
-      .findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
+    const cardRequiresPayment = monopoly.cardRequiresPayment(cardKey)
+
+    const promises = [
+      this.playerRepository.findByGameIdAndUsername(gameId, username)
+    ]
+
+    if (cardRequiresPayment) {
+      promises.push(this.playerRepository.getAllPlayerUsernames(gameId))
+    }
+
+    return Promise.all(promises)
+      .then(([player: Player, usernames: Username[]]) => {
         player.game.discardedCards.push(cardKey)
         player.actionCounter = player.actionCounter + 1
 
-        if (monopoly.cardRequiresPayment(cardKey)) {
+        if (cardRequiresPayment) {
           player.payeeInfo = {
             cardPlayed: cardKey,
-            amount: monopoly.cardPaymentAmount(cardKey)
+            amount: monopoly.cardPaymentAmount(cardKey),
+            payers: usernames.filter(u => u !== username)
           }
         }
 
@@ -95,15 +105,6 @@ export default class PlayerService {
       .then(([_, drawnCards]) => drawnCards)
   }
 
-  giveCardToOtherPlayer (
-    gameId: string,
-    otherPlayerUsername: Username,
-    card: CardKey,
-    asMoney: boolean = false
-  ): void {
-    // TODO
-  }
-
   flipCard (gameId: string, username: Username, cardToFlip: CardKey): Promise<CardKey> | Promise<*> {
     const card: Card = monopoly.getCardObject(cardToFlip)
 
@@ -122,5 +123,59 @@ export default class PlayerService {
         return player.save()
       })
       .then(() => flippedCard)
+  }
+
+  pay (gameId: string, payer: Username, payee: Username, cardsForPayment: CardKey[]): Promise<*> {
+    const moneyCards = monopoly.getMoneyCards(cardsForPayment)
+    const propertyCards = monopoly.getPropertyCards(cardsForPayment)
+    const promises = [
+      this.playerRepository.findByGameIdAndUsername(gameId, payee),
+      this.playerRepository.findByGameIdAndUsername(gameId, payer)
+    ]
+
+    return Promise.all(promises)
+      .then(([payeePlayer: Player, payerPlayer: Player]) => {
+        return Promise.all([
+          updatePayer(payerPlayer),
+          updatePayee(payeePlayer)
+        ])
+      })
+
+    function updatePayee (payeePlayer: Player): Promise<*> {
+      const { payeeInfo } = payeePlayer
+
+      if (!payeeInfo.payers || !payeeInfo.payers.includes(payer)) {
+        return Promise.reject()
+      }
+
+      payeePlayer.payeeInfo.payers = payeeInfo.payers.filter(p => p !== payer)
+
+      if (!payeePlayer.payeeInfo.payers.length) {
+        payeePlayer.payeeInfo.amount = 0
+        payeePlayer.payeeInfo.cardPlayed = null
+      }
+
+      const { placedCards } = payeePlayer
+
+      placedCards.bank = placedCards.bank.concat(moneyCards)
+      placedCards.properties = placedCards.properties.concat(propertyCards)
+      return payeePlayer.save()
+    }
+
+    function updatePayer (payerPlayer: Player): Promise<*> {
+      const { placedCards } = payerPlayer
+
+      moneyCards.forEach(card => {
+        const indexToRemove = placedCards.bank.findIndex(c => c === card)
+        placedCards.bank.splice(indexToRemove, 1)
+      })
+
+      propertyCards.forEach(card => {
+        const indexToRemove = placedCards.properties.findIndex(c => c === card)
+        placedCards.properties.splice(indexToRemove, 1)
+      })
+
+      return payerPlayer.save()
+    }
   }
 }

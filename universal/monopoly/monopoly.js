@@ -169,3 +169,11 @@ export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
 export function totalAmount (cardKeys: CardKey[]): number {
   return cardKeys.reduce((acc, cardKey) => acc + getCardObject(cardKey).value, 0)
 }
+
+export function getMoneyCards (cardKeys: CardKey[]): CardKey[] {
+  return cardKeys.filter(cardKey => isMoneyCard(cardKey) || isActionCard(cardKey))
+}
+
+export function getPropertyCards (cardKeys: CardKey[]): CardKey[] {
+  return cardKeys.filter(cardKey => !isMoneyCard(cardKey) && !isActionCard(cardKey))
+}

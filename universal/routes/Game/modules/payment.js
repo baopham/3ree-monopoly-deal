@@ -1,5 +1,6 @@
 /* @flow */
-import { namespace, deepmerge } from '../../../ducks-utils'
+import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
+import * as request from '../../../request-util'
 
 function ns (value) {
   return namespace('PAYMENT', value)
@@ -8,8 +9,11 @@ function ns (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
+const gamesUrl = `${apiUrl}/games`
+
 const PAYMENT_REQUEST = ns('PAYMENT_REQUEST')
-const PAY = ns('PAY')
+const PAY_REQUEST = ns('PAY_REQUEST')
+const PAY_SUCCESS = ns('PAY_SUCCESS')
 const ERROR = ns('ERROR')
 const PAYMENT_UPDATE = ns('PAYMENT_UPDATE')
 
@@ -26,41 +30,25 @@ function requestForPayment (payee: Username, payers: Username[], cardPlayed: Car
   }
 }
 
-function pay (payer: Username, amount: number) {
-  return (dispatch: Function, getState: Function) => {
-    const paymentState = getState().payment
-
-    if (amount < paymentState.amount) {
-      dispatch(error(`Need to pay at least ${paymentState.amount}`))
-      return
+function pay (payer: Username, cardsForPayment: CardKey[]) {
+  return {
+    types: [PAY_REQUEST, PAY_SUCCESS, ERROR],
+    payer,
+    promise: (dispatch: Function, getState: Function) => {
+      const game = getState().currentGame.game
+      const payee = getState().payment.payee
+      return request.put(`${gamesUrl}/${game.id}/pay`, { payer, payee, cardsForPayment })
     }
-
-    if (!paymentState.payers.find(p => p === payer)) {
-      dispatch(error('Wrong payer'))
-      return
-    }
-
-    dispatch({
-      type: PAY,
-      payer
-    })
   }
 }
 
-function updatePayment (payee: Username, payers: Username[], amount: number, cardPlayed: CardKey) {
+function updatePayment (payee: ?Username, payers: ?Username[], amount: ?number, cardPlayed: ?CardKey) {
   return {
     type: PAYMENT_UPDATE,
     payee,
     amount,
     payers,
     cardPlayed
-  }
-}
-
-function error (message) {
-  return {
-    type: ERROR,
-    message
   }
 }
 
@@ -74,10 +62,10 @@ export const actions = {
 // Reducer
 // ------------------------------------
 export type PaymentState = {
-  payers: Username[],
+  payers: ?Username[],
   payee: ?Username,
   cardPlayed: ?CardKey,
-  amount: number
+  amount: ?number
 }
 
 const initialState: PaymentState = {
@@ -97,20 +85,16 @@ export default function reducer (state: PaymentState = initialState, action: Red
         amount: action.amount
       }
 
-    case PAY: {
+    case PAY_SUCCESS: {
       const { payer } = action
-      const payerIndex = state.payers.findIndex(p => p === payer)
 
-      if (state.payers.length === 1) {
+      if (!state.payers || state.payers.length <= 1) {
         return initialState
       }
 
       return {
         ...state,
-        payers: [
-          ...state.payers.slice(0, payerIndex),
-          ...state.payers.slice(payerIndex + 1)
-        ]
+        payers: state.payers.filter(p => p !== payer)
       }
     }
 

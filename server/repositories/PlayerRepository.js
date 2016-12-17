@@ -73,7 +73,7 @@ export default class PlayerRepository {
       .run()
       .then(result => {
         if (result.length) {
-          throw new Error('Player already exists')
+          return Promise.reject(new Error('Player already exists'))
         }
         return this.insert({ gameId, username, placedCards })
       })
@@ -89,10 +89,18 @@ export default class PlayerRepository {
       .run()
       .then(result => {
         if (!result.length) {
-          throw new Error(`No player ${username} found for game: ${gameId}`)
+          return Promise.reject(new Error(`No player ${username} found for game: ${gameId}`))
         }
+
         const [player] = result
         return player
       })
+  }
+
+  getAllPlayerUsernames (gameId) {
+    return Player
+      .filter({ gameId })
+      .run()
+      .then(players => players.map(p => p.username))
   }
 }

@@ -8,6 +8,7 @@ import PaymentForm from '../../components/PaymentForm'
 import { getCurrentPlayer, isPlayerTurn, getRequiredPayment } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
+import { actions as paymentActions } from '../../modules/payment'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
 
 const mapStateToProps = (state) => ({
@@ -29,6 +30,7 @@ export class Game extends React.Component {
     discardCard: PropTypes.func.isRequired,
     flipCard: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
+    pay: PropTypes.func.isRequired,
     endTurn: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool,
     requiredPayment: PropTypes.object
@@ -51,6 +53,11 @@ export class Game extends React.Component {
   onWinning = () => {
     // TODO
     alert('YOU WIN')
+  }
+
+  onPay = (cardsForPayment) => {
+    const { pay, currentPlayer } = this.props
+    pay(currentPlayer.username, cardsForPayment)
   }
 
   render () {
@@ -101,6 +108,7 @@ export class Game extends React.Component {
 
         {requiredPayment &&
           <PaymentForm
+            onPay={this.onPay}
             cards={currentPlayer.placedCards}
             payee={requiredPayment.payee}
             dueAmount={requiredPayment.amount}
@@ -117,5 +125,9 @@ export class Game extends React.Component {
 
 export default connect(
   mapStateToProps,
-  { ...gameActions, ...playerCardsActions }
+  {
+    ...gameActions,
+    ...playerCardsActions,
+    ...paymentActions
+  }
 )(Game)

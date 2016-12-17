@@ -74,11 +74,10 @@ function onGamePlayerChange (dispatch: Function, getState: Function, change: Soc
 
   if (change.payeeInfoUpdated) {
     const player = change.new_val
-    const game = getState().currentGame.game
 
     dispatch(paymentActions.updatePayment(
       player.username,
-      game.players.filter(p => p.username !== player.username).map(p => p.username),
+      player.payeeInfo.payers,
       player.payeeInfo.amount,
       player.payeeInfo.cardPlayed
     ))

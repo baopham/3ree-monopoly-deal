@@ -74,3 +74,11 @@ export function flipCard (req: AppRequest, res: express$Response) {
     .then(flippedCard => res.json({ flippedCard }))
     .catch(err => handleError(err, res))
 }
+
+export function pay (req: AppRequest, res: express$Response) {
+  const promise = playerService.pay(req.params.id, req.body.payer, req.body.payee, req.body.cardsForPayment)
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
