@@ -112,7 +112,7 @@ export default class PaymentForm extends React.Component {
     } = this.props
 
     return (
-      <Modal.Dialog autoFocus bsSize='large'>
+      <Modal show autoFocus bsSize='large'>
         <Modal.Header>
           <Modal.Title>Payment</Modal.Title>
         </Modal.Header>
@@ -136,7 +136,7 @@ export default class PaymentForm extends React.Component {
             Pay
           </Button>
         </Modal.Footer>
-      </Modal.Dialog>
+      </Modal>
     )
   }
 }
