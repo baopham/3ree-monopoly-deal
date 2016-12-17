@@ -1,3 +1,4 @@
+/* @flow */
 import { namespace, deepmerge } from '../../../ducks-utils'
 
 function ns (value) {
@@ -15,7 +16,7 @@ const PAYMENT_UPDATE = ns('PAYMENT_UPDATE')
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function requestForPayment (payee, payers, cardPlayed, amount) {
+function requestForPayment (payee: Username, payers: Username[], cardPlayed: CardKey, amount: number) {
   return {
     type: PAYMENT_REQUEST,
     payee,
@@ -25,8 +26,8 @@ function requestForPayment (payee, payers, cardPlayed, amount) {
   }
 }
 
-function pay (payer, amount) {
-  return (dispatch, getState) => {
+function pay (payer: Username, amount: number) {
+  return (dispatch: Function, getState: Function) => {
     const paymentState = getState().payment
 
     if (amount < paymentState.amount) {
@@ -46,7 +47,7 @@ function pay (payer, amount) {
   }
 }
 
-function updatePayment ({ payee, amount, payers, cardPlayed }) {
+function updatePayment (payee: Username, payers: Username[], amount: number, cardPlayed: CardKey) {
   return {
     type: PAYMENT_UPDATE,
     payee,
@@ -72,14 +73,21 @@ export const actions = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
+export type PaymentState = {
+  payers: Username[],
+  payee: ?Username,
+  cardPlayed: ?CardKey,
+  amount: number
+}
+
+const initialState: PaymentState = {
   payers: [],
   payee: null,
   cardPlayed: null,
-  amount: null
+  amount: 0
 }
 
-export default function reducer (state = initialState, action) {
+export default function reducer (state: PaymentState = initialState, action: ReduxAction) {
   switch (action.type) {
     case PAYMENT_REQUEST:
       return {

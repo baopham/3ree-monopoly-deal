@@ -5,11 +5,17 @@ import { Panel } from 'react-bootstrap'
 
 export default class PropertySet extends React.Component {
   static propTypes = {
-    propertySet: PropTypes.instanceOf(PropertySetClass).isRequired
+    propertySet: PropTypes.instanceOf(PropertySetClass).isRequired,
+    onCardClick: PropTypes.func,
+    isCardHighlighted: PropTypes.func
   }
 
   render () {
-    const { propertySet } = this.props
+    const {
+      propertySet,
+      isCardHighlighted,
+      onCardClick
+    } = this.props
     const bsStyle = propertySet.isFullSet() ? 'primary' : 'default'
 
     return (
@@ -17,7 +23,13 @@ export default class PropertySet extends React.Component {
         <ul className='list-inline'>
           {propertySet.getProperties().map((property, i) =>
             <li key={i}>
-              <Card card={property} size='small' faceUp />
+              <Card
+                highlighted={isCardHighlighted(property, i)}
+                onClick={(card) => onCardClick(card, i)}
+                card={property}
+                size='small'
+                faceUp
+              />
             </li>
           )}
         </ul>
@@ -25,4 +37,3 @@ export default class PropertySet extends React.Component {
     )
   }
 }
-

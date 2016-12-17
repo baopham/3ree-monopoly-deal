@@ -165,3 +165,7 @@ export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
 
   return fullSetIdentifiersOfDifferentColors.length >= NUMBER_OF_FULL_SETS_TO_WIN
 }
+
+export function totalAmount (cardKeys: CardKey[]): number {
+  return cardKeys.reduce((acc, cardKey) => acc + getCardObject(cardKey).value, 0)
+}

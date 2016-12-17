@@ -1,9 +1,8 @@
 import React, { PropTypes } from 'react'
 import CardPile from '../CardPile'
-import PropertySet from '../PropertySet'
+import Properties from '../Properties'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
-import { hasEnoughFullSetsToWin, groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
 
 const styles = {
   properties: {
@@ -16,38 +15,16 @@ const styles = {
 
 export default class PlacedCards extends React.Component {
   static propTypes = {
-    cards: PropTypes.object,
+    cards: PropTypes.shape({
+      bank: PropTypes.arrayOf(PropTypes.string),
+      properties: PropTypes.arrayOf(PropTypes.string)
+    }).isRequired,
     onWinning: PropTypes.func.isRequired
   }
 
-  static defaultProps = {
-    cards: {
-      bank: [],
-      properties: []
-    }
-  }
-
-  constructor (...args) {
-    super(...args)
-
-    this.propertySets = groupPropertiesIntoSets(this.props.cards.properties)
-  }
-
-  componentWillUpdate (nextProps) {
-    this.propertySets = groupPropertiesIntoSets(nextProps.cards.properties)
-
-    if (hasEnoughFullSetsToWin(this.propertySets)) {
-      this.props.onWinning()
-    }
-  }
-
-  componentWillUnmount () {
-    this.propertySets = null
-  }
-
   render () {
-    const { cards } = this.props
-    const { bank } = cards
+    const { cards, onWinning } = this.props
+    const { bank, properties } = cards
 
     return (
       <Container fluid>
@@ -59,15 +36,10 @@ export default class PlacedCards extends React.Component {
 
         <Col md={10}>
           <Panel header='Properties' style={styles.properties}>
-            <ul className='list-inline'>
-              {this.propertySets.map((set, i) =>
-                <li key={i}>
-                  <PropertySet
-                    propertySet={set}
-                   />
-                </li>
-              )}
-            </ul>
+            <Properties
+              properties={properties}
+              onWinning={onWinning}
+            />
           </Panel>
         </Col>
       </Container>

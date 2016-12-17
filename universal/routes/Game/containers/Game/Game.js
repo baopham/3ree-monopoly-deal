@@ -4,7 +4,8 @@ import FullWidth from '../../../../components/FullWidth'
 import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
-import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
+import PaymentForm from '../../components/PaymentForm'
+import { getCurrentPlayer, isPlayerTurn, getRequiredPayment } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
@@ -13,7 +14,8 @@ const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards,
-  isPlayerTurn: isPlayerTurn(state)
+  isPlayerTurn: isPlayerTurn(state),
+  requiredPayment: getRequiredPayment(state)
 })
 
 export class Game extends React.Component {
@@ -28,7 +30,8 @@ export class Game extends React.Component {
     flipCard: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
     endTurn: PropTypes.func.isRequired,
-    isPlayerTurn: PropTypes.bool
+    isPlayerTurn: PropTypes.bool,
+    requiredPayment: PropTypes.object
   }
 
   componentWillReceiveProps (nextProps) {
@@ -51,6 +54,7 @@ export class Game extends React.Component {
   }
 
   render () {
+    // TODO: handle when player does not have enough to pay -> take all their cards?
     const {
       game,
       currentPlayer,
@@ -62,7 +66,8 @@ export class Game extends React.Component {
       endTurn,
       discardCard,
       flipCard,
-      isPlayerTurn
+      isPlayerTurn,
+      requiredPayment
     } = this.props
 
     return (
@@ -91,6 +96,14 @@ export class Game extends React.Component {
             onWinning={this.onWinning}
             isPlayerTurn={isPlayerTurn}
             currentPlayer={currentPlayer}
+          />
+        }
+
+        {requiredPayment &&
+          <PaymentForm
+            cards={currentPlayer.placedCards}
+            payee={requiredPayment.payee}
+            dueAmount={requiredPayment.amount}
           />
         }
 
