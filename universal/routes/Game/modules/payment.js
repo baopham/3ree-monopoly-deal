@@ -99,6 +99,10 @@ export default function reducer (state: PaymentState = initialState, action: Red
     }
 
     case PAYMENT_UPDATE:
+      if (!action.payers || !action.payers.length) {
+        return initialState
+      }
+
       return {
         payee: action.payee,
         amount: action.amount,

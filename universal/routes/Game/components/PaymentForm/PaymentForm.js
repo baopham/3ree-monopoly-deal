@@ -62,7 +62,7 @@ export default class PaymentForm extends React.Component {
   }
 
   isCardHighlighted = (card, index) => {
-    return this.state.selectedCards.find(([c, i]) => c === card && i === index)
+    return !!this.state.selectedCards.find(([c, i]) => c === card && i === index)
   }
 
   renderTotalAmountAlert () {
@@ -118,7 +118,7 @@ export default class PaymentForm extends React.Component {
         </Modal.Header>
 
         <Modal.Body>
-          <h3>Select cards to pay {payee} ${dueAmount}M</h3>
+          <h4>Select cards to pay {payee} ${dueAmount}M</h4>
           {this.renderTotalAmountAlert()}
           {this.renderBankCards()}
           <Properties

@@ -5,6 +5,7 @@ import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
+import PaymentInProgress from '../../components/PaymentInProgress'
 import { getCurrentPlayer, isPlayerTurn, getRequiredPayment } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
@@ -16,7 +17,7 @@ const mapStateToProps = (state) => ({
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards,
   isPlayerTurn: isPlayerTurn(state),
-  requiredPayment: getRequiredPayment(state)
+  payment: state.payment
 })
 
 export class Game extends React.Component {
@@ -33,7 +34,7 @@ export class Game extends React.Component {
     pay: PropTypes.func.isRequired,
     endTurn: PropTypes.func.isRequired,
     isPlayerTurn: PropTypes.bool,
-    requiredPayment: PropTypes.object
+    payment: PropTypes.object.isRequired
   }
 
   componentWillReceiveProps (nextProps) {
@@ -74,8 +75,11 @@ export class Game extends React.Component {
       discardCard,
       flipCard,
       isPlayerTurn,
-      requiredPayment
+      payment
     } = this.props
+
+    const needToPay = currentPlayer && payment.amount && payment.payers && payment.payers.includes(currentPlayer.username)
+    const isPayee = currentPlayer && !needToPay && payment.payee === currentPlayer.username
 
     return (
       <FullWidth fluid>
@@ -106,12 +110,18 @@ export class Game extends React.Component {
           />
         }
 
-        {requiredPayment &&
+        {needToPay &&
           <PaymentForm
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
-            payee={requiredPayment.payee}
-            dueAmount={requiredPayment.amount}
+            payee={payment.payee}
+            dueAmount={payment.amount}
+          />
+        }
+
+        {isPayee &&
+          <PaymentInProgress
+            amount={payment.amount}
           />
         }
 
