@@ -25,6 +25,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 - [ ] Notification for each action
 - [ ] Rework on webpack for SCSS and CSS modules
 - [ ] Draw 5 cards when hand is empty
+- [ ] Winner notification
 - [ ] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
