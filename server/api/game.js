@@ -82,3 +82,11 @@ export function pay (req: AppRequest, res: express$Response) {
     .then(() => res.json('success'))
     .catch(err => handleError(err, res))
 }
+
+export function setWinner (req: AppRequest, res: express$Response) {
+  const promise = gameService.setWinner(req.params.id, req.body.winner);
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}

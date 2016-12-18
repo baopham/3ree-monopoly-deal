@@ -22,6 +22,8 @@ const JOIN_ERROR = ns('JOIN_ERROR')
 const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
 const END_TURN_REQUEST = ns('END_TURN_REQUEST')
 const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
+const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
+const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -84,6 +86,17 @@ function onGamePlayerChange (dispatch: Function, getState: Function, change: Soc
   }
 }
 
+function setWinner (winner: Username) {
+  return {
+    types: [SET_WINNER_REQUEST, SET_WINNER_SUCCESS, ERROR],
+    winner,
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      return request.put(`${gamesUrl}/${id}/winner`, { winner })
+    }
+  }
+}
+
 function onGameChange (dispatch, game) {
   dispatch({ type: UPDATE_GAME, payload: { game } })
 }
@@ -98,6 +111,7 @@ export const actions = {
   getGame,
   join,
   endTurn,
+  setWinner,
   subscribeSocket,
   unsubscribeSocket
 }
@@ -126,6 +140,7 @@ export default function reducer (state: CurrentGameState = initialState, action:
   switch (action.type) {
     case LOAD_REQUEST:
     case END_TURN_REQUEST:
+    case SET_WINNER_REQUEST:
       return requestActionHandler(state)
 
     case JOIN_REQUEST: {
@@ -189,6 +204,12 @@ export default function reducer (state: CurrentGameState = initialState, action:
           Object.assign(player, action.payload.player)
         }
       })
+      return nextState
+    }
+
+    case SET_WINNER_SUCCESS: {
+      const nextState = deepmerge(state)
+      nextState.game.winner = action.winner
       return nextState
     }
 

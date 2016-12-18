@@ -6,6 +6,7 @@ import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
 import PaymentInProgress from '../../components/PaymentInProgress'
+import WinnerNotification from '../../components/WinnerNotification'
 import { getCurrentPlayer, isPlayerTurn, getRequiredPayment } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
@@ -30,6 +31,7 @@ export class Game extends React.Component {
     drawCards: PropTypes.func.isRequired,
     discardCard: PropTypes.func.isRequired,
     flipCard: PropTypes.func.isRequired,
+    setWinner: PropTypes.func.isRequired,
     join: PropTypes.func.isRequired,
     pay: PropTypes.func.isRequired,
     endTurn: PropTypes.func.isRequired,
@@ -51,11 +53,6 @@ export class Game extends React.Component {
     }
   }
 
-  onWinning = () => {
-    // TODO
-    alert('YOU WIN')
-  }
-
   onPay = (cardsForPayment) => {
     const { pay, currentPlayer } = this.props
     pay(currentPlayer.username, cardsForPayment)
@@ -75,39 +72,45 @@ export class Game extends React.Component {
       discardCard,
       flipCard,
       isPlayerTurn,
+      setWinner,
       payment
     } = this.props
 
     const needToPay = currentPlayer && payment.amount && payment.payers && payment.payers.includes(currentPlayer.username)
     const isPayee = currentPlayer && !needToPay && payment.payee === currentPlayer.username
+    const gameHasAWinner = currentPlayer && !!game.winner
 
     return (
       <FullWidth fluid>
         <h2>Game: {game.name}</h2>
 
         {currentPlayer &&
-          <CardsOnHand
-            cardsOnHand={currentPlayerCards.cardsOnHand}
-            placedCards={currentPlayer.placedCards}
-            onPlaceCard={placeCard}
-            onPlayCard={playCard}
-            onDrawCards={drawCards}
-            onDiscardCard={discardCard}
-            onFlipCard={flipCard}
-            currentPlayer={currentPlayer}
-            isPlayerTurn={isPlayerTurn}
-          />
+          <div>
+            <CardsOnHand
+              cardsOnHand={currentPlayerCards.cardsOnHand}
+              placedCards={currentPlayer.placedCards}
+              onPlaceCard={placeCard}
+              onPlayCard={playCard}
+              onDrawCards={drawCards}
+              onDiscardCard={discardCard}
+              onFlipCard={flipCard}
+              currentPlayer={currentPlayer}
+              isPlayerTurn={isPlayerTurn}
+            />
+
+            <Board
+              game={game}
+              onEndTurn={endTurn}
+              onDrawCards={drawCards}
+              onWinning={setWinner}
+              isPlayerTurn={isPlayerTurn}
+              currentPlayer={currentPlayer}
+            />
+          </div>
         }
 
-        {currentPlayer &&
-          <Board
-            game={game}
-            onEndTurn={endTurn}
-            onDrawCards={drawCards}
-            onWinning={this.onWinning}
-            isPlayerTurn={isPlayerTurn}
-            currentPlayer={currentPlayer}
-          />
+        {!currentPlayer &&
+          <JoinForm onJoin={join} />
         }
 
         {needToPay &&
@@ -125,8 +128,11 @@ export class Game extends React.Component {
           />
         }
 
-        {!currentPlayer &&
-          <JoinForm onJoin={join} />
+        {gameHasAWinner &&
+          <WinnerNotification
+            winner={game.winner}
+            hasWon={currentPlayer.username === game.winner}
+          />
         }
       </FullWidth>
     )

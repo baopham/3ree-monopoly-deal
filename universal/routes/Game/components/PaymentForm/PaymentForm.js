@@ -114,7 +114,9 @@ export default class PaymentForm extends React.Component {
     return (
       <Modal show autoFocus bsSize='large'>
         <Modal.Header>
-          <Modal.Title>Payment</Modal.Title>
+          <Modal.Title>
+            Payment
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

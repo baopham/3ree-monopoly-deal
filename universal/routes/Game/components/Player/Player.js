@@ -7,6 +7,10 @@ export default class Player extends React.Component {
     onWinning: PropTypes.func.isRequired
   }
 
+  onWinning = () => {
+    this.props.onWinning(this.props.player.username)
+  }
+
   render () {
     const { player, onWinning } = this.props
 
@@ -14,7 +18,7 @@ export default class Player extends React.Component {
       <div>
         <PlacedCards
           cards={player.placedCards}
-          onWinning={onWinning}
+          onWinning={this.onWinning}
         />
       </div>
     )

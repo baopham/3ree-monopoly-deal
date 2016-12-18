@@ -29,8 +29,7 @@ export class GamesRoute extends React.Component {
 
   addGame = () => {
     this.props.addGame({
-      name: `Random Game ${new Date()}`,
-      winner: 'noone'
+      name: `Random Game ${new Date()}`
     })
   }
 
@@ -72,4 +71,3 @@ export default connect(
   mapStateToProps,
   actions
 )(GamesRoute)
-

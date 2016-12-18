@@ -71,4 +71,13 @@ export default class GameService {
       })
       .then(() => promiseContext.newPlayer)
   }
+
+  setWinner (gameId: string, winner: Username): Promise<*> {
+    return this.gameRepository
+      .find(gameId)
+      .then((game: Game) => {
+        game.winner = winner
+        return game.save()
+      })
+  }
 }

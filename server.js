@@ -47,6 +47,7 @@ app.put('/api/v1/games/:id/play', api.game.playCard)
 app.put('/api/v1/games/:id/flip', api.game.flipCard)
 app.put('/api/v1/games/:id/end-turn', api.game.endTurn)
 app.put('/api/v1/games/:id/pay', api.game.pay)
+app.put('/api/v1/games/:id/winner', api.game.setWinner)
 
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'static', 'images', 'favicon.ico')))
 app.use(express.static('static'))

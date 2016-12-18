@@ -19,18 +19,23 @@ export default class Properties extends React.Component {
     super(...args)
 
     this.propertySets = groupPropertiesIntoSets(this.props.properties)
+    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon && this.props.onWinning()
+  }
+
+  shouldComponentUpdate () {
+    return !this.hasWon
   }
 
   componentWillUpdate (nextProps) {
     this.propertySets = groupPropertiesIntoSets(nextProps.properties)
-
-    if (hasEnoughFullSetsToWin(this.propertySets)) {
-      this.props.onWinning()
-    }
+    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon && this.props.onWinning()
   }
 
   componentWillUnmount () {
-    this.propertySets = null
+    this.propertySets = []
+    this.hasWon = false
   }
 
   render () {
