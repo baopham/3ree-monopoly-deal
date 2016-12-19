@@ -150,8 +150,14 @@ export function cardRequiresPayment (cardKey: CardKey) {
   return false
 }
 
-export function cardPaymentAmount (cardKey: CardKey): number {
-  return getCardObject(cardKey).paymentAmount
+export function cardPaymentAmount (cardKey: CardKey, properties: CardKey[]): number {
+  const card = getCardObject(cardKey)
+
+  if (isRentCard(card)) {
+    // TODO
+  }
+
+  return card.paymentAmount
 }
 
 export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {

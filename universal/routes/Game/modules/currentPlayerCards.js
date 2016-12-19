@@ -85,7 +85,7 @@ function playCard (card) {
         const payers = currentGame.game.players
           .filter(player => player.username !== payee)
           .map(player => player.username)
-        const amount = cardPaymentAmount(card)
+        const amount = cardPaymentAmount(card, player.placedCards.properties)
         dispatch(paymentActions.requestForPayment(payee, payers, card, amount))
       }
     }
