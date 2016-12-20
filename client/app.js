@@ -6,6 +6,7 @@ import socketClient from 'socket.io-client'
 import routes from '../universal/routes'
 import store from '../universal/store'
 import Root from '../universal/containers/Root'
+import '../styles/main.styl'
 
 const history = syncHistoryWithStore(browserHistory, store)
 
@@ -15,4 +16,3 @@ ReactDOM.render(
   <Root store={store} routing={routes} history={history} />,
   document.getElementById('app')
 )
-

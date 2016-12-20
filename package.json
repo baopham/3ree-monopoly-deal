@@ -41,6 +41,7 @@
     "react": "15.0.x",
     "react-bootstrap": "^0.30.6",
     "react-dom": "15.0.x",
+    "react-modal": "^1.6.4",
     "react-redux": "5.0.x",
     "react-router": "2.4.x",
     "react-router-redux": "4.0.x",

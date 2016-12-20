@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Modal, Glyphicon } from 'react-bootstrap'
+import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
 export default class WinnerNotification extends React.Component {
   static propTypes = {
@@ -11,7 +12,7 @@ export default class WinnerNotification extends React.Component {
     const { winner, hasWon } = this.props
 
     return (
-      <Modal show>
+      <ScrollableBackgroundModal show>
         <Modal.Header>
           {hasWon &&
             <Modal.Title>
@@ -35,7 +36,7 @@ export default class WinnerNotification extends React.Component {
             }
           </h1>
         </Modal.Body>
-      </Modal>
+      </ScrollableBackgroundModal>
     )
   }
 }

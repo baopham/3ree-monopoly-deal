@@ -6,6 +6,7 @@ import {
 } from 'react-bootstrap'
 import Properties from '../Properties'
 import Card from '../Card'
+import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { totalAmount } from '../../../../monopoly/monopoly'
 
 export default class PaymentForm extends React.Component {
@@ -112,7 +113,7 @@ export default class PaymentForm extends React.Component {
     } = this.props
 
     return (
-      <Modal show autoFocus bsSize='large'>
+      <ScrollableBackgroundModal show>
         <Modal.Header>
           <Modal.Title>
             Payment
@@ -138,7 +139,7 @@ export default class PaymentForm extends React.Component {
             Pay
           </Button>
         </Modal.Footer>
-      </Modal>
+      </ScrollableBackgroundModal>
     )
   }
 }

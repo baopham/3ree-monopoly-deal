@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Modal } from 'react-bootstrap'
+import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
 export default class PaymentInProgress extends React.Component {
   static propTypes = {
@@ -10,15 +11,19 @@ export default class PaymentInProgress extends React.Component {
     const { amount } = this.props
 
     return (
-      <Modal show autoFocus>
+      <ScrollableBackgroundModal
+        show
+      >
         <Modal.Header>
-          Payment In Progress
+          <Modal.Title>
+            Payment In Progress
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <p>Please wait for other players to finish paying you ${amount}M</p>
         </Modal.Body>
-      </Modal>
+      </ScrollableBackgroundModal>
     )
   }
 }
