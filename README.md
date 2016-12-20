@@ -23,12 +23,20 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 
 - [ ] Collect all the card images
 - [ ] Notification for each action
-- [ ] Rework on webpack for SCSS and CSS modules
 - [ ] Draw 5 cards when hand is empty
+- [x] Show who played the last card
+- [x] Action counter
+- [x] Draw cards on PASS GO
+- [x] End turn when action counter reaches 3
 - [x] Winner notification
-- [ ] Modal allows background scrolling
+- [x] Modal allows background scrolling
 - [ ] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
   - [ ] Payment: handle when the payer does not have enough money to pay
   - [ ] Payment: rent
+  - [ ] Sly deal
+  - [ ] Forced deal
+  - [ ] Deal breaker
+- [ ] House
+- [ ] Hotel
