@@ -7,7 +7,7 @@ import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
 import PaymentInProgress from '../../components/PaymentInProgress'
 import WinnerNotification from '../../components/WinnerNotification'
-import { getCurrentPlayer, isPlayerTurn, getRequiredPayment } from '../../modules/gameSelectors'
+import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 import { actions as paymentActions } from '../../modules/payment'
@@ -76,8 +76,8 @@ export class Game extends React.Component {
       payment
     } = this.props
 
-    const needToPay = currentPlayer && payment.amount && payment.payers && payment.payers.includes(currentPlayer.username)
-    const isPayee = currentPlayer && !needToPay && payment.payee === currentPlayer.username
+    const isPayee = currentPlayer && payment.amount && payment.payee === currentPlayer.username
+    const needToPay = !isPayee && payment.payers && payment.payers.includes(currentPlayer.username)
     const gameHasAWinner = currentPlayer && !!game.winner
 
     return (

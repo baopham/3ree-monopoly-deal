@@ -12,7 +12,7 @@ export default class Player extends React.Component {
   }
 
   render () {
-    const { player, onWinning } = this.props
+    const { player } = this.props
 
     return (
       <div>

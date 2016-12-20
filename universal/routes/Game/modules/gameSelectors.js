@@ -1,10 +1,8 @@
 /* @flow */
 import { createSelector } from 'reselect'
 import type { CurrentGameState } from './currentGame'
-import type { PaymentState } from './payment'
 
 const getCurrentGame = (state) => state.currentGame
-const getPayment = (state) => state.payment
 
 export const getCurrentPlayer = createSelector(
   [getCurrentGame],
@@ -27,13 +25,5 @@ export const isPlayerTurn = createSelector(
       currentGame.game &&
       currentGame.game.currentTurn &&
       currentGame.game.currentTurn === currentPlayer.username
-  }
-)
-
-export const getRequiredPayment = createSelector(
-  [getCurrentGame, getCurrentGame, getPayment],
-  (currentGame: CurrentGameState, currentPlayer: Player, payment: PaymentState) => {
-    const needToPay = payment.amount && payment.payers && payment.payers.includes(currentPlayer.username)
-    return needToPay ? payment : null
   }
 )

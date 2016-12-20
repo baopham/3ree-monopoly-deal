@@ -4,12 +4,11 @@ import Modal from 'react-modal'
 export default class ScrollableBackgroundModal extends React.Component {
   static propTypes = {
     show: PropTypes.bool,
-    customStyle: PropTypes.object,
     children: PropTypes.arrayOf(PropTypes.element)
   }
 
   render () {
-    const { show, customStyle, children } = this.props
+    const { show, children } = this.props
 
     return (
       <Modal
