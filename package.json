@@ -8,8 +8,8 @@
     "db:setup": "node dbSetup.babel.js",
     "lint": "eslint client server universal test server.js dbSetup.js",
     "lint:fix": "npm run lint -- --fix",
-    "start": "NODE_ENV=development nodemon start-dev.js --ignore dist --ignore client",
-    "start:prod": "NODE_ENV=production nodemon server.babel.js --ignore dist --ignore client",
+    "start": "NODE_ENV=development nodemon start-dev.js --ignore dist --ignore client --ignore universal",
+    "start:prod": "NODE_ENV=production nodemon server.babel.js --ignore dist --ignore client --ignore universal",
     "test": "karma start",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
