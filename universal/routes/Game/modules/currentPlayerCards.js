@@ -3,6 +3,7 @@ import * as request from '../../../request-util'
 import { PASS_GO } from '../../../monopoly/cards'
 import { cardRequiresPayment, cardPaymentAmount } from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
+import { getCurrentPlayer } from './gameSelectors'
 
 function ns (value) {
   return namespace('PLAYER', value)
@@ -46,7 +47,7 @@ function discardCard (card) {
     card,
     promise: (dispatch, getState) => {
       const currentGame = getState().currentGame
-      const username = currentGame.username
+      const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/discard`, { username, card })
     }
   }
@@ -58,7 +59,7 @@ function placeCard (card, asMoney = false) {
     card,
     promise: (dispatch, getState) => {
       const currentGame = getState().currentGame
-      const username = currentGame.username
+      const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney })
     }
   }
@@ -71,22 +72,25 @@ function playCard (card) {
     })
 
     const currentGame = getState().currentGame
-    const username = currentGame.username
+    const currentPlayer = getCurrentPlayer(getState())
 
     return request
-      .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username })
+      .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username: currentPlayer.username })
       .then(handleSuccessRequest, handleErrorRequest)
 
     function handleSuccessRequest (res) {
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
       card === PASS_GO && dispatch(drawCards())
+
       if (cardRequiresPayment(card)) {
-        const payee = username
-        const payers = currentGame.game.players
-          .filter(player => player.username !== payee)
-          .map(player => player.username)
-        const amount = cardPaymentAmount(card, player.placedCards.properties)
-        dispatch(paymentActions.requestForPayment(payee, payers, card, amount))
+        const payee: Player = currentGame.game.players.find(player => player.username === currentPlayer.username)
+
+        const payers: Player[] = currentGame.game.players
+          .filter(player => player.username !== payee.username)
+
+        const amount = cardPaymentAmount(card, payee.placedCards.properties)
+
+        dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
     }
 
@@ -102,7 +106,7 @@ function flipCard (card) {
     card,
     promise: (dispatch, getState) => {
       const currentGame = getState().currentGame
-      const username = currentGame.username
+      const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/flip`, { card, username })
     }
   }
