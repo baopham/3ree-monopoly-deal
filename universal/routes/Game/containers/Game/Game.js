@@ -5,13 +5,14 @@ import JoinForm from '../../components/JoinForm'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
+import AutoPaymentAlert from '../../components/AutoPaymentAlert'
 import PaymentInProgress from '../../components/PaymentInProgress'
 import WinnerNotification from '../../components/WinnerNotification'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 import { actions as paymentActions } from '../../modules/payment'
-import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
+import { MAX_NUMBER_OF_ACTIONS, getTotalCardValue } from '../../../../monopoly/monopoly'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -58,8 +59,14 @@ export class Game extends React.Component {
     pay(currentPlayer.username, cardsForPayment)
   }
 
+  payerHasNotEnoughMoney () {
+    const { currentPlayer, payment } = this.props
+    const { placedCards } = currentPlayer
+    const totalAmount = getTotalCardValue(placedCards.bank) + getTotalCardValue(placedCards.properties)
+    return totalAmount > 0 && totalAmount <= payment.amount
+  }
+
   render () {
-    // TODO: handle when player does not have enough to pay -> take all their cards?
     const {
       game,
       currentPlayer,
@@ -77,7 +84,8 @@ export class Game extends React.Component {
     } = this.props
 
     const isPayee = currentPlayer && payment.amount && payment.payee === currentPlayer.username
-    const needToPay = !isPayee && payment.payers && payment.payers.includes(currentPlayer.username)
+    const needToPay = currentPlayer && !isPayee && payment.payers && payment.payers.includes(currentPlayer.username)
+    const needToPayButNotEnoughMoney = needToPay && this.payerHasNotEnoughMoney()
     const gameHasAWinner = currentPlayer && !!game.winner
 
     return (
@@ -113,8 +121,17 @@ export class Game extends React.Component {
           <JoinForm onJoin={join} />
         }
 
-        {needToPay &&
+        {needToPay && !needToPayButNotEnoughMoney &&
           <PaymentForm
+            onPay={this.onPay}
+            cards={currentPlayer.placedCards}
+            payee={payment.payee}
+            dueAmount={payment.amount}
+          />
+        }
+
+        {needToPayButNotEnoughMoney &&
+          <AutoPaymentAlert
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
             payee={payment.payee}

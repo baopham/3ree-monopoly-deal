@@ -33,7 +33,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 - [ ] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
-  - [ ] Payment: handle when the payer does not have enough money to pay
+  - [x] Payment: handle when the payer does not have enough money to pay
   - [ ] Payment: rent
   - [ ] Sly deal
   - [ ] Forced deal
