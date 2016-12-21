@@ -182,8 +182,12 @@ export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
   return fullSetIdentifiersOfDifferentColors.length >= NUMBER_OF_FULL_SETS_TO_WIN
 }
 
-export function getTotalCardValue (cardKeys: CardKey[]): number {
+export function getTotalMoneyFromCards (cardKeys: CardKey[]): number {
   return cardKeys.reduce((acc, cardKey) => acc + getCardObject(cardKey).value, 0)
+}
+
+export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number {
+  return getTotalMoneyFromCards(placedCards.bank) + getTotalMoneyFromCards(placedCards.properties)
 }
 
 export function getMoneyCards (cardKeys: CardKey[]): CardKey[] {

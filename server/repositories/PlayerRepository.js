@@ -97,10 +97,9 @@ export default class PlayerRepository {
       })
   }
 
-  getAllPlayerUsernames (gameId) {
+  getAllPlayers (gameId) {
     return Player
       .filter({ gameId })
       .run()
-      .then(players => players.map(p => p.username))
   }
 }

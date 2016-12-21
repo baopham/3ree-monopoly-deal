@@ -7,7 +7,7 @@ import {
 import Properties from '../Properties'
 import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import { getTotalCardValue } from '../../../../monopoly/monopoly'
+import { getTotalMoneyFromCards } from '../../../../monopoly/monopoly'
 
 export default class PaymentForm extends React.Component {
   static propTypes = {
@@ -102,7 +102,7 @@ export default class PaymentForm extends React.Component {
   }
 
   getAmountSelected () {
-    return getTotalCardValue(this.state.selectedCards.map(([card, index]) => card))
+    return getTotalMoneyFromCards(this.state.selectedCards.map(([card, index]) => card))
   }
 
   render () {

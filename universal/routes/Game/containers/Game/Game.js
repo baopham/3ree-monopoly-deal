@@ -12,7 +12,7 @@ import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 import { actions as paymentActions } from '../../modules/payment'
-import { MAX_NUMBER_OF_ACTIONS, getTotalCardValue } from '../../../../monopoly/monopoly'
+import { MAX_NUMBER_OF_ACTIONS, getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -62,7 +62,7 @@ export class Game extends React.Component {
   payerHasNotEnoughMoney () {
     const { currentPlayer, payment } = this.props
     const { placedCards } = currentPlayer
-    const totalAmount = getTotalCardValue(placedCards.bank) + getTotalCardValue(placedCards.properties)
+    const totalAmount = getTotalMoneyFromPlacedCards(placedCards)
     return totalAmount > 0 && totalAmount <= payment.amount
   }
 

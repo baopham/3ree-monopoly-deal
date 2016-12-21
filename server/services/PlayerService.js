@@ -38,11 +38,11 @@ export default class PlayerService {
     ]
 
     if (cardRequiresPayment) {
-      promises.push(this.playerRepository.getAllPlayerUsernames(gameId))
+      promises.push(this.playerRepository.getAllPlayers(gameId))
     }
 
     return Promise.all(promises)
-      .then(([player: Player, usernames: Username[]]) => {
+      .then(([player: Player, players: Player[]]) => {
         player.game.lastCardPlayedBy = username
         player.game.discardedCards.push(cardKey)
         player.actionCounter = player.actionCounter + 1
@@ -51,7 +51,9 @@ export default class PlayerService {
           player.payeeInfo = {
             cardPlayed: cardKey,
             amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.properties),
-            payers: usernames.filter(u => u !== username)
+            payers: players
+              .filter(p => p.username !== username && monopoly.getTotalMoneyFromPlacedCards(p.placedCards) > 0)
+              .map(p => p.username)
           }
         }
 
