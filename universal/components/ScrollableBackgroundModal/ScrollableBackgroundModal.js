@@ -15,6 +15,7 @@ export default class ScrollableBackgroundModal extends React.Component {
         shouldCloseOnOverlayClick={false}
         isOpen={show}
         className='modal-dialog'
+        contentLabel='Modal'
       >
         <div className='modal-content'>
           {children}
