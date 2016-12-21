@@ -6,6 +6,7 @@ type Card = {
   key: string,
   paymentAmount: number,
   needs: number,
+  rent: number[],
   forCards: string[],
   treatAs: string,
   flipTo: string

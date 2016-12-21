@@ -34,7 +34,8 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
   - [x] Payment: handle when the payer does not have enough money to pay
-  - [ ] Payment: rent
+  - [x] Payment: rent
+  - [ ] Payment: target rent
   - [ ] Sly deal
   - [ ] Forced deal
   - [ ] Deal breaker

@@ -1,4 +1,11 @@
 /* @flow */
+import {
+  HOUSE,
+  HOTEL,
+  RENT_ALL_COLOUR
+} from './cards'
+import { getCardObject } from './monopoly'
+
 export default class PropertySet {
   identifier: CardKey
   properties: CardKey[]
@@ -11,6 +18,7 @@ export default class PropertySet {
   }
 
   addProperty (property: CardKey): boolean {
+    // TODO house, hotel
     if (this.isFullSet()) {
       return false
     }
@@ -25,5 +33,15 @@ export default class PropertySet {
 
   isFullSet (): boolean {
     return this.properties.length === this.numberOfPropertiesRequired
+  }
+
+  getRentAmount () {
+    const card = getCardObject(this.identifier)
+    const numberOfProperties = this.properties.filter(p => p !== HOUSE && p !== HOTEL).length
+    return card.rent[numberOfProperties - 1]
+  }
+
+  isRentable (rentCard: Card) {
+    return rentCard.key === RENT_ALL_COLOUR || rentCard.forCards.includes(this.identifier)
   }
 }

@@ -159,6 +159,7 @@ export const CARDS: MapOfCards = setKey({
     count: 2,
     value: 1,
     needs: 2,
+    rent: [1, 2],
     image: '/images/cards/property-brown.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -167,6 +168,7 @@ export const CARDS: MapOfCards = setKey({
     count: 2,
     value: 4,
     needs: 2,
+    rent: [3, 8],
     image: '/images/cards/property-blue.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -175,6 +177,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 4,
     needs: 3,
+    rent: [2, 4, 7],
     image: '/images/cards/property-green.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -183,6 +186,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 1,
     needs: 3,
+    rent: [1, 2, 3],
     image: '/images/cards/property-light-blue.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -191,6 +195,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 2,
     needs: 3,
+    rent: [1, 3, 5],
     image: '/images/cards/property-orange.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -199,6 +204,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 2,
     needs: 3,
+    rent: [1, 2, 4],
     image: '/images/cards/property-pink.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -207,6 +213,7 @@ export const CARDS: MapOfCards = setKey({
     count: 4,
     value: 2,
     needs: 4,
+    rent: [1, 2, 3, 4],
     image: '/images/cards/property-black.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -215,6 +222,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 3,
     needs: 3,
+    rent: [2, 3, 6],
     image: '/images/cards/property-red.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -223,6 +231,7 @@ export const CARDS: MapOfCards = setKey({
     count: 3,
     value: 3,
     needs: 3,
+    rent: [2, 4, 6],
     image: '/images/cards/property-yellow.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -231,6 +240,7 @@ export const CARDS: MapOfCards = setKey({
     count: 2,
     value: 2,
     needs: 2,
+    rent: [1, 2],
     image: '/images/cards/property-light-green.png',
     type: PROPERTY_CARD_TYPE
   },

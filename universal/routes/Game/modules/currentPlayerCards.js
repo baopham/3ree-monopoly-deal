@@ -1,7 +1,8 @@
+/* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { PASS_GO } from '../../../monopoly/cards'
-import { cardRequiresPayment, cardPaymentAmount } from '../../../monopoly/monopoly'
+import { cardRequiresPayment, getCardPaymentAmount } from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
 
@@ -34,18 +35,18 @@ const ERROR = ns('ERROR')
 function drawCards () {
   return {
     types: [DRAW_CARDS_REQUEST, DRAW_CARDS_SUCCESS, ERROR],
-    promise: (dispatch, getState) => {
+    promise: (dispatch: Function, getState: Function) => {
       const gameId = getState().currentGame.game.id
       return request.get(`${gamesUrl}/${gameId}/draw`)
     }
   }
 }
 
-function discardCard (card) {
+function discardCard (card: CardKey) {
   return {
     types: [DISCARD_CARD_REQUEST, DISCARD_CARD_SUCCESS, ERROR],
     card,
-    promise: (dispatch, getState) => {
+    promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/discard`, { username, card })
@@ -53,11 +54,11 @@ function discardCard (card) {
   }
 }
 
-function placeCard (card, asMoney = false) {
+function placeCard (card: CardKey, asMoney: bool = false) {
   return {
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
-    promise: (dispatch, getState) => {
+    promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney })
@@ -65,8 +66,8 @@ function placeCard (card, asMoney = false) {
   }
 }
 
-function playCard (card) {
-  return (dispatch, getState) => {
+function playCard (card: CardKey) {
+  return (dispatch: Function, getState: Function) => {
     dispatch({
       type: PLAY_CARD_REQUEST
     })
@@ -88,7 +89,7 @@ function playCard (card) {
         const payers: Player[] = currentGame.game.players
           .filter(player => player.username !== payee.username)
 
-        const amount = cardPaymentAmount(card, payee.placedCards.properties)
+        const amount = getCardPaymentAmount(card, payee.placedCards.properties)
 
         dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
@@ -100,11 +101,11 @@ function playCard (card) {
   }
 }
 
-function flipCard (card) {
+function flipCard (card: CardKey) {
   return {
     types: [FLIP_CARD_REQUEST, FLIP_CARD_SUCCESS, ERROR],
     card,
-    promise: (dispatch, getState) => {
+    promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${currentGame.game.id}/flip`, { card, username })
@@ -123,15 +124,21 @@ export const actions = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
+export type CurrentPlayerCardsState = {
+  cardsOnHand: CardKey[],
+  isWorking: bool,
+  error: mixed
+}
+
+const initialState: CurrentPlayerCardsState = {
   cardsOnHand: [],
   isWorking: false,
   error: null
 }
 
-const requestActionHandler = (state) => deepmerge(state, { isWorking: true, error: null })
+const requestActionHandler = (state: CurrentPlayerCardsState) => deepmerge(state, { isWorking: true, error: null })
 
-export default function reducer (state = initialState, action) {
+export default function reducer (state: CurrentPlayerCardsState = initialState, action: ReduxAction) {
   switch (action.type) {
     case DRAW_CARDS_REQUEST:
     case DISCARD_CARD_REQUEST:

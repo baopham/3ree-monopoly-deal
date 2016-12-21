@@ -70,7 +70,7 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
 export function canFlipCard (cardKeyOrCard: CardKeyOrCard): boolean {
   const card = getCardObject(cardKeyOrCard)
 
-  return card.type === PROPERTY_WILDCARD_TYPE
+  return card.type === PROPERTY_WILDCARD_TYPE && card.key !== PROPERTY_WILDCARD
 }
 
 export function flipCard (cardKeyOrCard: CardKeyOrCard): CardKey {
@@ -150,14 +150,24 @@ export function cardRequiresPayment (cardKey: CardKey) {
   return false
 }
 
-export function cardPaymentAmount (cardKey: CardKey, properties: CardKey[]): number {
+export function getCardPaymentAmount (cardKey: CardKey, properties: CardKey[]): number {
   const card = getCardObject(cardKey)
 
-  if (isRentCard(card)) {
-    // TODO
+  if (!isRentCard(card)) {
+    return card.paymentAmount
   }
 
-  return card.paymentAmount
+  const propertySets = groupPropertiesIntoSets(properties)
+  const maxRentableAmount = propertySets.reduce((acc, set) => {
+    if (set.isRentable(card)) {
+      const rentAmount = set.getRentAmount()
+      return rentAmount > acc ? rentAmount : acc
+    }
+
+    return acc
+  }, 0)
+
+  return maxRentableAmount
 }
 
 export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
