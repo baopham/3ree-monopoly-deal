@@ -13,6 +13,11 @@
     "test": "karma start",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
+  "pre-push": [
+    "test",
+    "lint",
+    "flow"
+  ],
   "keywords": [
     "react",
     "3ree",
@@ -102,6 +107,7 @@
     "nock": "8.0.x",
     "node-libs-browser": "1.0.x",
     "phantomjs-prebuilt": "2.1.x",
+    "pre-push": "^0.1.1",
     "raw-loader": "0.5.x",
     "react-hot-loader": "1.3.x",
     "react-transform-hmr": "1.0.x",
