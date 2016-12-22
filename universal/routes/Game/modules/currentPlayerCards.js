@@ -54,7 +54,7 @@ function discardCard (card: CardKey) {
   }
 }
 
-function placeCard (card: CardKey, asMoney: bool = false) {
+function placeCard (card: CardKey, asMoney: boolean = false) {
   return {
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
@@ -126,7 +126,7 @@ export const actions = {
 // ------------------------------------
 export type CurrentPlayerCardsState = {
   cardsOnHand: CardKey[],
-  isWorking: bool,
+  isWorking: boolean,
   error: mixed
 }
 

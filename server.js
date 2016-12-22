@@ -5,7 +5,6 @@ import compress from 'compression'
 import http from 'http'
 import socketIO from 'socket.io'
 import config from 'config'
-import api from './server/api'
 import setupRealtime from './server/real-time'
 import * as uni from './server/app'
 
@@ -37,11 +36,11 @@ if (process.env.NODE_ENV === 'development') {
   console.log('Enabling webpack dev and HMR middleware')
 
   app.use(require('webpack-dev-middleware')(compiler, {
-    publicPath  : webpackConfig.output.publicPath,
-    hot         : true,
-    quiet       : true,
-    noInfo      : true,
-    lazy        : false
+    publicPath: webpackConfig.output.publicPath,
+    hot: true,
+    quiet: true,
+    noInfo: true,
+    lazy: false
   }))
   app.use(require('webpack-hot-middleware')(compiler))
 
@@ -52,7 +51,7 @@ if (process.env.NODE_ENV === 'development') {
   watcher.on('ready', () => {
     watcher.on('all', () => {
       Object.keys(require.cache).forEach((id) => {
-        if (/[\/\\]server[\/\\]/.test(id) || /[\/\\]universal[\/\\]/.test(id)) {
+        if (id.includes('/server/') || id.includes('/universal/')) {
           delete require.cache[id]
         }
       })
