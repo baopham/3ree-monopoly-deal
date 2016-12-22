@@ -18,7 +18,8 @@
     "3ree",
     "rethinkdb",
     "redux",
-    "webpack"
+    "webpack",
+    "monopoly"
   ],
   "license": "MIT",
   "engines": {
@@ -34,7 +35,6 @@
     "express": "4.13.x",
     "history": "1.13.x",
     "lodash": "^4.16.6",
-    "lodash.mergewith": "^4.6.0",
     "moment": "2.11.x",
     "nib": "^1.1.x",
     "node-uuid": "1.4.x",
