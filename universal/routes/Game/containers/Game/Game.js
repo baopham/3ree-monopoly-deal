@@ -63,7 +63,7 @@ export class Game extends React.Component {
     const { currentPlayer, payment } = this.props
     const { placedCards } = currentPlayer
     const totalAmount = getTotalMoneyFromPlacedCards(placedCards)
-    return totalAmount > 0 && totalAmount <= payment.amount
+    return totalAmount <= payment.amount
   }
 
   render () {

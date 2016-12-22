@@ -5,6 +5,7 @@ import {
   Alert,
   Button
 } from 'react-bootstrap'
+import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 
 const INITIAL_COUNTER = 10
 const INTERVAL_DELAY = 1000
@@ -53,8 +54,9 @@ export default class AutoPaymentAlert extends React.Component {
   }
 
   render () {
-    const { payee, dueAmount } = this.props
+    const { payee, dueAmount, cards } = this.props
     const { counter } = this.state
+    const hasNoMoney = getTotalMoneyFromPlacedCards(cards) === 0
 
     return (
       <ScrollableBackgroundModal show>
@@ -67,16 +69,30 @@ export default class AutoPaymentAlert extends React.Component {
         <Modal.Body>
           <p>You don't have enough money to pay <strong>{payee}</strong> ${dueAmount}M :(</p>
 
-          <Alert bsStyle='warning'>
-            Giving all your cards to <strong>{payee}</strong> in {counter} seconds
-          </Alert>
+          {!hasNoMoney &&
+            <Alert bsStyle='warning'>
+              Giving all your cards to <strong>{payee}</strong> in {counter} seconds
+            </Alert>
+          }
+
+          {hasNoMoney &&
+            <Alert bsStyle='info'>
+              This will close in {counter} seconds
+            </Alert>
+          }
         </Modal.Body>
 
         <Modal.Footer>
           <Button
             onClick={this.pay}
           >
-            Give all cards now!
+            {!hasNoMoney &&
+              ('Give all cards now!')
+            }
+
+            {hasNoMoney &&
+              ('Close')
+            }
           </Button>
         </Modal.Footer>
       </ScrollableBackgroundModal>
