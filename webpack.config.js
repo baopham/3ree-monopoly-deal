@@ -7,20 +7,22 @@ var config = require('config')
 
 var entry, output, plugins, loaders
 
+const port = config.get('express.port') || 3000
+
 if (process.env.NODE_ENV === 'development') {
   entry = [
-    'webpack-dev-server/client?http://localhost:3001',
-    'webpack/hot/only-dev-server',
+    'webpack-hot-middleware/client',
     'babel-polyfill',
     './client/app'
   ]
   output = {
     path: path.join(__dirname, [ '/', config.get('buildDirectory') ].join('')),
     filename: 'bundle.js',
-    publicPath: 'http://localhost:3001/'
+    publicPath: `http://localhost:${port}/`
   }
   plugins = [
     new webpack.DefinePlugin({ __DEV__: true }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ]

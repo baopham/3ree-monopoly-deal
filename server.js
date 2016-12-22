@@ -5,7 +5,6 @@ import compress from 'compression'
 import http from 'http'
 import socketIO from 'socket.io'
 import config from 'config'
-
 import api from './server/api'
 import setupRealtime from './server/real-time'
 import * as uni from './server/app'
@@ -13,7 +12,6 @@ import * as uni from './server/app'
 const app = express()
 const httpServer = http.createServer(app)
 const port = config.get('express.port') || 3000
-
 const io = socketIO(httpServer)
 
 app.set('views', path.join(__dirname, 'server', 'views'))
@@ -30,25 +28,44 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 
 /**
+ * Apply Webpack HMR Middleware and clear require cache on server code changes
+ */
+if (process.env.NODE_ENV === 'development') {
+  const webpackConfig = require('./webpack.config')
+  const compiler = require('webpack')(webpackConfig)
+
+  console.log('Enabling webpack dev and HMR middleware')
+
+  app.use(require('webpack-dev-middleware')(compiler, {
+    publicPath  : webpackConfig.output.publicPath,
+    hot         : true,
+    quiet       : true,
+    noInfo      : true,
+    lazy        : false
+  }))
+  app.use(require('webpack-hot-middleware')(compiler))
+
+  console.log('Watching server/universal files')
+
+  const chokidar = require('chokidar')
+  const watcher = chokidar.watch(['./server', './universal'])
+  watcher.on('ready', () => {
+    watcher.on('all', () => {
+      Object.keys(require.cache).forEach((id) => {
+        if (/[\/\\]server[\/\\]/.test(id) || /[\/\\]universal[\/\\]/.test(id)) {
+          delete require.cache[id]
+        }
+      })
+    })
+  })
+}
+
+/**
  * API Endpoints
  */
-app.get('/api/v1/games', api.games.getGames)
-app.get('/api/v1/games/:id', api.games.getGame)
-app.post('/api/v1/games', api.games.addGame)
-app.post('/api/v1/games/:id', api.games.updateGame)
-app.delete('/api/v1/games/:id', api.games.deleteGame)
-
-app.post('/api/v1/games/:id/join', api.game.joinGame)
-app.put('/api/v1/games/:id', api.game.endTurn)
-app.get('/api/v1/games/:id/draw', api.game.drawCards)
-app.put('/api/v1/games/:id/discard', api.game.discardCard)
-app.put('/api/v1/games/:id/place', api.game.placeCard)
-app.put('/api/v1/games/:id/play', api.game.playCard)
-app.put('/api/v1/games/:id/flip', api.game.flipCard)
-app.put('/api/v1/games/:id/end-turn', api.game.endTurn)
-app.put('/api/v1/games/:id/pay', api.game.pay)
-app.put('/api/v1/games/:id/winner', api.game.setWinner)
-
+app.use((req, res, next) => {
+  require('./server/api')(req, res, next)
+})
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'static', 'images', 'favicon.ico')))
 app.use(express.static('static'))
 
