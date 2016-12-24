@@ -70,7 +70,7 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
 export function canFlipCard (cardKeyOrCard: CardKeyOrCard): boolean {
   const card = getCardObject(cardKeyOrCard)
 
-  return card.type === PROPERTY_WILDCARD_TYPE && card.key !== PROPERTY_WILDCARD
+  return card.type === PROPERTY_WILDCARD_TYPE
 }
 
 export function flipCard (cardKeyOrCard: CardKeyOrCard): CardKey {

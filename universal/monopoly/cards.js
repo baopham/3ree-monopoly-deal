@@ -5,6 +5,7 @@
 export const ACTION_CARD_TYPE = 'ACTION_CARD_TYPE'
 export const PROPERTY_CARD_TYPE = 'PROPERTY_CARD_TYPE'
 export const PROPERTY_WILDCARD_TYPE = 'PROPERTY_WILDCARD_TYPE'
+export const PROPERTY_WILDCARD_ALL_COLOUR_TYPE = 'PROPERTY_WILDCARD_ALL_COLOUR_TYPE'
 export const RENT_CARD_TYPE = 'RENT_CARD_TYPE'
 export const MONEY_CARD_TYPE = 'MONEY_CARD_TYPE'
 
@@ -249,7 +250,7 @@ export const CARDS: MapOfCards = setKey({
     count: 2,
     value: 0,
     image: '/images/cards/property-wildcard.png',
-    type: PROPERTY_WILDCARD_TYPE
+    type: PROPERTY_WILDCARD_ALL_COLOUR_TYPE
   },
 
   [PROPERTY_GREEN_OR_BLUE]: {
