@@ -196,3 +196,7 @@ export function getMoneyCards (cardKeys: CardKey[]): CardKey[] {
 export function getPropertyCards (cardKeys: CardKey[]): CardKey[] {
   return cardKeys.filter(cardKey => !isMoneyCard(cardKey) && !isActionCard(cardKey))
 }
+
+function unserializePropertySet (serializedItem: SerializedPropertySets): PropertySet {
+  return new PropertySet(serializedItem.identifier, serializedItem.cards)
+}

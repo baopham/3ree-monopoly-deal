@@ -4,6 +4,7 @@ type Player = {
   gameId: string,
   actionCounter: number,
   placedCards: PlacedCards,
+  propertySets: SerializedPropertySets[],
   game: Game,
   payeeInfo: PayeeInfo,
   save: Function,
