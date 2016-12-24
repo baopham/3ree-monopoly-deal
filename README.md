@@ -45,3 +45,4 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 - [ ] House
 - [ ] Hotel
 - [ ] Double rent
+- [ ] Debt collector
