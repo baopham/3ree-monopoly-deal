@@ -2,6 +2,7 @@
 import GameRepository from '../repositories/GameRepository'
 import PlayerRepository from '../repositories/PlayerRepository'
 import { newDeck } from '../../universal/monopoly/cards'
+import * as monopoly from '../../universal/monopoly/monopoly'
 
 export default class GameService {
   gameRepository: GameRepository
@@ -73,11 +74,18 @@ export default class GameService {
   }
 
   setWinner (gameId: string, winner: Username): Promise<*> {
-    return this.gameRepository
-      .find(gameId)
-      .then((game: Game) => {
-        game.winner = winner
-        return game.save()
+    return this.playerRepository
+      .findByGameIdAndUsername(gameId, winner)
+      .then((player: Player) => {
+        const propertySets = monopoly.groupPropertiesIntoSets(player.placedCards.properties)
+
+        if (!monopoly.hasEnoughFullSetsToWin(propertySets)) {
+          return Promise.reject(`${winner} does not have enough full sets to win!`)
+        }
+
+        player.game.winner = winner
+
+        return player.game.save()
       })
   }
 }
