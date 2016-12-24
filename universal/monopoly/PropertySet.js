@@ -9,12 +9,10 @@ import {
 export default class PropertySet {
   identifier: Card
   cards: CardKey[]
-  numberOfPropertiesRequired: number
 
   constructor (identifier: Card, cards: CardKey[]) {
     this.identifier = identifier
     this.cards = cards
-    this.numberOfPropertiesRequired = identifier.needs
   }
 
   addCard (card: CardKey): boolean {
@@ -43,7 +41,7 @@ export default class PropertySet {
   }
 
   isFullSet (): boolean {
-    return this.getProperties().length === this.numberOfPropertiesRequired
+    return this.getProperties().length === this.identifier.needs
   }
 
   getRentAmount () {
