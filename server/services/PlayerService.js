@@ -130,6 +130,7 @@ export default class PlayerService {
   }
 
   pay (gameId: string, payer: Username, payee: Username, cardsForPayment: CardKey[]): Promise<*> {
+    // TODO: what if we have a set that has a house/hotel card?
     const moneyCards = monopoly.getMoneyCards(cardsForPayment)
     const propertyCards = monopoly.getPropertyCards(cardsForPayment)
     const promises = [
