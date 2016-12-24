@@ -103,8 +103,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   // Property sets (without using wildcards)
   groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
     const treatAsCard = getCardObject(treatAs)
-    const numberOfPropertiesRequired = treatAsCard.needs
-    let set = new PropertySet(treatAsCard, [], numberOfPropertiesRequired)
+    let set = new PropertySet(treatAsCard, [])
     sets.push(set)
 
     cardKeys.forEach(cardKey => {
@@ -112,7 +111,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
         return
       }
 
-      set = new PropertySet(treatAsCard, [], numberOfPropertiesRequired)
+      set = new PropertySet(treatAsCard, [])
       sets.push(set)
       set.addCard(cardKey)
     })

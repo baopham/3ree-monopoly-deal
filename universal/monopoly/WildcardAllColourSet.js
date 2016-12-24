@@ -7,7 +7,7 @@ export default class WildcardAllColourSet extends PropertySet {
   numberOfPropertiesRequired: number
 
   constructor (identifier: Card, properties: CardKey[]) {
-    super(identifier, properties, 0)
+    super(identifier, properties)
     this.identifier = identifier
     this.properties = properties
   }

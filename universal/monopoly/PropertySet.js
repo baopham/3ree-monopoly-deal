@@ -11,10 +11,10 @@ export default class PropertySet {
   cards: CardKey[]
   numberOfPropertiesRequired: number
 
-  constructor (identifier: Card, cards: CardKey[], numberOfPropertiesRequired: number) {
+  constructor (identifier: Card, cards: CardKey[]) {
     this.identifier = identifier
     this.cards = cards
-    this.numberOfPropertiesRequired = numberOfPropertiesRequired
+    this.numberOfPropertiesRequired = identifier.needs
   }
 
   addCard (card: CardKey): boolean {
