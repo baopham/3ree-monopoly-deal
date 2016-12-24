@@ -32,6 +32,7 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 - [x] Modal allows background scrolling
 - [x] Use flow types in React components
 - [ ] Allow player to move wildcard to a particular property group
+- [ ] Player can minimize the modal
 - [ ] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
