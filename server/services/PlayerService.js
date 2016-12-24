@@ -50,7 +50,7 @@ export default class PlayerService {
         if (cardRequiresPayment) {
           player.payeeInfo = {
             cardPlayed: cardKey,
-            amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.properties),
+            amount: monopoly.getCardPaymentAmount(cardKey, player.propertySets),
             payers: players
               .filter(p => p.username !== username)
               .map(p => p.username)

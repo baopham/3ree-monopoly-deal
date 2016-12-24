@@ -149,15 +149,16 @@ export function cardRequiresPayment (cardKey: CardKey) {
   return false
 }
 
-export function getCardPaymentAmount (cardKey: CardKey, properties: CardKey[]): number {
+export function getCardPaymentAmount (cardKey: CardKey, propertySets: SerializedPropertySets[]): number {
   const card = getCardObject(cardKey)
 
   if (!isRentCard(card)) {
     return card.paymentAmount
   }
 
-  const propertySets = groupPropertiesIntoSets(properties)
-  const maxRentableAmount = propertySets.reduce((acc, set) => {
+  const maxRentableAmount = propertySets.reduce((acc, item) => {
+    const set = unserializePropertySet(item)
+
     if (set.isRentable(card)) {
       const rentAmount = set.getRentAmount()
       return rentAmount > acc ? rentAmount : acc

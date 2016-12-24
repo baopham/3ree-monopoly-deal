@@ -2,7 +2,7 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { PASS_GO } from '../../../monopoly/cards'
-import { cardRequiresPayment, getCardPaymentAmount } from '../../../monopoly/monopoly'
+import * as monopoly from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
 
@@ -83,13 +83,13 @@ function playCard (card: CardKey) {
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
       card === PASS_GO && dispatch(drawCards())
 
-      if (cardRequiresPayment(card)) {
+      if (monopoly.cardRequiresPayment(card)) {
         const payee: Player = currentGame.game.players.find(player => player.username === currentPlayer.username)
 
         const payers: Player[] = currentGame.game.players
           .filter(player => player.username !== payee.username)
 
-        const amount = getCardPaymentAmount(card, payee.placedCards.properties)
+        const amount = monopoly.getCardPaymentAmount(card, payee.propertySets)
 
         dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
