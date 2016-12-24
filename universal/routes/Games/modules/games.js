@@ -125,5 +125,8 @@ export default function reducer (state: GamesState = initialState, action: Redux
         ...state,
         games: state.games.filter(g => g.id !== action.payload.game.id)
       }
+
+    default:
+      return state
   }
 }
