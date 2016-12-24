@@ -1,7 +1,7 @@
 /* @flow */
 import PropertySet from './PropertySet'
 
-export default class WildcardSet extends PropertySet {
+export default class WildcardAllColourSet extends PropertySet {
   identifier: Card
   properties: CardKey[]
   numberOfPropertiesRequired: number

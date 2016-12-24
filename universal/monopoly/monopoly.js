@@ -12,7 +12,7 @@ import {
   DEBT_COLLECTOR
 } from './cards'
 import PropertySet from './PropertySet'
-import WildcardSet from './WildcardSet'
+import WildcardAllColourSet from './WildcardAllColourSet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
 export const NUMBER_OF_FULL_SETS_TO_WIN = 3
@@ -130,7 +130,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
 
   // Finally, a set for unused wildcards
   if (unusedWildcards.length) {
-    sets.push(new WildcardSet(getCardObject(PROPERTY_WILDCARD), unusedWildcards))
+    sets.push(new WildcardAllColourSet(getCardObject(PROPERTY_WILDCARD), unusedWildcards))
   }
 
   return sets
