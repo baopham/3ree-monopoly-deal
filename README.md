@@ -1,4 +1,5 @@
-## 3REE Monopoly Deal
+3REE Monopoly Deal
+===================
 
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)  
 
@@ -6,22 +7,28 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 
 > Initial boilerplate was based on: https://github.com/GordyD/3ree
 
-### Quick Start
+
+Quick Start
+----------
+
+> Replace `npm` with `yarn` if you are using yarn
 
 1. Install rethinkdb
 1. Run `npm install`
-1. Run `rethinkdb` in the root directory
-1. Run `npm run db:setup`
+1. Run `rethinkdb` in the root directory in a separate tab
+1. Run `npm run db:setup` wait and exit
 1. Run `npm start`
 
 
-### Notes
+Notes
+-----
 
 - Currently, only the client knows about what cards the player is holding
 - Rules are loosely applied
 
 
-### TODOs
+TODOs
+-----
 
 - [ ] Collect all the card images
 - [ ] Notification for each action
@@ -48,3 +55,8 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 - [ ] Hotel
 - [ ] Double rent
 - [ ] Debt collector
+
+
+License
+--------
+MIT
