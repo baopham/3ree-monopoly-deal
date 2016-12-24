@@ -102,19 +102,19 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
 
   // Property sets (without using wildcards)
   groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
-    const card = getCardObject(treatAs)
-    const numberOfPropertiesRequired = card.needs
-    let set = new PropertySet(treatAs, [], numberOfPropertiesRequired)
+    const treatAsCard = getCardObject(treatAs)
+    const numberOfPropertiesRequired = treatAsCard.needs
+    let set = new PropertySet(treatAsCard, [], numberOfPropertiesRequired)
     sets.push(set)
 
     cardKeys.forEach(cardKey => {
-      if (set.addProperty(cardKey)) {
+      if (set.addCard(cardKey)) {
         return
       }
 
-      set = new PropertySet(treatAs, [], numberOfPropertiesRequired)
+      set = new PropertySet(treatAsCard, [], numberOfPropertiesRequired)
       sets.push(set)
-      set.addProperty(cardKey)
+      set.addCard(cardKey)
     })
   })
 
@@ -122,7 +122,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   const wildcards = cardKeys.filter(c => c === PROPERTY_WILDCARD)
   const unusedWildcards = wildcards.filter((cardKey: CardKey) => {
     const used = sets.some((set: PropertySet) => {
-      return set.addProperty(cardKey)
+      return set.addCard(cardKey)
     })
 
     return !used
@@ -130,7 +130,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
 
   // Finally, a set for unused wildcards
   if (unusedWildcards.length) {
-    sets.push(new WildcardSet(PROPERTY_WILDCARD, unusedWildcards))
+    sets.push(new WildcardSet(getCardObject(PROPERTY_WILDCARD), unusedWildcards))
   }
 
   return sets
@@ -176,7 +176,7 @@ export function hasEnoughFullSetsToWin (propertySets: PropertySet[]) {
       return acc
     }
 
-    return acc.concat([set.identifier])
+    return acc.concat([set.identifier.key])
   }, [])
 
   return fullSetIdentifiersOfDifferentColors.length >= NUMBER_OF_FULL_SETS_TO_WIN

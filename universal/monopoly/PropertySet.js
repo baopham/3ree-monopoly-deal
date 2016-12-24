@@ -2,46 +2,74 @@
 import {
   HOUSE,
   HOTEL,
+  PROPERTY_WILDCARD,
   RENT_ALL_COLOUR
 } from './cards'
-import { getCardObject } from './monopoly'
 
 export default class PropertySet {
-  identifier: CardKey
-  properties: CardKey[]
+  identifier: Card
+  cards: CardKey[]
   numberOfPropertiesRequired: number
 
-  constructor (identifier: CardKey, properties: CardKey[], numberOfPropertiesRequired: number) {
+  constructor (identifier: Card, cards: CardKey[], numberOfPropertiesRequired: number) {
     this.identifier = identifier
-    this.properties = properties
+    this.cards = cards
     this.numberOfPropertiesRequired = numberOfPropertiesRequired
   }
 
-  addProperty (property: CardKey): boolean {
-    // TODO house, hotel
-    if (this.isFullSet()) {
+  addCard (card: CardKey): boolean {
+    if (this.isFullSet() && card !== HOUSE && card !== HOTEL) {
       return false
     }
 
-    this.properties.push(property)
+    if ((card === HOUSE || card === HOTEL) && (this.cards.includes(card) || !this.isFullSet())) {
+      return false
+    }
+
+    if (card === HOTEL && !this.cards.includes(HOUSE)) {
+      return false
+    }
+
+    this.cards.push(card)
     return true
   }
 
   getProperties () {
-    return this.properties
+    return this.cards.filter(c => c !== HOUSE && c !== HOTEL)
+  }
+
+  getCards () {
+    return this.cards
   }
 
   isFullSet (): boolean {
-    return this.properties.length === this.numberOfPropertiesRequired
+    return this.getProperties().length === this.numberOfPropertiesRequired
   }
 
   getRentAmount () {
-    const card = getCardObject(this.identifier)
-    const numberOfProperties = this.properties.filter(p => p !== HOUSE && p !== HOTEL).length
-    return card.rent[numberOfProperties - 1]
+    const numberOfProperties = this.getProperties().length
+    return this.identifier.rent[numberOfProperties - 1]
   }
 
   isRentable (rentCard: Card) {
-    return rentCard.key === RENT_ALL_COLOUR || rentCard.forCards.includes(this.identifier)
+    return rentCard.key === RENT_ALL_COLOUR || rentCard.forCards.includes(this.identifier.key)
+  }
+
+  toArray (): CardKey[] {
+    const cards = this.getProperties().filter(p => p !== PROPERTY_WILDCARD)
+
+    if (this.cards.includes(HOUSE)) {
+      cards.push(HOUSE)
+    }
+
+    if (this.cards.includes(HOTEL)) {
+      cards.push(HOTEL)
+    }
+
+    if (this.cards.includes(PROPERTY_WILDCARD)) {
+      cards.push(PROPERTY_WILDCARD)
+    }
+
+    return cards
   }
 }
