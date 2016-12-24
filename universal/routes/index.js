@@ -1,3 +1,4 @@
+/* @flow */
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 
@@ -12,4 +13,3 @@ export default (
     <Route path='games/:id' component={GameRoute} />
   </Route>
 )
-

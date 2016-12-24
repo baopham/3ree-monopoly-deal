@@ -1,12 +1,15 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import Card from '../Card'
 
+type Props = {
+  faceUp?: boolean,
+  size?: 'large' | 'small',
+  cards: CardKey[]
+}
+
 export default class CardPile extends React.Component {
-  static propTypes = {
-    faceUp: PropTypes.bool,
-    size: PropTypes.string,
-    cards: PropTypes.array
-  }
+  props: Props
 
   static defaultProps = {
     cards: []
@@ -22,4 +25,3 @@ export default class CardPile extends React.Component {
     )
   }
 }
-

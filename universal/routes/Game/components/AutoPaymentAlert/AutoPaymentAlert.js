@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import {
   Modal,
@@ -10,19 +11,26 @@ import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 const INITIAL_COUNTER = 10
 const INTERVAL_DELAY = 1000
 
-export default class AutoPaymentAlert extends React.Component {
-  static propTypes = {
-    payee: PropTypes.string.isRequired,
-    dueAmount: PropTypes.number.isRequired,
-    onPay: PropTypes.func.isRequired,
-    cards: PropTypes.shape({
-      bank: PropTypes.arrayOf(PropTypes.string),
-      properties: PropTypes.arrayOf(PropTypes.string)
-    })
-  }
+type Props = {
+  payee: Username,
+  dueAmount: number,
+  onPay: (cards: CardKey[]) => void,
+  cards: PlacedCards
+}
 
-  constructor (...args) {
-    super(...args)
+type State = {
+  counter: number
+}
+
+export default class AutoPaymentAlert extends React.Component {
+  props: Props
+
+  state: State
+
+  intervalId: number
+
+  constructor (props: Props) {
+    super(props)
 
     this.state = {
       counter: INITIAL_COUNTER
@@ -39,7 +47,7 @@ export default class AutoPaymentAlert extends React.Component {
     clearInterval(this.intervalId)
   }
 
-  componentWillUpdate (nextProps, nextState) {
+  componentWillUpdate (nextProps: Props, nextState: State) {
     if (nextState.counter > 0) {
       return
     }

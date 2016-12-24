@@ -1,11 +1,14 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Modal } from 'react-bootstrap'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
+type Props = {
+  amount: number
+}
+
 export default class PaymentInProgress extends React.Component {
-  static propTypes = {
-    amount: PropTypes.number.isRequired
-  }
+  props: Props
 
   render () {
     const { amount } = this.props

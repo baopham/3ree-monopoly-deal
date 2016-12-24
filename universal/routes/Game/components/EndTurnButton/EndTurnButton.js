@@ -1,11 +1,15 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Button, Glyphicon } from 'react-bootstrap'
 
+type Props = {
+  isPlayerTurn: boolean,
+  className?: string,
+  onEndTurn: () => void
+}
+
 export default class EndTurnButton extends React.Component {
-  static propTypes = {
-    isPlayerTurn: PropTypes.bool,
-    onEndTurn: PropTypes.func.isRequired
-  }
+  props: Props
 
   render () {
     const {
@@ -28,4 +32,3 @@ export default class EndTurnButton extends React.Component {
     )
   }
 }
-

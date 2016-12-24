@@ -1,12 +1,15 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Panel } from 'react-bootstrap'
 import CardPile from '../CardPile'
 
+type Props = {
+  lastCardPlayedBy: Username,
+  cards: CardKey[]
+}
+
 export default class DiscardPile extends React.Component {
-  static propTypes = {
-    lastCardPlayedBy: PropTypes.string,
-    cards: PropTypes.array
-  }
+  props: Props
 
   static defaultProps = {
     cards: []

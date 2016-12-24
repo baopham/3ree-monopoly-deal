@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Col } from 'react-bootstrap'
 import DrawCardsButton from '../DrawCardsButton'
 import EndTurnButton from '../EndTurnButton'
@@ -7,15 +8,17 @@ import DrawPile from '../DrawPile'
 import DiscardPile from '../DiscardPile'
 import Players from '../Players'
 
+type Props = {
+  game: Game,
+  onEndTurn: () => void,
+  onDrawCards: () => void,
+  onWinning: (username: Username) => void,
+  currentPlayer: Player,
+  isPlayerTurn: boolean
+}
+
 export default class Board extends React.Component {
-  static propTypes = {
-    game: PropTypes.object.isRequired,
-    onEndTurn: PropTypes.func.isRequired,
-    onDrawCards: PropTypes.func.isRequired,
-    onWinning: PropTypes.func.isRequired,
-    currentPlayer: PropTypes.object.isRequired,
-    isPlayerTurn: PropTypes.bool
-  }
+  props: Props
 
   render () {
     const {

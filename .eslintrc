@@ -1,6 +1,11 @@
 {
   "parser"  : "babel-eslint",
-  "extends": ["standard", "standard-react", "plugin:flowtype/recommended"],
+  "extends": [
+    "standard",
+    "standard-react",
+    "plugin:flowtype/recommended",
+    "plugin:import/errors"
+  ],
   "env": {
     "browser": true,
     "node": true
@@ -17,12 +22,21 @@
     "generator-star-spacing": 0,
     "max-len": [2, 120, 2],
     "object-curly-spacing": [2, "always"],
-    "react/prop-types": [2, { ignore: ["children", "className"] }]
+    "react/prop-types": [2, { ignore: ["children", "className"] }],
+    "no-duplicate-imports": 0,
+    "import/no-duplicates": 2
   },
   "plugins": [
     "babel",
     "react",
     "promise",
-    "flowtype"
-  ]
+    "flowtype",
+    "import"
+  ],
+  "settings": {
+    "import/ignore": [
+      "server/models/Game",
+      "server/models/Player"
+    ]
+  }
 }

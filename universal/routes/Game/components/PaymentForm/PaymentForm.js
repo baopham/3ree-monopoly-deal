@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import {
   Button,
   Modal,
@@ -9,19 +10,26 @@ import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { getTotalMoneyFromCards } from '../../../../monopoly/monopoly'
 
-export default class PaymentForm extends React.Component {
-  static propTypes = {
-    onPay: PropTypes.func.isRequired,
-    cards: PropTypes.shape({
-      bank: PropTypes.arrayOf(PropTypes.string),
-      properties: PropTypes.arrayOf(PropTypes.string)
-    }),
-    payee: PropTypes.string.isRequired,
-    dueAmount: PropTypes.number.isRequired
-  }
+type Props = {
+  onPay: (cards: CardKey[]) => void,
+  cards: PlacedCards,
+  payee: Username,
+  dueAmount: number
+}
 
-  constructor (...args) {
-    super(...args)
+type CardIndex = number
+
+type State = {
+  selectedCards: Array<[CardKey, CardIndex]>
+}
+
+export default class PaymentForm extends React.Component {
+  props: Props
+
+  state: State
+
+  constructor (props: Props) {
+    super(props)
 
     this.state = {
       selectedCards: []
@@ -34,13 +42,13 @@ export default class PaymentForm extends React.Component {
     })
   }
 
-  selectCard (card, index) {
+  selectCard (card: CardKey, index: CardIndex) {
     this.setState({
       selectedCards: this.state.selectedCards.concat([[card, index]])
     })
   }
 
-  unselectCard (card, index) {
+  unselectCard (card: CardKey, index: CardIndex) {
     const { selectedCards } = this.state
 
     this.setState({
@@ -48,7 +56,7 @@ export default class PaymentForm extends React.Component {
     })
   }
 
-  toggleSelectCard = (card, index) => {
+  toggleSelectCard = (card: CardKey, index: CardIndex) => {
     if (this.isCardHighlighted(card, index)) {
       this.unselectCard(card, index)
       return
@@ -62,7 +70,7 @@ export default class PaymentForm extends React.Component {
     this.props.onPay(selectedCards.map(([card, index]) => card))
   }
 
-  isCardHighlighted = (card, index) => {
+  isCardHighlighted = (card: CardKey, index: CardIndex) => {
     return !!this.state.selectedCards.find(([c, i]) => c === card && i === index)
   }
 

@@ -1,7 +1,16 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { getCardImageSrc } from '../../../../monopoly/monopoly'
 
-function getStyles (props) {
+type Props = {
+  card: ?CardKey,
+  faceUp?: boolean,
+  highlighted?: boolean,
+  onClick: (card: CardKey) => void,
+  size: 'large' | 'small'
+}
+
+function getStyles (props: Props) {
   return {
     large: {
       width: 150,
@@ -21,22 +30,20 @@ function getStyles (props) {
 }
 
 export default class Card extends React.Component {
-  static propTypes = {
-    card: PropTypes.string,
-    faceUp: PropTypes.bool,
-    highlighted: PropTypes.bool,
-    onClick: PropTypes.func,
-    size: PropTypes.oneOf(['large', 'small'])
-  }
+  props: Props
 
   static defaultProps = {
     faceUp: false,
     size: 'large',
-    onClick: () => {}
+    onClick: (card: CardKey) => {}
   }
 
   getImageSrc () {
     const { card, faceUp } = this.props
+    if (!card) {
+      return
+    }
+
     const src = faceUp ? getCardImageSrc(card) : '/images/cards/back.png'
     return src
   }
@@ -47,7 +54,7 @@ export default class Card extends React.Component {
       card
     } = this.props
 
-    onClick(card)
+    card && onClick(card)
   }
 
   render () {

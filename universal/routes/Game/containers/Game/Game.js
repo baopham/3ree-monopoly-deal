@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { connect } from 'react-redux'
 import FullWidth from '../../../../components/FullWidth'
 import JoinForm from '../../components/JoinForm'
@@ -13,6 +14,25 @@ import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
 import { actions as paymentActions } from '../../modules/payment'
 import { MAX_NUMBER_OF_ACTIONS, getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
+import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCards'
+import type { PaymentState } from '../../modules/payment'
+
+type Props = {
+  game: Game,
+  currentPlayer: Player,
+  currentPlayerCards: CurrentPlayerCardsState,
+  placeCard: (card: CardKey) => void,
+  playCard: (card: CardKey) => void,
+  drawCards: () => void,
+  discardCard: (card: CardKey) => void,
+  flipCard: (card: CardKey) => void,
+  setWinner: (username: Username) => void,
+  join: (username: Username) => void,
+  pay: (payer: Username, cardsForPayment: CardKey[]) => void,
+  endTurn: () => void,
+  isPlayerTurn: boolean,
+  payment: PaymentState
+}
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
@@ -22,25 +42,10 @@ const mapStateToProps = (state) => ({
   payment: state.payment
 })
 
-export class Game extends React.Component {
-  static propTypes = {
-    game: PropTypes.object.isRequired,
-    currentPlayer: PropTypes.object,
-    currentPlayerCards: PropTypes.object,
-    placeCard: PropTypes.func.isRequired,
-    playCard: PropTypes.func.isRequired,
-    drawCards: PropTypes.func.isRequired,
-    discardCard: PropTypes.func.isRequired,
-    flipCard: PropTypes.func.isRequired,
-    setWinner: PropTypes.func.isRequired,
-    join: PropTypes.func.isRequired,
-    pay: PropTypes.func.isRequired,
-    endTurn: PropTypes.func.isRequired,
-    isPlayerTurn: PropTypes.bool,
-    payment: PropTypes.object.isRequired
-  }
+export class GameComponent extends React.Component {
+  props: Props
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps: Props) {
     if (!this.props.currentPlayer || !nextProps.currentPlayer) {
       return
     }
@@ -54,16 +59,26 @@ export class Game extends React.Component {
     }
   }
 
-  onPay = (cardsForPayment) => {
+  onPay = (cardsForPayment: CardKey[]) => {
     const { pay, currentPlayer } = this.props
     pay(currentPlayer.username, cardsForPayment)
   }
 
-  payerHasNotEnoughMoney () {
+  payerHasNotEnoughMoney (): boolean {
     const { currentPlayer, payment } = this.props
     const { placedCards } = currentPlayer
     const totalAmount = getTotalMoneyFromPlacedCards(placedCards)
-    return totalAmount <= payment.amount
+    return !!(payment.amount && totalAmount <= payment.amount)
+  }
+
+  isPayee (): boolean {
+    const { currentPlayer, payment } = this.props
+    return !!(currentPlayer && payment.amount && payment.payee === currentPlayer.username)
+  }
+
+  needToPay (): boolean {
+    const { currentPlayer, payment } = this.props
+    return !!(currentPlayer && !this.isPayee() && payment.payers && payment.payers.includes(currentPlayer.username))
   }
 
   render () {
@@ -83,9 +98,9 @@ export class Game extends React.Component {
       payment
     } = this.props
 
-    const isPayee = currentPlayer && payment.amount && payment.payee === currentPlayer.username
-    const needToPay = currentPlayer && !isPayee && payment.payers && payment.payers.includes(currentPlayer.username)
-    const needToPayButNotEnoughMoney = needToPay && this.payerHasNotEnoughMoney()
+    const isPayee = this.isPayee()
+    const needToPay = this.needToPay()
+    const needToPayAndHaveEnoughMoney = needToPay && !this.payerHasNotEnoughMoney()
     const gameHasAWinner = currentPlayer && !!game.winner
 
     return (
@@ -121,7 +136,7 @@ export class Game extends React.Component {
           <JoinForm onJoin={join} />
         }
 
-        {needToPay && !needToPayButNotEnoughMoney &&
+        {payment.payee && needToPayAndHaveEnoughMoney &&
           <PaymentForm
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
@@ -130,7 +145,7 @@ export class Game extends React.Component {
           />
         }
 
-        {needToPayButNotEnoughMoney &&
+        {payment.payee && needToPay && !needToPayAndHaveEnoughMoney &&
           <AutoPaymentAlert
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
@@ -163,4 +178,4 @@ export default connect(
     ...playerCardsActions,
     ...paymentActions
   }
-)(Game)
+)(GameComponent)

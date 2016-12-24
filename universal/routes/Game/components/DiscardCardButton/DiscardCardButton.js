@@ -1,11 +1,14 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Button, Glyphicon } from 'react-bootstrap'
 
+type Props = {
+  disabled?: boolean,
+  onClick: (e: Event) => void
+}
+
 export default class DiscardCardButton extends React.Component {
-  static propTypes = {
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func.isRequired
-  }
+  props: Props
 
   render () {
     const { disabled, onClick } = this.props
@@ -23,4 +26,3 @@ export default class DiscardCardButton extends React.Component {
     )
   }
 }
-

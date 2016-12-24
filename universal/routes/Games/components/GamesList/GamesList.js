@@ -1,10 +1,13 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Link } from 'react-router'
 
+type Props = {
+  games: Game[]
+}
+
 export default class GamesList extends React.Component {
-  static propTypes = {
-    games: PropTypes.array.isRequired
-  }
+  props: Props
 
   render () {
     const { games } = this.props

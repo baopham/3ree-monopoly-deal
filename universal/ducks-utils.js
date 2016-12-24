@@ -1,4 +1,4 @@
-import merge from 'lodash/mergewith'
+import merge from 'lodash/mergeWith'
 
 const serverUrl = ''
 export const apiUrl = `${serverUrl}/api/v1`
@@ -20,4 +20,3 @@ function customizer (destValue, srcValue, key, destParent) {
     }
   }
 }
-

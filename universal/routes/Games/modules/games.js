@@ -1,3 +1,4 @@
+/* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 
@@ -23,7 +24,7 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Action Creators
 // ------------------------------------
-function getGames (page = 0) {
+function getGames (page: number = 0) {
   return {
     types: [LOAD_PAGE_REQUEST, LOAD_SUCCESS, ERROR],
     page,
@@ -31,7 +32,7 @@ function getGames (page = 0) {
   }
 }
 
-function addGame (game) {
+function addGame (game: Object) {
   return {
     types: [ADD_REQUEST, null, ERROR],
     game,
@@ -39,13 +40,13 @@ function addGame (game) {
   }
 }
 
-function subscribeSocket (socket) {
-  return (dispatch) => {
+function subscribeSocket (socket: Socket) {
+  return (dispatch: Function) => {
     socket.on('game-change', onGameChange.bind(this, dispatch))
   }
 }
 
-function onGameChange (dispatch, change) {
+function onGameChange (dispatch: Function, change: Function) {
   if (change.created) {
     dispatch({ type: ADD_SUCCESS, payload: { game: change.new_val, count: change.count } })
   } else if (change.deleted) {
@@ -55,8 +56,8 @@ function onGameChange (dispatch, change) {
   }
 }
 
-function unsubscribeSocket (socket) {
-  return (dispatch) => {
+function unsubscribeSocket (socket: Socket) {
+  return (dispatch: Function) => {
     socket.off('game-change')
   }
 }
@@ -71,7 +72,16 @@ export const actions = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
+export type GamesState = {
+  games: Game[],
+  isWorking: boolean,
+  error: mixed,
+  limit: number,
+  page: number,
+  count: number
+}
+
+const initialState: GamesState = {
   games: [],
   isWorking: false,
   error: null,
@@ -80,47 +90,40 @@ const initialState = {
   count: 0
 }
 
-const requestActionHandler = (state) => ({ ...state, isWorking: true, error: null })
+export default function reducer (state: GamesState = initialState, action: ReduxAction) {
+  switch (action.type) {
+    case ADD_REQUEST:
+    case DELETE_REQUEST:
+    case UPDATE_REQUEST:
+      return deepmerge(state, {
+        isWorking: true,
+        error: false
+      })
 
-const actionHandlers = {
-  [LOAD_PAGE_REQUEST]: (state, { page }) => ({ ...state, page }),
+    case LOAD_PAGE_REQUEST:
+      return deepmerge(state, { page: action.page })
 
-  [LOAD_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    games: payload.games,
-    count: payload.count,
-    isWorking: false,
-    error: null
-  }),
+    case LOAD_SUCCESS:
+      return {
+        ...state,
+        games: action.payload.games,
+        count: action.payload.count,
+        isWorking: false,
+        error: null
+      }
 
-  [ADD_REQUEST]: requestActionHandler,
+    case ADD_SUCCESS:
+      return deepmerge(state, {
+        isWorking: false,
+        error: null,
+        games: [action.payload.game, ...state.games.slice(0, state.limit - 1)],
+        count: action.payload.count
+      })
 
-  [DELETE_REQUEST]: requestActionHandler,
-
-  [UPDATE_REQUEST]: requestActionHandler,
-
-  [ADD_SUCCESS]: (state, { payload }) => {
-    const nextState = deepmerge(state, {
-      isWorking: false,
-      error: null,
-      games: [payload.game, ...state.games.slice(0, state.limit - 1)],
-      count: payload.count
-    })
-    return nextState
-  },
-
-  [DELETE_SUCCESS]: (state, { payload }) => {
-    const nextState = deepmerge(state, { isWorking: false, error: null })
-    nextState.games = state.games.filter(g => g.id !== payload.game.id)
-
-    return nextState
-  },
-
-  [ERROR]: (state, { err }) => ({ ...state, isWorking: false, error: err })
+    case DELETE_SUCCESS:
+      return {
+        ...state,
+        games: state.games.filter(g => g.id !== action.payload.game.id)
+      }
+  }
 }
-
-export default function reducer (state = initialState, action) {
-  const handler = actionHandlers[action.type]
-  return handler ? handler(state, action) : state
-}
-

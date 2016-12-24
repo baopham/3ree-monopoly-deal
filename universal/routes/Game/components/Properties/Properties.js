@@ -1,22 +1,30 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
+import type PropertySetClass from '../../../../monopoly/PropertySet'
 import PropertySet from '../PropertySet'
 import { hasEnoughFullSetsToWin, groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
 
+type Props = {
+  properties: CardKey[],
+  onCardClick?: (card: CardKey, index: number) => void,
+  isCardHighlighted: (card: CardKey, index: number) => boolean,
+  onWinning: () => void
+}
+
 export default class Properties extends React.Component {
-  static propTypes = {
-    properties: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onCardClick: PropTypes.func,
-    isCardHighlighted: PropTypes.func,
-    onWinning: PropTypes.func
-  }
+  props: Props
+
+  propertySets: PropertySetClass[]
+
+  hasWon: boolean
 
   static defaultProps = {
-    isCardHighlighted: () => {},
+    isCardHighlighted: (card: CardKey, index: number) => false,
     onWinning: () => {}
   }
 
-  constructor (...args) {
-    super(...args)
+  constructor (props: Props) {
+    super(props)
 
     this.propertySets = groupPropertiesIntoSets(this.props.properties)
     this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
@@ -27,7 +35,7 @@ export default class Properties extends React.Component {
     return !this.hasWon
   }
 
-  componentWillUpdate (nextProps) {
+  componentWillUpdate (nextProps: Props) {
     this.propertySets = groupPropertiesIntoSets(nextProps.properties)
     this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
     this.hasWon && this.props.onWinning()

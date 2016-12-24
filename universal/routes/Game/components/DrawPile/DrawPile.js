@@ -1,13 +1,16 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Panel } from 'react-bootstrap'
 import CardPile from '../CardPile'
 
+type Props = {
+  cards: CardKey[],
+  drawCardsButton: React.Element<*>,
+  endTurnButton: React.Element<*>
+}
+
 export default class DrawPile extends React.Component {
-  static propTypes = {
-    cards: PropTypes.array,
-    drawCardsButton: PropTypes.node,
-    endTurnButton: PropTypes.node
-  }
+  props: Props
 
   static defaultProps = {
     cards: []
@@ -37,4 +40,3 @@ export default class DrawPile extends React.Component {
     )
   }
 }
-

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import {
   Button,
   Modal,
@@ -7,13 +8,21 @@ import {
   FormControl
 } from 'react-bootstrap'
 
-export default class JoinForm extends React.Component {
-  static propTypes = {
-    onJoin: PropTypes.func.isRequired
-  }
+type Props = {
+  onJoin: (username: Username) => void
+}
 
-  constructor (...args) {
-    super(...args)
+type State = {
+  username: string
+}
+
+export default class JoinForm extends React.Component {
+  props: Props
+
+  state: State
+
+  constructor (props: Props) {
+    super(props)
 
     this.state = {
       username: ''
@@ -30,7 +39,7 @@ export default class JoinForm extends React.Component {
     return 'success'
   }
 
-  handleChange = (e) => {
+  handleChange = (e: SyntheticInputEvent) => {
     this.setState({
       username: e.target.value && e.target.value.trim()
     })
@@ -70,4 +79,3 @@ export default class JoinForm extends React.Component {
     )
   }
 }
-

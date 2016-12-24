@@ -1,14 +1,17 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import Card from '../Card'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import { Panel } from 'react-bootstrap'
 
+type Props = {
+  propertySet: PropertySetClass,
+  onCardClick: (card: CardKey, index: number) => void,
+  isCardHighlighted: (card: CardKey, index: number) => boolean
+}
+
 export default class PropertySet extends React.Component {
-  static propTypes = {
-    propertySet: PropTypes.instanceOf(PropertySetClass).isRequired,
-    onCardClick: PropTypes.func,
-    isCardHighlighted: PropTypes.func
-  }
+  props: Props
 
   render () {
     const {

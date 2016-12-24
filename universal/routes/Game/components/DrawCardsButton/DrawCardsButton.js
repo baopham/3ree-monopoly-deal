@@ -1,21 +1,31 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Button, Glyphicon } from 'react-bootstrap'
 
-export default class DrawCardsButton extends React.Component {
-  static propTypes = {
-    isPlayerTurn: PropTypes.bool,
-    onDrawCards: PropTypes.func.isRequired
-  }
+type Props = {
+  isPlayerTurn: boolean,
+  className?: string,
+  onDrawCards: () => void
+}
 
-  constructor (...args) {
-    super(...args)
+type State = {
+  hasDrawnCards: boolean
+}
+
+export default class DrawCardsButton extends React.Component {
+  props: Props
+
+  state: State
+
+  constructor (props: Props) {
+    super(props)
 
     this.state = {
       hasDrawnCards: false
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps: Props) {
     const { isPlayerTurn } = this.props
 
     if (!isPlayerTurn) {

@@ -1,4 +1,4 @@
 type PlacedCards = {
-  bank: string[],
-  properties: string[]
+  bank: CardKey[],
+  properties: CardKey[]
 }

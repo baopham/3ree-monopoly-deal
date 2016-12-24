@@ -1,22 +1,26 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import GamesList from '../../components/GamesList'
 import FullWidth from '../../../../components/FullWidth'
 import { Button } from 'react-bootstrap'
 import { actions } from '../../modules/games'
 import { connect } from 'react-redux'
+import type { GamesState } from '../../modules/games'
+
+type Props = {
+  games: GamesState,
+  addGame: (game: Object) => void,
+  getGames: () => void,
+  subscribeSocket: (socket: Socket) => void,
+  unsubscribeSocket: (socket: Socket) => void
+}
 
 const mapStateToProps = (state) => ({
   games: state.games
 })
 
 export class GamesRoute extends React.Component {
-  static propTypes = {
-    games: PropTypes.object.isRequired,
-    addGame: PropTypes.func.isRequired,
-    getGames: PropTypes.func.isRequired,
-    subscribeSocket: PropTypes.func.isRequired,
-    unsubscribeSocket: PropTypes.func.isRequired
-  }
+  props: Props
 
   componentDidMount () {
     this.props.getGames(this.props.games.page)
@@ -29,7 +33,7 @@ export class GamesRoute extends React.Component {
 
   addGame = () => {
     this.props.addGame({
-      name: `Random Game ${new Date()}`
+      name: `Random Game ${new Date().toString()}`
     })
   }
 

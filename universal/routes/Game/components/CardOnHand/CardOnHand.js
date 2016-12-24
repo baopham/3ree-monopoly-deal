@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import Card from '../Card'
 import PlaceCardButton from '../PlaceCardButton'
 import PlayCardButton from '../PlayCardButton'
@@ -12,38 +13,40 @@ import {
   canFlipCard
 } from '../../../../monopoly/monopoly'
 
-export default class CardOnHand extends React.Component {
-  static propTypes = {
-    placedCards: PropTypes.object.isRequired,
-    card: PropTypes.string.isRequired,
-    onPlaceCard: PropTypes.func.isRequired,
-    onPlayCard: PropTypes.func.isRequired,
-    onDrawCards: PropTypes.func.isRequired,
-    onDiscardCard: PropTypes.func.isRequired,
-    onFlipCard: PropTypes.func.isRequired,
-    needsToDiscard: PropTypes.bool,
-    isPlayerTurn: PropTypes.bool
-  }
+type Props = {
+  placedCards: PlacedCards,
+  card: CardKey,
+  onPlaceCard: (card: CardKey, boolean) => void,
+  onPlayCard: (card: CardKey) => void,
+  onDrawCards: () => void,
+  onDiscardCard: (card: CardKey) => void,
+  onFlipCard: (card: CardKey) => void,
+  needsToDiscard: boolean,
+  isPlayerTurn: boolean
+}
 
-  onPlaceCard = (e) => {
+export default class CardOnHand extends React.Component {
+  props: Props
+
+  onPlaceCard = (e: Event) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onPlaceCard(card, isMoneyCard(card) || isActionCard(card) || isRentCard(card))
   }
 
-  onPlayCard = (e) => {
+  onPlayCard = (e: Event) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onPlayCard(card)
   }
 
-  onDiscardCard = (e) => {
+  onDiscardCard = (e: Event) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onDiscardCard(card)
   }
 
-  onFlipCard = (e) => {
+  onFlipCard = (e: Event) => {
     e.stopPropagation()
     const { card } = this.props
     this.props.onFlipCard(card)
@@ -86,4 +89,3 @@ export default class CardOnHand extends React.Component {
     )
   }
 }
-

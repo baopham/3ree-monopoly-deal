@@ -1,11 +1,14 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import PlacedCards from '../PlacedCards'
 
-export default class Player extends React.Component {
-  static propTypes = {
-    player: PropTypes.object.isRequired,
-    onWinning: PropTypes.func.isRequired
-  }
+type Props = {
+  player: Player,
+  onWinning: (username: Username) => void
+}
+
+export default class PlayerComponent extends React.Component {
+  props: Props
 
   onWinning = () => {
     this.props.onWinning(this.props.player.username)

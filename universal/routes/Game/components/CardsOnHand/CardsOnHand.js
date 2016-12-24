@@ -1,8 +1,25 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import FullWidth from '../../../../components/FullWidth'
 import CardOnHand from '../CardOnHand'
 import { MAX_CARDS_IN_HAND } from '../../../../monopoly/cards'
+
+type Props = {
+  cardsOnHand: CardKey[],
+  placedCards: PlacedCards,
+  onPlaceCard: (card: CardKey) => void,
+  onPlayCard: (card: CardKey) => void,
+  onDrawCards: () => void,
+  onDiscardCard: (card: CardKey) => void,
+  onFlipCard: (card: CardKey) => void,
+  isPlayerTurn: boolean
+}
+
+type State = {
+  open: boolean,
+  needsToDiscard: boolean
+}
 
 const styles = {
   cardsOnHand: {
@@ -14,19 +31,12 @@ const styles = {
 }
 
 export default class CardsOnHand extends React.Component {
-  static propTypes = {
-    cardsOnHand: PropTypes.array.isRequired,
-    placedCards: PropTypes.object.isRequired,
-    onPlaceCard: PropTypes.func.isRequired,
-    onPlayCard: PropTypes.func.isRequired,
-    onDrawCards: PropTypes.func.isRequired,
-    onDiscardCard: PropTypes.func.isRequired,
-    onFlipCard: PropTypes.func.isRequired,
-    isPlayerTurn: PropTypes.bool
-  }
+  props: Props
 
-  constructor (...args) {
-    super(...args)
+  state: State
+
+  constructor (props: Props) {
+    super(props)
 
     this.state = {
       open: true,
@@ -34,7 +44,7 @@ export default class CardsOnHand extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps: Props) {
     this.setState({
       needsToDiscard: nextProps.cardsOnHand.length > MAX_CARDS_IN_HAND
     })
@@ -110,4 +120,3 @@ export default class CardsOnHand extends React.Component {
     )
   }
 }
-

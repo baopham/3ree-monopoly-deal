@@ -1,8 +1,14 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import CardPile from '../CardPile'
 import Properties from '../Properties'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
+
+type Props = {
+  cards: PlacedCards,
+  onWinning: () => void
+}
 
 const styles = {
   properties: {
@@ -13,14 +19,8 @@ const styles = {
   }
 }
 
-export default class PlacedCards extends React.Component {
-  static propTypes = {
-    cards: PropTypes.shape({
-      bank: PropTypes.arrayOf(PropTypes.string),
-      properties: PropTypes.arrayOf(PropTypes.string)
-    }).isRequired,
-    onWinning: PropTypes.func.isRequired
-  }
+export default class PlacedCardsComponent extends React.Component {
+  props: Props
 
   render () {
     const { cards, onWinning } = this.props

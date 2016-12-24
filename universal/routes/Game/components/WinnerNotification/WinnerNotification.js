@@ -1,12 +1,15 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Modal, Glyphicon } from 'react-bootstrap'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
+type Props = {
+  winner: Username,
+  hasWon: boolean
+}
+
 export default class WinnerNotification extends React.Component {
-  static propTypes = {
-    winner: PropTypes.string.isRequired,
-    hasWon: PropTypes.bool
-  }
+  props: Props
 
   render () {
     const { winner, hasWon } = this.props

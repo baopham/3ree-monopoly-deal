@@ -65,7 +65,7 @@ export type PaymentState = {
   payers: ?Username[],
   payee: ?Username,
   cardPlayed: ?CardKey,
-  amount: ?number
+  amount: number
 }
 
 const initialState: PaymentState = {

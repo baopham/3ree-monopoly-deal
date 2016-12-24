@@ -1,16 +1,19 @@
-import React, { PropTypes } from 'react'
+/* @flow */
+import React from 'react'
 import { Panel } from 'react-bootstrap'
-import Player from '../Player'
+import PlayerComponent from '../Player'
 import ActionCounter from '../ActionCounter'
 
-export default class Players extends React.Component {
-  static propTypes = {
-    players: PropTypes.array.isRequired,
-    currentPlayer: PropTypes.object.isRequired,
-    onWinning: PropTypes.func.isRequired
-  }
+type Props = {
+  players: Player[],
+  currentPlayer: Player,
+  onWinning: (username: Username) => void
+}
 
-  renderHeader (player) {
+export default class Players extends React.Component {
+  props: Props
+
+  renderHeader (player: Player) {
     return (
       <div>
         Player: {player.username}
@@ -33,7 +36,7 @@ export default class Players extends React.Component {
             header={this.renderHeader(player)}
             bsStyle={currentPlayer.username === player.username ? 'success' : 'default'}
           >
-            <Player
+            <PlayerComponent
               player={player}
               onWinning={onWinning}
             />
