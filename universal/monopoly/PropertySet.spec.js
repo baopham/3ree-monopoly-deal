@@ -84,7 +84,8 @@ describe('PropertySet', function () {
     })
 
     it('should not allow to add more than one HOTEL', function () {
-      const propertySet = new PropertySet(identifier, [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE, HOTEL], numberOfPropertiesRequired)
+      const cards = [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE, HOTEL]
+      const propertySet = new PropertySet(identifier, cards, numberOfPropertiesRequired)
 
       expect(propertySet.getCards()).to.have.lengthOf(4)
       expect(propertySet.addCard(HOTEL)).to.be.false
