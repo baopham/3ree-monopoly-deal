@@ -28,9 +28,15 @@ export default class PlayerService {
   placeCard (gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false): Promise<*> {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
+      .then(increaseActionCounter)
       .then(putCardInTheRightPlace)
 
     //////
+    function increaseActionCounter (player: Player) {
+      player.actionCounter = player.actionCounter + 1
+      return player
+    }
+
     function putCardInTheRightPlace (player: Player) {
       if (asMoney) {
         player.placedCards.bank.push(cardKey)
