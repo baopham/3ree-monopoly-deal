@@ -241,7 +241,7 @@ export function mergeSerializedPropertySets (
   // TODO: when will this happen?
   return handleLeftOverCards()
 
-  // ///
+  //////
   function merge (other: SerializedPropertySet) {
     const otherPropertySet = unserializePropertySet(other)
 

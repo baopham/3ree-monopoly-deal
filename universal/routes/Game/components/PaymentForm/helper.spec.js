@@ -7,7 +7,6 @@ import PropertySet from '../../../../../universal/monopoly/PropertySet'
 import {
   PROPERTY_BLUE,
   PROPERTY_RED,
-  PROPERTY_RED_OR_YELLOW,
   HOUSE,
   PROPERTY_WILDCARD
 } from '../../../../../universal/monopoly/cards'

@@ -24,7 +24,8 @@
     "object-curly-spacing": [2, "always"],
     "react/prop-types": [2, { ignore: ["children", "className"] }],
     "no-duplicate-imports": 0,
-    "import/no-duplicates": 2
+    "import/no-duplicates": 2,
+    "spaced-comment": [2, "always", { "line": { "markers": ["*package", "!", ","], "exceptions": ["////"] } }]
   },
   "plugins": [
     "babel",
