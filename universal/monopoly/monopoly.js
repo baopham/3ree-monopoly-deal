@@ -201,14 +201,6 @@ export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number 
     getTotalMoneyFromCards(flattenSerializedPropertySetCards(placedCards.serializedPropertySets))
 }
 
-export function getMoneyCards (cardKeys: CardKey[]): CardKey[] {
-  return cardKeys.filter(cardKey => isMoneyCard(cardKey) || isActionCard(cardKey))
-}
-
-export function getPropertyCards (cardKeys: CardKey[]): CardKey[] {
-  return cardKeys.filter(cardKey => !isMoneyCard(cardKey) && !isActionCard(cardKey))
-}
-
 export function unserializePropertySet (serializedItem: SerializedPropertySet): PropertySet {
   return new PropertySet(serializedItem.identifier, serializedItem.cards)
 }
