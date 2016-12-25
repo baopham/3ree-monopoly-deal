@@ -14,7 +14,7 @@ const INTERVAL_DELAY = 1000
 type Props = {
   payee: Username,
   dueAmount: number,
-  onPay: (cards: CardKey[]) => void,
+  onPay: (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
   cards: PlacedCards
 }
 
@@ -58,7 +58,7 @@ export default class AutoPaymentAlert extends React.Component {
   pay = () => {
     const { cards, onPay } = this.props
 
-    onPay(cards.bank.concat(cards.properties))
+    onPay(cards.bank, cards.serializedPropertySets)
   }
 
   render () {

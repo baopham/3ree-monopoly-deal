@@ -67,16 +67,14 @@ export function endTurn (req: AppRequest, res: express$Response) {
     .catch(err => handleError(err, res))
 }
 
-export function flipCard (req: AppRequest, res: express$Response) {
-  const promise = playerService.flipCard(req.params.id, req.body.username, req.body.card)
-
-  promise
-    .then(flippedCard => res.json({ flippedCard }))
-    .catch(err => handleError(err, res))
-}
-
 export function pay (req: AppRequest, res: express$Response) {
-  const promise = playerService.pay(req.params.id, req.body.payer, req.body.payee, req.body.cardsForPayment)
+  const promise = playerService.pay(
+    req.params.id,
+    req.body.payer,
+    req.body.payee,
+    req.body.moneyCards,
+    req.body.serializedPropertySets
+  )
 
   promise
     .then(() => res.json('success'))

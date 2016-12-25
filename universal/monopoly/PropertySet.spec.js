@@ -2,6 +2,7 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai'
 import {
+  PROPERTY_GREEN,
   PROPERTY_BLUE,
   HOTEL,
   HOUSE,
@@ -105,6 +106,27 @@ describe('PropertySet', function () {
         HOTEL,
         PROPERTY_WILDCARD
       ])
+    })
+  })
+
+  describe('#equals', function () {
+    it('should return true if 2 property sets have the same identifier and cards', function () {
+      const thisPropertySet = new PropertySet(identifier, [PROPERTY_BLUE])
+      const thatPropertySet = new PropertySet(identifier, [PROPERTY_BLUE])
+
+      expect(thisPropertySet.equals(thatPropertySet)).to.be.true
+    })
+
+    it('should return false if 2 property sets do not have the same identifier or cards', function () {
+      let thisPropertySet = new PropertySet(identifier, [PROPERTY_BLUE, PROPERTY_WILDCARD])
+      let thatPropertySet = new PropertySet(identifier, [PROPERTY_BLUE])
+
+      expect(thisPropertySet.equals(thatPropertySet)).to.be.false
+
+      thisPropertySet = new PropertySet(getCardObject(PROPERTY_GREEN), [])
+      thatPropertySet = new PropertySet(identifier, [])
+
+      expect(thisPropertySet.equals(thatPropertySet)).to.be.false
     })
   })
 })

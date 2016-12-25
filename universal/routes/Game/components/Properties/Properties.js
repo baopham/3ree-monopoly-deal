@@ -2,32 +2,30 @@
 import React from 'react'
 import type PropertySetClass from '../../../../monopoly/PropertySet'
 import PropertySet from '../PropertySet'
-import { hasEnoughFullSetsToWin, groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
+import * as monopoly from '../../../../monopoly/monopoly'
 
 type Props = {
-  properties: CardKey[],
-  onCardClick?: (card: CardKey, index: number) => void,
-  isCardHighlighted: (card: CardKey, index: number) => boolean,
+  propertySets: PropertySetClass[],
+  onCardClick: (card: CardKey, index: number, serializedPropertySetIndex: number) => void,
+  isCardHighlighted: (card: CardKey, index: number, serializedPropertySetIndex: number) => boolean,
   onWinning: () => void
 }
 
 export default class Properties extends React.Component {
   props: Props
 
-  propertySets: PropertySetClass[]
-
   hasWon: boolean
 
   static defaultProps = {
-    isCardHighlighted: (card: CardKey, index: number) => false,
+    isCardHighlighted: (card: CardKey, index: number, serializedPropertySetIndex: number) => false,
+    onCardClick: (card: CardKey, index: number, serializedPropertySetIndex: number) => {},
     onWinning: () => {}
   }
 
   constructor (props: Props) {
     super(props)
 
-    this.propertySets = groupPropertiesIntoSets(this.props.properties)
-    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon = monopoly.hasEnoughFullSetsToWin(props.propertySets)
     this.hasWon && this.props.onWinning()
   }
 
@@ -36,29 +34,28 @@ export default class Properties extends React.Component {
   }
 
   componentWillUpdate (nextProps: Props) {
-    this.propertySets = groupPropertiesIntoSets(nextProps.properties)
-    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon = monopoly.hasEnoughFullSetsToWin(nextProps.propertySets)
     this.hasWon && this.props.onWinning()
   }
 
   componentWillUnmount () {
-    this.propertySets = []
     this.hasWon = false
   }
 
   render () {
     const {
+      propertySets,
       onCardClick,
       isCardHighlighted
     } = this.props
 
     return (
       <ul className='list-inline'>
-        {this.propertySets.map((set, i) =>
-          <li key={i}>
+        {propertySets.map((set, setIndex) =>
+          <li key={setIndex}>
             <PropertySet
-              onCardClick={onCardClick}
-              isCardHighlighted={isCardHighlighted}
+              onCardClick={(card, cardIndex) => onCardClick(card, cardIndex, setIndex)}
+              isCardHighlighted={(card, cardIndex) => isCardHighlighted(card, cardIndex, setIndex)}
               propertySet={set}
             />
           </li>

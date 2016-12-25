@@ -30,14 +30,14 @@ function requestForPayment (payee: Username, payers: Username[], cardPlayed: Car
   }
 }
 
-function pay (payer: Username, cardsForPayment: CardKey[]) {
+function pay (payer: Username, moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) {
   return {
     types: [PAY_REQUEST, PAY_SUCCESS, ERROR],
     payer,
     promise: (dispatch: Function, getState: Function) => {
       const game = getState().currentGame.game
       const payee = getState().payment.payee
-      return request.put(`${gamesUrl}/${game.id}/pay`, { payer, payee, cardsForPayment })
+      return request.put(`${gamesUrl}/${game.id}/pay`, { payer, payee, moneyCards, serializedPropertySets })
     }
   }
 }

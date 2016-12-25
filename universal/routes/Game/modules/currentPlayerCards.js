@@ -2,7 +2,7 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { PASS_GO } from '../../../monopoly/cards'
-import { cardRequiresPayment, getCardPaymentAmount } from '../../../monopoly/monopoly'
+import * as monopoly from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
 
@@ -23,10 +23,7 @@ const PLACE_CARD_REQUEST = ns('PLACE_CARD_REQUEST')
 const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
 const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
 const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
-const FLIP_CARD_REQUEST = ns('FLIP_CARD_REQUEST')
-const FLIP_CARD_SUCCESS = ns('FLIP_CARD_SUCCESS')
-const GIVE_CARD_TO_OTHER_PLAYER_REQUEST = ns('GIVE_CARD_TO_OTHER_PLAYER_REQUEST')
-const GIVE_CARD_TO_OTHER_PLAYER_SUCCESS = ns('GIVE_CARD_TO_OTHER_PLAYER_SUCCESS')
+const FLIP_CARD_ON_HAND = ns('FLIP_CARD_ON_HAND')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -83,13 +80,13 @@ function playCard (card: CardKey) {
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
       card === PASS_GO && dispatch(drawCards())
 
-      if (cardRequiresPayment(card)) {
+      if (monopoly.cardRequiresPayment(card)) {
         const payee: Player = currentGame.game.players.find(player => player.username === currentPlayer.username)
 
         const payers: Player[] = currentGame.game.players
           .filter(player => player.username !== payee.username)
 
-        const amount = getCardPaymentAmount(card, payee.placedCards.properties)
+        const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
 
         dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
@@ -101,15 +98,11 @@ function playCard (card: CardKey) {
   }
 }
 
-function flipCard (card: CardKey) {
+function flipCardOnHand (card: CardKey) {
   return {
-    types: [FLIP_CARD_REQUEST, FLIP_CARD_SUCCESS, ERROR],
+    type: FLIP_CARD_ON_HAND,
     card,
-    promise: (dispatch: Function, getState: Function) => {
-      const currentGame = getState().currentGame
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/flip`, { card, username })
-    }
+    flippedCard: monopoly.flipCard(card)
   }
 }
 
@@ -117,8 +110,8 @@ export const actions = {
   drawCards,
   playCard,
   placeCard,
-  flipCard,
-  discardCard
+  discardCard,
+  flipCardOnHand
 }
 
 // ------------------------------------
@@ -144,8 +137,6 @@ export default function reducer (state: CurrentPlayerCardsState = initialState, 
     case DISCARD_CARD_REQUEST:
     case PLACE_CARD_REQUEST:
     case PLAY_CARD_REQUEST:
-    case FLIP_CARD_REQUEST:
-    case GIVE_CARD_TO_OTHER_PLAYER_REQUEST:
       return requestActionHandler(state)
 
     case DRAW_CARDS_SUCCESS:
@@ -154,24 +145,16 @@ export default function reducer (state: CurrentPlayerCardsState = initialState, 
         cardsOnHand: state.cardsOnHand.concat(action.payload.cards)
       }
 
-    case FLIP_CARD_SUCCESS: {
-      const { cardsOnHand } = state
-      const indexToRemove = cardsOnHand.indexOf(action.card)
-
-      return {
-        ...state,
-        cardsOnHand: [
-          ...cardsOnHand.slice(0, indexToRemove),
-          ...cardsOnHand.slice(indexToRemove + 1),
-          action.payload.flippedCard
-        ]
-      }
+    case FLIP_CARD_ON_HAND: {
+      const nextState = deepmerge(state)
+      const indexToFlip = nextState.cardsOnHand.indexOf(action.card)
+      nextState.cardsOnHand[indexToFlip] = action.flippedCard
+      return nextState
     }
 
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
-    case PLAY_CARD_SUCCESS:
-    case GIVE_CARD_TO_OTHER_PLAYER_SUCCESS: {
+    case PLAY_CARD_SUCCESS: {
       const { cardsOnHand } = state
       const indexToRemove = cardsOnHand.indexOf(action.card)
 

@@ -6,6 +6,7 @@ export const ACTION_CARD_TYPE = 'ACTION_CARD_TYPE'
 export const PROPERTY_CARD_TYPE = 'PROPERTY_CARD_TYPE'
 export const PROPERTY_WILDCARD_TYPE = 'PROPERTY_WILDCARD_TYPE'
 export const PROPERTY_WILDCARD_ALL_COLOUR_TYPE = 'PROPERTY_WILDCARD_ALL_COLOUR_TYPE'
+export const PROPERTY_ADDON_TYPE = 'PROPERTY_ADDON_TYPE'
 export const RENT_CARD_TYPE = 'RENT_CARD_TYPE'
 export const MONEY_CARD_TYPE = 'MONEY_CARD_TYPE'
 
@@ -60,9 +61,6 @@ export const PROPERTY_BLACK_OR_LIGHT_GREEN = 'PROPERTY_BLACK_OR_LIGHT_GREEN'
 export const PROPERTY_YELLOW_OR_RED = 'PROPERTY_YELLOW_OR_RED'
 export const PROPERTY_RED_OR_YELLOW = 'PROPERTY_RED_OR_YELLOW'
 
-export const PROPERTY_ADDON_HOUSE = 'PROPERTY_ADDON_HOUSE'
-export const PROPERTY_ADDON_HOTEL = 'PROPERTY_ADDON_HOTEL'
-
 // ------------------------------------
 // Rent cards
 // ------------------------------------
@@ -83,19 +81,19 @@ export const MONEY_3M = 'MONEY_3M'
 export const MONEY_2M = 'MONEY_2M'
 export const MONEY_1M = 'MONEY_1M'
 
-export const CARDS: MapOfCards = setKey({
+export const CARDS: MapOfCards = setKeyAndTreatAs({
   [HOUSE]: {
     count: 3,
     value: 3,
     image: '/images/cards/house.png',
-    type: ACTION_CARD_TYPE
+    type: PROPERTY_ADDON_TYPE
   },
 
   [HOTEL]: {
     count: 3,
     value: 4,
     image: '/images/cards/hotel.png',
-    type: ACTION_CARD_TYPE
+    type: PROPERTY_ADDON_TYPE
   },
 
   [DEAL_BREAKER]: {
@@ -379,22 +377,6 @@ export const CARDS: MapOfCards = setKey({
     flipTo: PROPERTY_YELLOW_OR_RED
   },
 
-  // TODO
-  [PROPERTY_ADDON_HOUSE]: {
-    count: 0,
-    value: 3,
-    image: '/images/cards/house.png',
-    type: PROPERTY_CARD_TYPE
-  },
-
-  // TODO
-  [PROPERTY_ADDON_HOTEL]: {
-    count: 0,
-    value: 4,
-    image: '/images/cards/hotel.png',
-    type: PROPERTY_CARD_TYPE
-  },
-
   [RENT_ALL_COLOUR]: {
     count: 3,
     value: 3,
@@ -506,7 +488,11 @@ export function shuffle (cards: CardKey[]): CardKey[] {
 }
 
 // Side effect
-function setKey (cards: Object): MapOfCards {
-  Object.keys(cards).map(key => (cards[key].key = key))
+function setKeyAndTreatAs (cards: Object): MapOfCards {
+  Object.keys(cards).map((key) => {
+    const card = cards[key]
+    card.key = key
+    card.treatAs = card.treatAs ? card.treatAs : card.key
+  })
   return cards
 }

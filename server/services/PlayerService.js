@@ -2,7 +2,13 @@
 import PlayerRepository from '../repositories/PlayerRepository'
 import GameService from './GameService'
 import * as monopoly from '../../universal/monopoly/monopoly'
-import { newDeck } from '../../universal/monopoly/cards'
+import PropertySet from '../../universal/monopoly/PropertySet'
+import {
+  PROPERTY_WILDCARD,
+  HOUSE,
+  HOTEL,
+  newDeck
+} from '../../universal/monopoly/cards'
 
 export default class PlayerService {
   playerRepository: PlayerRepository
@@ -19,15 +25,56 @@ export default class PlayerService {
     })
   }
 
-  placeCard (gameId: string, username: Username, card: CardKey, asMoney: boolean = false): Promise<*> {
+  placeCard (gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false): Promise<*> {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        const area = asMoney ? 'bank' : 'properties'
-        player.placedCards[area].push(card)
-        player.actionCounter = player.actionCounter + 1
+      .then(increaseActionCounter)
+      .then(putCardInTheRightPlace)
+
+    //////
+    function increaseActionCounter (player: Player) {
+      player.actionCounter = player.actionCounter + 1
+      return player
+    }
+
+    function putCardInTheRightPlace (player: Player) {
+      if (asMoney) {
+        player.placedCards.bank.push(cardKey)
         return player.save()
-      })
+      }
+
+      // TODO: deal with wildcard, house, hotel
+      if (cardKey === PROPERTY_WILDCARD || cardKey === HOUSE || cardKey === HOTEL) {
+        return Promise.reject(`Not ready for ${cardKey}`)
+      }
+
+      const card = monopoly.getCardObject(cardKey)
+
+      // Side effect
+      // Put in the first non full set of the same colour
+      const hasBeenPlaced = player.placedCards
+        .serializedPropertySets
+        .some((set, index) => {
+          if (set.identifier.key !== card.treatAs) {
+            return false
+          }
+
+          if (monopoly.unserializePropertySet(set).isFullSet()) {
+            return false
+          }
+
+          set.cards.push(cardKey)
+
+          return true
+        })
+
+      if (!hasBeenPlaced) {
+        const newPropertySet = new PropertySet(monopoly.getCardObject(card.treatAs), [cardKey]).serialize()
+        player.placedCards.serializedPropertySets.push(newPropertySet)
+      }
+
+      return player.save()
+    }
   }
 
   playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
@@ -50,7 +97,7 @@ export default class PlayerService {
         if (cardRequiresPayment) {
           player.payeeInfo = {
             cardPlayed: cardKey,
-            amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.properties),
+            amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
             payers: players
               .filter(p => p.username !== username)
               .map(p => p.username)
@@ -109,30 +156,13 @@ export default class PlayerService {
       .then(([_, drawnCards]) => drawnCards)
   }
 
-  flipCard (gameId: string, username: Username, cardToFlip: CardKey): Promise<CardKey> | Promise<*> {
-    const card: Card = monopoly.getCardObject(cardToFlip)
-
-    if (!monopoly.canFlipCard(card)) {
-      return Promise.reject(new Error(`Card ${cardToFlip} is not flippable`))
-    }
-
-    const flippedCard: CardKey = monopoly.flipCard(cardToFlip)
-
-    return this.playerRepository
-      .findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        const cardToFlipIndex = player.placedCards.properties.findIndex(c => c === cardToFlip)
-        player.placedCards.properties[cardToFlipIndex] = flippedCard
-
-        return player.save()
-      })
-      .then(() => flippedCard)
-  }
-
-  pay (gameId: string, payer: Username, payee: Username, cardsForPayment: CardKey[]): Promise<*> {
-    // TODO: what if we have a set that has a house/hotel card?
-    const moneyCards = monopoly.getMoneyCards(cardsForPayment)
-    const propertyCards = monopoly.getPropertyCards(cardsForPayment)
+  pay (
+    gameId: string,
+    payer: Username,
+    payee: Username,
+    moneyCards: CardKey[],
+    paymentSerializedSets: SerializedPropertySet[]
+  ): Promise<*> {
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, payee),
       this.playerRepository.findByGameIdAndUsername(gameId, payer)
@@ -146,38 +176,66 @@ export default class PlayerService {
         ])
       })
 
+    //////
     function updatePayee (payeePlayer: Player): Promise<*> {
       const { payeeInfo } = payeePlayer
 
       if (!payeeInfo.payers || !payeeInfo.payers.includes(payer)) {
-        return Promise.reject()
+        return Promise.reject(`${payer} does not owe anything`)
       }
 
+      // Since payer is paying their due, we remove them from the list.
       payeePlayer.payeeInfo.payers = payeeInfo.payers.filter(p => p !== payer)
 
+      // If we don't have any payers left, reset payeeInfo.
       if (!payeePlayer.payeeInfo.payers.length) {
         payeePlayer.payeeInfo.amount = 0
         payeePlayer.payeeInfo.cardPlayed = null
       }
 
+      // Merge the property sets.
       const { placedCards } = payeePlayer
 
-      placedCards.bank = placedCards.bank.concat(moneyCards)
-      placedCards.properties = placedCards.properties.concat(propertyCards)
+      const leftOverNonPropertyCards = monopoly.mergeSerializedPropertySets(
+        placedCards.serializedPropertySets,
+        paymentSerializedSets
+      )
+
+      // Put money cards into the bank.
+      placedCards.bank = placedCards.bank.concat(moneyCards).concat(leftOverNonPropertyCards)
+
       return payeePlayer.save()
     }
 
     function updatePayer (payerPlayer: Player): Promise<*> {
       const { placedCards } = payerPlayer
 
+      // Remove the money cards
       moneyCards.forEach(card => {
         const indexToRemove = placedCards.bank.findIndex(c => c === card)
         placedCards.bank.splice(indexToRemove, 1)
       })
 
-      propertyCards.forEach(card => {
-        const indexToRemove = placedCards.properties.findIndex(c => c === card)
-        placedCards.properties.splice(indexToRemove, 1)
+      // Remove the property sets, if there are any to remove.
+      if (!paymentSerializedSets.length) {
+        return payerPlayer.save()
+      }
+
+      placedCards.serializedPropertySets.forEach((item, index) => {
+        const paymentSerializedSet = paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
+
+        if (!paymentSerializedSet) {
+          return
+        }
+
+        const thisPropertySet = monopoly.unserializePropertySet(item)
+        const thatPropertySet = monopoly.unserializePropertySet(paymentSerializedSet)
+
+        if (!thisPropertySet.equals(thatPropertySet)) {
+          return
+        }
+
+        placedCards.serializedPropertySets.splice(index, 1)
       })
 
       return payerPlayer.save()
