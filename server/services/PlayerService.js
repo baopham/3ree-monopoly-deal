@@ -221,7 +221,7 @@ export default class PlayerService {
       }
 
       placedCards.serializedPropertySets.forEach((item, index) => {
-        const paymentSerializedSet = !paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
+        const paymentSerializedSet = paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
 
         if (!paymentSerializedSet) {
           return
