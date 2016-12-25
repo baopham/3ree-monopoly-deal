@@ -8,6 +8,12 @@ A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
 > Initial boilerplate was based on: https://github.com/GordyD/3ree
 
 
+Requirements
+------------
+* Node 6.7 and up
+* npm 3.10 and up or yarn
+
+
 Quick Start
 ----------
 
@@ -25,6 +31,7 @@ Notes
 
 - Currently, only the client knows about what cards the player is holding
 - Rules are loosely applied
+- If you unexpected errors, try to clear local storage: `localStorage.removeItem('redux')`
 
 
 TODOs
