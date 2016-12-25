@@ -217,7 +217,10 @@ export function unserializePropertySet (serializedItem: SerializedPropertySet): 
  * Side effect on `mine`
  * Return any left over cards that cannot be used to form property sets.
  */
-export function mergeSerializedPropertySets (mine: SerializedPropertySet[], theirs: SerializedPropertySet[]): CardKey[] {
+export function mergeSerializedPropertySets (
+  mine: SerializedPropertySet[],
+  theirs: SerializedPropertySet[]
+): CardKey[] {
   const allLeftOverCards = []
 
   // First get all of my non full sets
@@ -238,7 +241,7 @@ export function mergeSerializedPropertySets (mine: SerializedPropertySet[], thei
   // TODO: when will this happen?
   return handleLeftOverCards()
 
-  /////
+  // ///
   function merge (other: SerializedPropertySet) {
     const otherPropertySet = unserializePropertySet(other)
 

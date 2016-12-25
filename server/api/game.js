@@ -68,7 +68,13 @@ export function endTurn (req: AppRequest, res: express$Response) {
 }
 
 export function pay (req: AppRequest, res: express$Response) {
-  const promise = playerService.pay(req.params.id, req.body.payer, req.body.payee, req.body.cardsForPayment)
+  const promise = playerService.pay(
+    req.params.id,
+    req.body.payer,
+    req.body.payee,
+    req.body.moneyCards,
+    req.body.serializedPropertySets
+  )
 
   promise
     .then(() => res.json('success'))

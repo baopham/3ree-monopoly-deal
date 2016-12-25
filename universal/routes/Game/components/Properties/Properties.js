@@ -6,8 +6,8 @@ import * as monopoly from '../../../../monopoly/monopoly'
 
 type Props = {
   propertySets: PropertySetClass[],
-  onCardClick?: (card: CardKey, index: number) => void,
-  isCardHighlighted: (card: CardKey, index: number) => boolean,
+  onCardClick: (card: CardKey, index: number, serializedPropertySetIndex: number) => void,
+  isCardHighlighted: (card: CardKey, index: number, serializedPropertySetIndex: number) => boolean,
   onWinning: () => void
 }
 
@@ -17,7 +17,8 @@ export default class Properties extends React.Component {
   hasWon: boolean
 
   static defaultProps = {
-    isCardHighlighted: (card: CardKey, index: number) => false,
+    isCardHighlighted: (card: CardKey, index: number, serializedPropertySetIndex: number) => false,
+    onCardClick: (card: CardKey, index: number, serializedPropertySetIndex: number) => {},
     onWinning: () => {}
   }
 
@@ -50,11 +51,11 @@ export default class Properties extends React.Component {
 
     return (
       <ul className='list-inline'>
-        {propertySets.map((set, i) =>
-          <li key={i}>
+        {propertySets.map((set, setIndex) =>
+          <li key={setIndex}>
             <PropertySet
-              onCardClick={onCardClick}
-              isCardHighlighted={isCardHighlighted}
+              onCardClick={(card, cardIndex) => onCardClick(card, cardIndex, setIndex)}
+              isCardHighlighted={(card, cardIndex) => isCardHighlighted(card, cardIndex, setIndex)}
               propertySet={set}
             />
           </li>

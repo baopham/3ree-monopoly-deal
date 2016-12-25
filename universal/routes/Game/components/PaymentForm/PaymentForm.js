@@ -9,18 +9,19 @@ import Properties from '../Properties'
 import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import * as monopoly from '../../../../monopoly/monopoly'
+import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
+import * as helper from './helper'
 
 type Props = {
-  onPay: (cards: CardKey[]) => void,
+  onPay: (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
   cards: PlacedCards,
   payee: Username,
   dueAmount: number
 }
 
-type CardIndex = number
-
 type State = {
-  selectedCards: Array<[CardKey, CardIndex]>
+  selectedMoneyCards: MoneyCardTuple[],
+  selectedNonMoneyCards: NonMoneyCardTuple[]
 }
 
 export default class PaymentForm extends React.Component {
@@ -32,46 +33,78 @@ export default class PaymentForm extends React.Component {
     super(props)
 
     this.state = {
-      selectedCards: []
+      selectedMoneyCards: [],
+      selectedNonMoneyCards: []
     }
   }
 
   componentWillUnmount () {
     this.setState({
-      selectedCards: []
+      selectedMoneyCards: [],
+      selectedNonMoneyCards: []
     })
   }
 
-  selectCard (card: CardKey, index: CardIndex) {
-    this.setState({
-      selectedCards: this.state.selectedCards.concat([[card, index]])
-    })
-  }
+  toggleSelectMoneyCard = (card: CardKey, index: CardIndex) => {
+    const { selectedMoneyCards } = this.state
+    const tuple: MoneyCardTuple = [card, index]
 
-  unselectCard (card: CardKey, index: CardIndex) {
-    const { selectedCards } = this.state
+    if (this.isMoneyCardHighlighted(card, index)) {
+      this.setState({
+        selectedMoneyCards: helper.unselectCard(tuple, selectedMoneyCards)
+      })
 
-    this.setState({
-      selectedCards: selectedCards.filter(([c, i]) => c !== card || i !== index)
-    })
-  }
-
-  toggleSelectCard = (card: CardKey, index: CardIndex) => {
-    if (this.isCardHighlighted(card, index)) {
-      this.unselectCard(card, index)
       return
     }
 
-    this.selectCard(card, index)
+    this.setState({
+      selectedMoneyCards: helper.selectCard(tuple, selectedMoneyCards)
+    })
+  }
+
+  toggleSelectNonMoneyCard = (
+    card: CardKey,
+    cardIndex: CardIndex,
+    serializedPropertySetIndex: SerializedPropertySetIndex
+  ) => {
+    const { selectedNonMoneyCards } = this.state
+    const tuple: NonMoneyCardTuple = [card, cardIndex, serializedPropertySetIndex]
+
+    if (this.isNonMoneyCardHighlighted(card, cardIndex, serializedPropertySetIndex)) {
+      this.setState({
+        selectedNonMoneyCards: helper.unselectCard(tuple, selectedNonMoneyCards)
+      })
+
+      return
+    }
+
+    this.setState({
+      selectedNonMoneyCards: helper.selectCard(tuple, selectedNonMoneyCards)
+    })
   }
 
   pay = () => {
-    const { selectedCards } = this.state
-    this.props.onPay(selectedCards.map(([card, index]) => card))
+    const { selectedMoneyCards, selectedNonMoneyCards } = this.state
+    const { serializedPropertySets } = this.props.cards
+    const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
+      selectedNonMoneyCards,
+      serializedPropertySets
+    )
+    const moneyCards = selectedMoneyCards.map(([c]) => c).concat(leftOverCards)
+
+    this.props.onPay(moneyCards, sets)
   }
 
-  isCardHighlighted = (card: CardKey, index: CardIndex) => {
-    return !!this.state.selectedCards.find(([c, i]) => c === card && i === index)
+  isMoneyCardHighlighted = (card: CardKey, index: CardIndex) => {
+    return helper.cardIsSelected([...arguments], this.state.selectedMoneyCards)
+  }
+
+  isNonMoneyCardHighlighted = (
+    card: CardKey,
+    cardIndex: CardIndex,
+    serializedPropertySetIndex: SerializedPropertySetIndex
+  ) => {
+    return helper.cardIsSelected([...arguments], this.state.selectedNonMoneyCards)
   }
 
   renderTotalAmountAlert () {
@@ -97,8 +130,8 @@ export default class PaymentForm extends React.Component {
         {cards.bank.map((card, i) =>
           <li key={i}>
             <Card
-              highlighted={this.isCardHighlighted(card, i)}
-              onClick={() => this.toggleSelectCard(card, i)}
+              highlighted={this.isMoneyCardHighlighted(card, i)}
+              onClick={() => this.toggleSelectMoneyCard(card, i)}
               card={card}
               size='small'
               faceUp
@@ -110,7 +143,10 @@ export default class PaymentForm extends React.Component {
   }
 
   getAmountSelected () {
-    return monopoly.getTotalMoneyFromCards(this.state.selectedCards.map(([card, index]) => card))
+    const { selectedMoneyCards, selectedNonMoneyCards } = this.state
+    const allSelectedCards = selectedMoneyCards.map(([c]) => c).concat(selectedNonMoneyCards.map(([c]) => c))
+
+    return monopoly.getTotalMoneyFromCards(allSelectedCards)
   }
 
   render () {
@@ -136,8 +172,8 @@ export default class PaymentForm extends React.Component {
           {this.renderBankCards()}
           <Properties
             propertySets={propertySets}
-            onCardClick={this.toggleSelectCard}
-            isCardHighlighted={this.isCardHighlighted}
+            onCardClick={this.toggleSelectNonMoneyCard}
+            isCardHighlighted={this.isNonMoneyCardHighlighted}
           />
         </Modal.Body>
 

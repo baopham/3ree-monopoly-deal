@@ -2,7 +2,6 @@
 import PlayerRepository from '../repositories/PlayerRepository'
 import GameService from './GameService'
 import * as monopoly from '../../universal/monopoly/monopoly'
-import PropertySet from '../../universal/monopoly/PropertySet'
 import { newDeck } from '../../universal/monopoly/cards'
 
 export default class PlayerService {

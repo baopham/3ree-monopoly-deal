@@ -37,8 +37,8 @@ describe('monopoly', function () {
       const placedCards: PlacedCards = {
         bank: [],
         serializedPropertySets: [{
-          identifier: monopoly.getCardObject(PROPERTY_BLUE),
-          cards: [PROPERTY_BLUE]
+          identifier: monopoly.getCardObject(PROPERTY_PINK),
+          cards: [PROPERTY_PINK]
         }]
       }
       expect(monopoly.canPlayCard(card, placedCards)).to.be.false
