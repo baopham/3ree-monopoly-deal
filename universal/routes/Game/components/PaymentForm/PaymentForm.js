@@ -96,7 +96,7 @@ export default class PaymentForm extends React.Component {
   }
 
   isMoneyCardHighlighted = (card: CardKey, index: CardIndex) => {
-    return helper.cardIsSelected([...arguments], this.state.selectedMoneyCards)
+    return helper.cardIsSelected([card, index], this.state.selectedMoneyCards)
   }
 
   isNonMoneyCardHighlighted = (
@@ -104,7 +104,7 @@ export default class PaymentForm extends React.Component {
     cardIndex: CardIndex,
     serializedPropertySetIndex: SerializedPropertySetIndex
   ) => {
-    return helper.cardIsSelected([...arguments], this.state.selectedNonMoneyCards)
+    return helper.cardIsSelected([card, cardIndex, serializedPropertySetIndex], this.state.selectedNonMoneyCards)
   }
 
   renderTotalAmountAlert () {

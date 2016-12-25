@@ -25,10 +25,10 @@ type Props = {
   playCard: (card: CardKey) => void,
   drawCards: () => void,
   discardCard: (card: CardKey) => void,
-  flipCard: (card: CardKey) => void,
+  flipCardOnHand: (card: CardKey) => void,
   setWinner: (username: Username) => void,
   join: (username: Username) => void,
-  pay: (payer: Username, cardsForPayment: CardKey[]) => void,
+  pay: (payer: Username, moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
   endTurn: () => void,
   isPlayerTurn: boolean,
   payment: PaymentState
@@ -59,9 +59,9 @@ export class GameComponent extends React.Component {
     }
   }
 
-  onPay = (cardsForPayment: CardKey[]) => {
+  onPay = (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => {
     const { pay, currentPlayer } = this.props
-    pay(currentPlayer.username, cardsForPayment)
+    pay(currentPlayer.username, moneyCards, serializedPropertySets)
   }
 
   payerHasNotEnoughMoney (): boolean {
@@ -92,7 +92,7 @@ export class GameComponent extends React.Component {
       playCard,
       endTurn,
       discardCard,
-      flipCard,
+      flipCardOnHand,
       isPlayerTurn,
       setWinner,
       payment
@@ -116,7 +116,7 @@ export class GameComponent extends React.Component {
               onPlayCard={playCard}
               onDrawCards={drawCards}
               onDiscardCard={discardCard}
-              onFlipCard={flipCard}
+              onFlipCard={flipCardOnHand}
               currentPlayer={currentPlayer}
               isPlayerTurn={isPlayerTurn}
             />

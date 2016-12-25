@@ -23,10 +23,7 @@ const PLACE_CARD_REQUEST = ns('PLACE_CARD_REQUEST')
 const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
 const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
 const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
-const FLIP_CARD_REQUEST = ns('FLIP_CARD_REQUEST')
-const FLIP_CARD_SUCCESS = ns('FLIP_CARD_SUCCESS')
-const GIVE_CARD_TO_OTHER_PLAYER_REQUEST = ns('GIVE_CARD_TO_OTHER_PLAYER_REQUEST')
-const GIVE_CARD_TO_OTHER_PLAYER_SUCCESS = ns('GIVE_CARD_TO_OTHER_PLAYER_SUCCESS')
+const FLIP_CARD_ON_HAND = ns('FLIP_CARD_ON_HAND')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -101,11 +98,20 @@ function playCard (card: CardKey) {
   }
 }
 
+function flipCardOnHand (card: CardKey) {
+  return {
+    type: FLIP_CARD_ON_HAND,
+    card,
+    flippedCard: monopoly.flipCard(card)
+  }
+}
+
 export const actions = {
   drawCards,
   playCard,
   placeCard,
-  discardCard
+  discardCard,
+  flipCardOnHand
 }
 
 // ------------------------------------
@@ -131,8 +137,6 @@ export default function reducer (state: CurrentPlayerCardsState = initialState, 
     case DISCARD_CARD_REQUEST:
     case PLACE_CARD_REQUEST:
     case PLAY_CARD_REQUEST:
-    case FLIP_CARD_REQUEST:
-    case GIVE_CARD_TO_OTHER_PLAYER_REQUEST:
       return requestActionHandler(state)
 
     case DRAW_CARDS_SUCCESS:
@@ -141,24 +145,16 @@ export default function reducer (state: CurrentPlayerCardsState = initialState, 
         cardsOnHand: state.cardsOnHand.concat(action.payload.cards)
       }
 
-    case FLIP_CARD_SUCCESS: {
-      const { cardsOnHand } = state
-      const indexToRemove = cardsOnHand.indexOf(action.card)
-
-      return {
-        ...state,
-        cardsOnHand: [
-          ...cardsOnHand.slice(0, indexToRemove),
-          ...cardsOnHand.slice(indexToRemove + 1),
-          action.payload.flippedCard
-        ]
-      }
+    case FLIP_CARD_ON_HAND: {
+      const nextState = deepmerge(state)
+      const indexToFlip = nextState.cardsOnHand.indexOf(action.card)
+      nextState.cardsOnHand[indexToFlip] = action.flippedCard
+      return nextState
     }
 
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
-    case PLAY_CARD_SUCCESS:
-    case GIVE_CARD_TO_OTHER_PLAYER_SUCCESS: {
+    case PLAY_CARD_SUCCESS: {
       const { cardsOnHand } = state
       const indexToRemove = cardsOnHand.indexOf(action.card)
 

@@ -54,7 +54,7 @@ export function cardIsSelected (tuple: Array<*>, tuples: Array<*>): boolean {
 }
 
 function tuplesAreEqual (a: Array<mixed>, b: Array<mixed>) {
-  return a.length === b.length && a.some((item, index) => item === b[index])
+  return a.length === b.length && a.every((item, index) => item === b[index])
 }
 
 function sortCards (cards: CardKey[]): CardKey[] {
