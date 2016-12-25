@@ -2,7 +2,13 @@
 import PlayerRepository from '../repositories/PlayerRepository'
 import GameService from './GameService'
 import * as monopoly from '../../universal/monopoly/monopoly'
-import { newDeck } from '../../universal/monopoly/cards'
+import PropertySet from '../../universal/monopoly/PropertySet'
+import {
+  PROPERTY_WILDCARD,
+  HOUSE,
+  HOTEL,
+  newDeck
+} from '../../universal/monopoly/cards'
 
 export default class PlayerService {
   playerRepository: PlayerRepository
@@ -24,17 +30,23 @@ export default class PlayerService {
       .findByGameIdAndUsername(gameId, username)
       .then(putCardInTheRightPlace)
 
+    //////
     function putCardInTheRightPlace (player: Player) {
       if (asMoney) {
         player.placedCards.bank.push(cardKey)
         return player.save()
       }
 
+      // TODO: deal with wildcard, house, hotel
+      if (cardKey === PROPERTY_WILDCARD || cardKey === HOUSE || cardKey === HOTEL) {
+        return Promise.reject(`Not ready for ${cardKey}`)
+      }
+
       const card = monopoly.getCardObject(cardKey)
 
       // Side effect
       // Put in the first non full set of the same colour
-      player.placedCards
+      const hasBeenPlaced = player.placedCards
         .serializedPropertySets
         .some((set, index) => {
           if (set.identifier.key !== card.treatAs) {
@@ -49,6 +61,11 @@ export default class PlayerService {
 
           return true
         })
+
+      if (!hasBeenPlaced) {
+        const newPropertySet = new PropertySet(monopoly.getCardObject(card.treatAs), [cardKey]).serialize()
+        player.placedCards.serializedPropertySets.push(newPropertySet)
+      }
 
       return player.save()
     }
@@ -74,7 +91,7 @@ export default class PlayerService {
         if (cardRequiresPayment) {
           player.payeeInfo = {
             cardPlayed: cardKey,
-            amount: monopoly.getCardPaymentAmount(cardKey, player.propertySets),
+            amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
             payers: players
               .filter(p => p.username !== username)
               .map(p => p.username)
@@ -192,7 +209,11 @@ export default class PlayerService {
         placedCards.bank.splice(indexToRemove, 1)
       })
 
-      // Remove the property sets
+      // Remove the property sets, if there are any to remove.
+      if (!paymentSerializedSets.length) {
+        return payerPlayer.save()
+      }
+
       placedCards.serializedPropertySets.forEach((item, index) => {
         const paymentSerializedSet = !paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
 
