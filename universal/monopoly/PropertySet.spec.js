@@ -109,7 +109,7 @@ describe('PropertySet', function () {
     })
   })
 
-  describe('#isEqual', function () {
+  describe('#equals', function () {
     it('should return true if 2 property sets have the same identifier and cards', function () {
       const thisPropertySet = new PropertySet(identifier, [PROPERTY_BLUE])
       const thatPropertySet = new PropertySet(identifier, [PROPERTY_BLUE])
