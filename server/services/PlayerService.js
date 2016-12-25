@@ -176,6 +176,7 @@ export default class PlayerService {
         ])
       })
 
+    //////
     function updatePayee (payeePlayer: Player): Promise<*> {
       const { payeeInfo } = payeePlayer
 
