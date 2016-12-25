@@ -23,10 +23,6 @@ export function getCardObject (cardKeyOrCard: CardKeyOrCard): Card {
   return typeof cardKeyOrCard === 'string' ? CARDS[cardKeyOrCard] : cardKeyOrCard
 }
 
-export function totalValue (cards: CardKeyOrCard[]): number {
-  return cards.reduce((previous, card) => previous + getCardObject(card).value, 0)
-}
-
 export function isMoneyCard (card: CardKeyOrCard): boolean {
   card = getCardObject(card)
   return card.type === MONEY_CARD_TYPE
