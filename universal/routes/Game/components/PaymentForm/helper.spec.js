@@ -8,7 +8,9 @@ import {
   PROPERTY_BLUE,
   PROPERTY_RED,
   HOUSE,
-  PROPERTY_WILDCARD
+  PROPERTY_WILDCARD,
+  MONEY_1M,
+  MONEY_2M
 } from '../../../../../universal/monopoly/cards'
 
 describe('PaymentForm: helper', function () {
@@ -74,6 +76,54 @@ describe('PaymentForm: helper', function () {
           identifier: monopoly.getCardObject(PROPERTY_BLUE),
           cards: [PROPERTY_BLUE, PROPERTY_WILDCARD, HOUSE]
         })
+      })
+    })
+  })
+  describe('#cardIsSelected', function () {
+    describe('Given an array of non-money tuples', function () {
+      it('should return true if the card is selected', function () {
+        const selected = [
+          [PROPERTY_BLUE, 0, 1],
+          [PROPERTY_RED, 1, 2]
+        ]
+
+        const tuple = [PROPERTY_BLUE, 0, 1]
+
+        expect(helper.cardIsSelected(tuple, selected)).to.be.true
+      })
+
+      it('should return false if the card is not selected', function () {
+        const selected = [
+          [PROPERTY_BLUE, 0, 1],
+          [PROPERTY_RED, 1, 2]
+        ]
+
+        const tuple = [PROPERTY_BLUE, 1, 1]
+
+        expect(helper.cardIsSelected(tuple, selected)).to.be.false
+      })
+    })
+    describe('Given an array of money tuples', function () {
+      it('should return true if the card is selected', function () {
+        const selected = [
+          [MONEY_1M, 0],
+          [MONEY_2M, 1]
+        ]
+
+        const tuple = [MONEY_1M, 0]
+
+        expect(helper.cardIsSelected(tuple, selected)).to.be.true
+      })
+
+      it('should return false if the card is not selected', function () {
+        const selected = [
+          [MONEY_1M, 0],
+          [MONEY_2M, 1]
+        ]
+
+        const tuple = [MONEY_1M, 1]
+
+        expect(helper.cardIsSelected(tuple, selected)).to.be.false
       })
     })
   })
