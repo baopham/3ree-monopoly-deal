@@ -70,4 +70,37 @@ export default class PropertySet {
 
     return cards
   }
+
+  serialize (): SerializedPropertySet {
+    return {
+      cards: this.getCards(),
+      identifier: this.identifier
+    }
+  }
+
+  equals (other: PropertySet): boolean {
+    return this.identifier.key === other.identifier.key &&
+    this.getCards().length === other.getCards().length &&
+    this.getCards().filter(card => !other.getCards().includes(card)).length === 0
+  }
+
+  /**
+   * Merge with another set.
+   * Will return any left over cards that could not be merged.
+   */
+  mergeWith (other: PropertySet): ?CardKey[] {
+    if (this.identifier.key !== other.identifier.key) {
+      throw new Error('Cannot merge 2 sets of different colours')
+    }
+
+    if (other.isFullSet() || this.isFullSet()) {
+      throw new Error('Cannot merge when one of the set is full')
+    }
+
+    const leftOverCards = other.getCards().filter(card => !this.addCard(card))
+
+    if (leftOverCards.length) {
+      return leftOverCards
+    }
+  }
 }

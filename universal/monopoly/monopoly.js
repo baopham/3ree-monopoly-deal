@@ -1,7 +1,9 @@
 /* @flow */
 import {
   CARDS,
+  PROPERTY_CARD_TYPE,
   PROPERTY_WILDCARD_TYPE,
+  PROPERTY_WILDCARD_ALL_COLOUR_TYPE,
   PROPERTY_WILDCARD,
   MONEY_CARD_TYPE,
   ACTION_CARD_TYPE,
@@ -40,10 +42,15 @@ export function isActionCard (card: CardKeyOrCard): boolean {
   return card.type === ACTION_CARD_TYPE
 }
 
+export function isPropertyCard (card: CardKeyOrCard): boolean {
+  card = getCardObject(card)
+  return card.type === PROPERTY_CARD_TYPE || card.type === PROPERTY_WILDCARD_ALL_COLOUR_TYPE
+}
+
 export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCards): boolean {
   const card = getCardObject(cardKeyOrCard)
 
-  if (card.key === FORCED_DEAL && placedCards.properties.length) {
+  if (card.key === FORCED_DEAL && placedCards.serializedPropertySets.length) {
     return true
   }
 
@@ -52,11 +59,15 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
   }
 
   if (isRentCard(card)) {
-    if (card.key === RENT_ALL_COLOUR && placedCards.properties.length) {
+    if (card.key === RENT_ALL_COLOUR && placedCards.serializedPropertySets.length) {
       return true
     }
 
-    return placedCards.properties.some((c: CardKey): boolean => {
+    const properties = placedCards.serializedPropertySets
+      .map(unserializePropertySet)
+      .reduce((acc, set: PropertySet) => acc.concat(set.getProperties()), [])
+
+    return properties.some((c: CardKey): boolean => {
       const property = getCardObject(c)
       const forCards = card.forCards || []
       const propertyKey = property.treatAs ? property.treatAs : property.key
@@ -89,11 +100,7 @@ export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
   // Property groups (without wildcards)
   cardKeysWithoutWildcards.forEach((cardKey: CardKey): void => {
     const card = getCardObject(cardKey)
-    let treatAs = card.key
-
-    if (card.type === PROPERTY_WILDCARD_TYPE) {
-      treatAs = card.treatAs
-    }
+    let treatAs = card.treatAs
 
     const group = groups.get(treatAs) || []
     group.push(cardKey)
@@ -149,14 +156,17 @@ export function cardRequiresPayment (cardKey: CardKey) {
   return false
 }
 
-export function getCardPaymentAmount (cardKey: CardKey, propertySets: SerializedPropertySets[]): number {
+/**
+ * e.g. DEBT_COLLECTOR -> 5M, RENT -> xx depending on what cards are available
+ */
+export function getCardPaymentAmount (cardKey: CardKey, serializedPropertySets: SerializedPropertySet[]): number {
   const card = getCardObject(cardKey)
 
   if (!isRentCard(card)) {
     return card.paymentAmount
   }
 
-  const maxRentableAmount = propertySets.reduce((acc, item) => {
+  const maxRentableAmount = serializedPropertySets.reduce((acc, item) => {
     const set = unserializePropertySet(item)
 
     if (set.isRentable(card)) {
@@ -187,7 +197,8 @@ export function getTotalMoneyFromCards (cardKeys: CardKey[]): number {
 }
 
 export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number {
-  return getTotalMoneyFromCards(placedCards.bank) + getTotalMoneyFromCards(placedCards.properties)
+  return getTotalMoneyFromCards(placedCards.bank) +
+    getTotalMoneyFromCards(flattenSerializedPropertySetCards(placedCards.serializedPropertySets))
 }
 
 export function getMoneyCards (cardKeys: CardKey[]): CardKey[] {
@@ -198,6 +209,83 @@ export function getPropertyCards (cardKeys: CardKey[]): CardKey[] {
   return cardKeys.filter(cardKey => !isMoneyCard(cardKey) && !isActionCard(cardKey))
 }
 
-function unserializePropertySet (serializedItem: SerializedPropertySets): PropertySet {
+export function unserializePropertySet (serializedItem: SerializedPropertySet): PropertySet {
   return new PropertySet(serializedItem.identifier, serializedItem.cards)
+}
+
+/**
+ * Side effect on `mine`
+ * Return any left over cards that cannot be used to form property sets.
+ */
+export function mergeSerializedPropertySets (mine: SerializedPropertySet[], theirs: SerializedPropertySet[]): CardKey[] {
+  const allLeftOverCards = []
+
+  // First get all of my non full sets
+  // Keeping references to ensure the order staying the same
+  const nonFullSerializedSets = new Map()
+  mine.forEach((item) => {
+    if (unserializePropertySet(item).isFullSet()) {
+      return
+    }
+
+    nonFullSerializedSets.set(item.identifier.key, item)
+  })
+
+  // Next, merging
+  theirs.forEach(merge)
+
+  // Finally, deal with the left over cards
+  // TODO: when will this happen?
+  return handleLeftOverCards()
+
+  /////
+  function merge (other: SerializedPropertySet) {
+    const otherPropertySet = unserializePropertySet(other)
+
+    if (otherPropertySet.isFullSet()) {
+      mine.push(otherPropertySet.serialize())
+      return
+    }
+
+    let serializedSetToMerge = nonFullSerializedSets.get(other.identifier.key)
+
+    // If we don't have a set of this colour, create a new set
+    if (!serializedSetToMerge) {
+      serializedSetToMerge = { identifier: other.identifier, cards: [] }
+      mine.push(serializedSetToMerge)
+    }
+
+    const setToMerge = unserializePropertySet(serializedSetToMerge)
+
+    const leftOverCards = setToMerge.mergeWith(otherPropertySet)
+
+    // Update in place
+    Object.assign(serializedSetToMerge, setToMerge.serialize())
+
+    leftOverCards && allLeftOverCards.push(...leftOverCards)
+  }
+
+  function handleLeftOverCards (): CardKey[] {
+    if (!allLeftOverCards.length) {
+      return []
+    }
+
+    const leftOverProperties = allLeftOverCards.filter(c => isPropertyCard(c))
+    const leftOverNonProperties = allLeftOverCards.filter(c => !isPropertyCard(c))
+
+    const newPropertySets = groupPropertiesIntoSets(leftOverProperties)
+
+    mine.push(...newPropertySets.map(set => set.serialize()))
+
+    leftOverNonProperties.forEach((c, index) => {
+      const used = newPropertySets.some(set => set.addCard(c))
+      used && leftOverNonProperties.splice(index, 1)
+    })
+
+    return leftOverNonProperties
+  }
+}
+
+function flattenSerializedPropertySetCards (serializedPropertySets: SerializedPropertySet[]): CardKey[] {
+  return serializedPropertySets.reduce((acc, item) => acc.concat(item.cards), [])
 }

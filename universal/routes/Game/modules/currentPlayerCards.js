@@ -89,7 +89,7 @@ function playCard (card: CardKey) {
         const payers: Player[] = currentGame.game.players
           .filter(player => player.username !== payee.username)
 
-        const amount = monopoly.getCardPaymentAmount(card, payee.propertySets)
+        const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
 
         dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
@@ -101,23 +101,10 @@ function playCard (card: CardKey) {
   }
 }
 
-function flipCard (card: CardKey) {
-  return {
-    types: [FLIP_CARD_REQUEST, FLIP_CARD_SUCCESS, ERROR],
-    card,
-    promise: (dispatch: Function, getState: Function) => {
-      const currentGame = getState().currentGame
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/flip`, { card, username })
-    }
-  }
-}
-
 export const actions = {
   drawCards,
   playCard,
   placeCard,
-  flipCard,
   discardCard
 }
 

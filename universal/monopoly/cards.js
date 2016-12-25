@@ -83,7 +83,7 @@ export const MONEY_3M = 'MONEY_3M'
 export const MONEY_2M = 'MONEY_2M'
 export const MONEY_1M = 'MONEY_1M'
 
-export const CARDS: MapOfCards = setKey({
+export const CARDS: MapOfCards = setKeyAndTreatAs({
   [HOUSE]: {
     count: 3,
     value: 3,
@@ -506,7 +506,11 @@ export function shuffle (cards: CardKey[]): CardKey[] {
 }
 
 // Side effect
-function setKey (cards: Object): MapOfCards {
-  Object.keys(cards).map(key => (cards[key].key = key))
+function setKeyAndTreatAs (cards: Object): MapOfCards {
+  Object.keys(cards).map((key) => {
+    const card = cards[key]
+    card.key = key
+    card.treatAs = card.treatAs ? card.treatAs : card.key
+  })
   return cards
 }

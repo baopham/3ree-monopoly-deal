@@ -2,10 +2,10 @@
 import React from 'react'
 import type PropertySetClass from '../../../../monopoly/PropertySet'
 import PropertySet from '../PropertySet'
-import { hasEnoughFullSetsToWin, groupPropertiesIntoSets } from '../../../../monopoly/monopoly'
+import * as monopoly from '../../../../monopoly/monopoly'
 
 type Props = {
-  properties: CardKey[],
+  propertySets: PropertySetClass[],
   onCardClick?: (card: CardKey, index: number) => void,
   isCardHighlighted: (card: CardKey, index: number) => boolean,
   onWinning: () => void
@@ -13,8 +13,6 @@ type Props = {
 
 export default class Properties extends React.Component {
   props: Props
-
-  propertySets: PropertySetClass[]
 
   hasWon: boolean
 
@@ -26,8 +24,7 @@ export default class Properties extends React.Component {
   constructor (props: Props) {
     super(props)
 
-    this.propertySets = groupPropertiesIntoSets(this.props.properties)
-    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon = monopoly.hasEnoughFullSetsToWin(props.propertySets)
     this.hasWon && this.props.onWinning()
   }
 
@@ -36,25 +33,24 @@ export default class Properties extends React.Component {
   }
 
   componentWillUpdate (nextProps: Props) {
-    this.propertySets = groupPropertiesIntoSets(nextProps.properties)
-    this.hasWon = hasEnoughFullSetsToWin(this.propertySets)
+    this.hasWon = monopoly.hasEnoughFullSetsToWin(nextProps.propertySets)
     this.hasWon && this.props.onWinning()
   }
 
   componentWillUnmount () {
-    this.propertySets = []
     this.hasWon = false
   }
 
   render () {
     const {
+      propertySets,
       onCardClick,
       isCardHighlighted
     } = this.props
 
     return (
       <ul className='list-inline'>
-        {this.propertySets.map((set, i) =>
+        {propertySets.map((set, i) =>
           <li key={i}>
             <PropertySet
               onCardClick={onCardClick}

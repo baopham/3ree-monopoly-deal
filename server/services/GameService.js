@@ -77,7 +77,7 @@ export default class GameService {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, winner)
       .then((player: Player) => {
-        const propertySets = monopoly.groupPropertiesIntoSets(player.placedCards.properties)
+        const propertySets = player.placedCards.serializedPropertySets.map(monopoly.unserializePropertySet)
 
         if (!monopoly.hasEnoughFullSetsToWin(propertySets)) {
           return Promise.reject(`${winner} does not have enough full sets to win!`)

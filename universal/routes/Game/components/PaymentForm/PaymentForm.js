@@ -8,7 +8,7 @@ import {
 import Properties from '../Properties'
 import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import { getTotalMoneyFromCards } from '../../../../monopoly/monopoly'
+import * as monopoly from '../../../../monopoly/monopoly'
 
 type Props = {
   onPay: (cards: CardKey[]) => void,
@@ -110,7 +110,7 @@ export default class PaymentForm extends React.Component {
   }
 
   getAmountSelected () {
-    return getTotalMoneyFromCards(this.state.selectedCards.map(([card, index]) => card))
+    return monopoly.getTotalMoneyFromCards(this.state.selectedCards.map(([card, index]) => card))
   }
 
   render () {
@@ -119,6 +119,8 @@ export default class PaymentForm extends React.Component {
       payee,
       dueAmount
     } = this.props
+
+    const propertySets = cards.serializedPropertySets.map(monopoly.unserializePropertySet)
 
     return (
       <ScrollableBackgroundModal show>
@@ -133,7 +135,7 @@ export default class PaymentForm extends React.Component {
           {this.renderTotalAmountAlert()}
           {this.renderBankCards()}
           <Properties
-            properties={cards.properties}
+            propertySets={propertySets}
             onCardClick={this.toggleSelectCard}
             isCardHighlighted={this.isCardHighlighted}
           />

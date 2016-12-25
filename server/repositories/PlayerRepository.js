@@ -66,7 +66,7 @@ export default class PlayerRepository {
   }
 
   joinGame (gameId, username) {
-    const placedCards = { bank: [], properties: [] }
+    const placedCards = { bank: [], propertySets: [] }
 
     return Player
       .filter({ gameId, username })

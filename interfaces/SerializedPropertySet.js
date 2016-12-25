@@ -1,4 +1,4 @@
-type SerializedPropertySets = {
+type SerializedPropertySet = {
   cards: CardKey[],
   identifier: Card
 }
