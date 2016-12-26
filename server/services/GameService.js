@@ -1,16 +1,19 @@
 /* @flow */
 import GameRepository from '../repositories/GameRepository'
 import PlayerRepository from '../repositories/PlayerRepository'
+import GameHistoryService from './GameHistoryService'
 import { newDeck } from '../../universal/monopoly/cards'
 import * as monopoly from '../../universal/monopoly/monopoly'
 
 export default class GameService {
   gameRepository: GameRepository
   playerRepository: PlayerRepository
+  gameHistoryService: GameHistoryService
 
   constructor () {
     this.gameRepository = new GameRepository()
     this.playerRepository = new PlayerRepository()
+    this.gameHistoryService = new GameHistoryService()
   }
 
   static liveUpdates (io) {
@@ -68,7 +71,11 @@ export default class GameService {
         }
 
         game.currentTurn = username
-        return game.save()
+
+        return Promise.all([
+          game.save(),
+          this.gameHistoryService.record(game.id, `${promiseContext.newPlayer.username} has joined`)
+        ])
       })
       .then(() => promiseContext.newPlayer)
   }

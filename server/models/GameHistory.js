@@ -1,0 +1,16 @@
+import thinky from '../thinky'
+
+const type = thinky.type
+
+const GameHistory = thinky.createModel('game_history', {
+  id: type.string(),
+  gameId: type.string(),
+  message: type.string(),
+  notifyUser: type.string()
+})
+
+module.exports = GameHistory
+
+GameHistory.ensureIndex('gameId')
+const Game = require('./Game')
+GameHistory.belongsTo(Game, 'game', 'gameId', 'id')

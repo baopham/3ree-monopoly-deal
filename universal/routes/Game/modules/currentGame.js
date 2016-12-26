@@ -58,7 +58,7 @@ function endTurn () {
   }
 }
 
-function subscribeSocket (socket: Socket, gameId: string) {
+function subscribeGameEvent (socket: Socket, gameId: string) {
   return (dispatch: Function, getState: Function) => {
     socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
     socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
@@ -101,7 +101,7 @@ function onGameChange (dispatch, game) {
   dispatch({ type: UPDATE_GAME, payload: { game } })
 }
 
-function unsubscribeSocket (socket: Socket) {
+function unsubscribeGameEvent (socket: Socket) {
   return (dispatch: Function, getState: Function) => {
     socket.off(`game-${getState().currentGame.game.id}-player-change`)
   }
@@ -112,8 +112,8 @@ export const actions = {
   join,
   endTurn,
   setWinner,
-  subscribeSocket,
-  unsubscribeSocket
+  subscribeGameEvent,
+  unsubscribeGameEvent
 }
 
 // ------------------------------------
