@@ -29,20 +29,9 @@ export default class PaymentForm extends React.Component {
 
   state: State
 
-  constructor (props: Props) {
-    super(props)
-
-    this.state = {
-      selectedMoneyCards: [],
-      selectedNonMoneyCards: []
-    }
-  }
-
-  componentWillUnmount () {
-    this.setState({
-      selectedMoneyCards: [],
-      selectedNonMoneyCards: []
-    })
+  state = {
+    selectedMoneyCards: [],
+    selectedNonMoneyCards: []
   }
 
   toggleSelectMoneyCard = (card: CardKey, index: CardIndex) => {

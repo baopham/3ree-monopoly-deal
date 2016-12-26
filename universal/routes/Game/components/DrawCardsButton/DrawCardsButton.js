@@ -17,12 +17,8 @@ export default class DrawCardsButton extends React.Component {
 
   state: State
 
-  constructor (props: Props) {
-    super(props)
-
-    this.state = {
-      hasDrawnCards: false
-    }
+  state = {
+    hasDrawnCards: false
   }
 
   componentWillReceiveProps (nextProps: Props) {
