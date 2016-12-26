@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import FullWidth from '../../../../components/FullWidth'
-import JoinForm from '../../components/JoinForm'
+import TextFormDialog from '../../../../components/TextFormDialog'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
@@ -133,7 +133,12 @@ export class GameComponent extends React.Component {
         }
 
         {!currentPlayer &&
-          <JoinForm onJoin={join} />
+          <TextFormDialog
+            header='Join Game'
+            inputLabel='Username'
+            submitLabel='Join'
+            onSubmit={join}
+          />
         }
 
         {payment.payee && needToPayAndHaveEnoughMoney &&

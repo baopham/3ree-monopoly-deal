@@ -2,6 +2,7 @@
 import React from 'react'
 import GamesList from '../../components/GamesList'
 import FullWidth from '../../../../components/FullWidth'
+import TextFormDialog from '../../../../components/TextFormDialog'
 import { Button } from 'react-bootstrap'
 import { actions } from '../../modules/games'
 import { connect } from 'react-redux'
@@ -15,12 +16,22 @@ type Props = {
   unsubscribeSocket: (socket: Socket) => void
 }
 
+type State = {
+  addingGame: boolean
+}
+
 const mapStateToProps = (state) => ({
   games: state.games
 })
 
 export class GamesRoute extends React.Component {
   props: Props
+
+  state: State
+
+  state = {
+    addingGame: false
+  }
 
   componentDidMount () {
     this.props.getGames(this.props.games.page)
@@ -31,9 +42,20 @@ export class GamesRoute extends React.Component {
     !!global.socket && this.props.unsubscribeSocket(global.socket)
   }
 
-  addGame = () => {
-    this.props.addGame({
-      name: `Random Game ${new Date().toString()}`
+  addGame = (name: string) => {
+    this.props.addGame({ name })
+    this.cancelAddingGame()
+  }
+
+  addingGame = () => {
+    this.setState({
+      addingGame: true
+    })
+  }
+
+  cancelAddingGame = () => {
+    this.setState({
+      addingGame: false
     })
   }
 
@@ -46,6 +68,7 @@ export class GamesRoute extends React.Component {
   }
 
   render () {
+    const { addingGame } = this.state
     const { games, count, page, limit } = this.props.games
 
     const totalPages = Math.ceil(count / limit)
@@ -53,7 +76,7 @@ export class GamesRoute extends React.Component {
     return (
       <FullWidth>
         <GamesList games={games} />
-        <Button onClick={this.addGame}>
+        <Button onClick={this.addingGame}>
           Add
         </Button>
         {page < (totalPages - 1) &&
@@ -65,6 +88,17 @@ export class GamesRoute extends React.Component {
           <Button onClick={this.previousPage}>
             Previous
           </Button>
+        }
+        {addingGame &&
+          <TextFormDialog
+            allowSpaces
+            cancelable
+            header='Add Game'
+            inputLabel="Game's name"
+            submitLabel='Add'
+            onSubmit={this.addGame}
+            onCancel={this.cancelAddingGame}
+          />
         }
       </FullWidth>
     )
