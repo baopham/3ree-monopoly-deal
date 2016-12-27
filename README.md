@@ -59,10 +59,10 @@ TODOs
   - [ ] Sly deal
   - [ ] Forced deal
   - [ ] Deal breaker
+  - [ ] Debt collector
 - [ ] House
 - [ ] Hotel
 - [ ] Double rent
-- [ ] Debt collector
 
 
 License
