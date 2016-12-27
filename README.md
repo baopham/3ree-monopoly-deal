@@ -38,7 +38,7 @@ TODOs
 -----
 
 - [ ] Collect all the card images
-- [ ] Notification for each action
+- [x] Sound notification for payment notice
 - [ ] Draw 5 cards when hand is empty
 - [x] Game history log
 - [x] Show who played the last card
