@@ -20,7 +20,7 @@ export default class GameHistoryService {
     })
   }
 
-  record (gameId: string, message: string, notifyUser?: Username): Promise<GameHistoryRecord> {
-    return this.gameHistoryRepository.insert({ gameId, message, notifyUser })
+  record (gameId: string, message: string, notifyUsers?: Username[]): Promise<GameHistoryRecord> {
+    return this.gameHistoryRepository.insert({ gameId, message, notifyUsers })
   }
 }

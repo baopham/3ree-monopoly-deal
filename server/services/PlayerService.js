@@ -1,6 +1,7 @@
 /* @flow */
 import PlayerRepository from '../repositories/PlayerRepository'
 import GameService from './GameService'
+import GameHistoryService from './GameHistoryService'
 import * as monopoly from '../../universal/monopoly/monopoly'
 import PropertySet from '../../universal/monopoly/PropertySet'
 import {
@@ -13,10 +14,12 @@ import {
 export default class PlayerService {
   playerRepository: PlayerRepository
   gameService: GameService
+  gameHistoryService: GameHistoryService
 
   constructor () {
     this.playerRepository = new PlayerRepository()
     this.gameService = new GameService()
+    this.gameHistoryService = new GameHistoryService()
   }
 
   static liveUpdates (io) {
@@ -30,6 +33,7 @@ export default class PlayerService {
       .findByGameIdAndUsername(gameId, username)
       .then(increaseActionCounter)
       .then(putCardInTheRightPlace)
+      .then(logAction.bind(this))
 
     //////
     function increaseActionCounter (player: Player) {
@@ -75,6 +79,10 @@ export default class PlayerService {
 
       return player.save()
     }
+
+    function logAction (player: Player) {
+      return this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
+    }
   }
 
   playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
@@ -98,13 +106,16 @@ export default class PlayerService {
           player.payeeInfo = {
             cardPlayed: cardKey,
             amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
-            payers: players
-              .filter(p => p.username !== username)
-              .map(p => p.username)
+            payers: players.filter(p => p.username !== username).map(p => p.username)
           }
         }
 
-        return player.saveAll()
+        const notifyUsers = player.payeeInfo ? player.payeeInfo.payers : undefined
+
+        return Promise.all([
+          player.saveAll(),
+          this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, notifyUsers)
+        ])
       })
   }
 
@@ -114,7 +125,10 @@ export default class PlayerService {
       .then((player: Player) => {
         player.game.discardedCards.push(card)
         player.game.lastCardPlayedBy = username
-        return player.game.save()
+        return Promise.all([
+          player.game.save(),
+          this.gameHistoryService.record(gameId, `${username} discarded ${card}`)
+        ])
       })
   }
 
@@ -131,11 +145,11 @@ export default class PlayerService {
         currentPlayer.actionCounter = 0
 
         return Promise.all([
-          game.save(),
-          currentPlayer.save()
+          game.saveAll(),
+          this.gameHistoryService.record(gameId, `${nextTurn}'s turn`)
         ])
       })
-      .then(([game, player]) => game.currentTurn)
+      .then(([game, _]) => game.currentTurn)
   }
 
   drawCards (gameId: string): Promise<CardKey[]> {
@@ -149,11 +163,12 @@ export default class PlayerService {
         game.availableCards = rest
 
         return Promise.all([
-          game.save(),
-          [first, second]
+          [first, second],
+          this.gameHistoryService.record(gameId, `${game.currentTurn} picked up 2 cards`),
+          game.save()
         ])
       })
-      .then(([_, drawnCards]) => drawnCards)
+      .then(([drawnCards]) => drawnCards)
   }
 
   pay (
@@ -170,9 +185,11 @@ export default class PlayerService {
 
     return Promise.all(promises)
       .then(([payeePlayer: Player, payerPlayer: Player]) => {
+        const dueAmount = payeePlayer.payeeInfo.amount
         return Promise.all([
           updatePayer(payerPlayer),
-          updatePayee(payeePlayer)
+          updatePayee(payeePlayer),
+          this.gameHistoryService.record(gameId, paymentLogMessage(dueAmount))
         ])
       })
 
@@ -239,6 +256,16 @@ export default class PlayerService {
       })
 
       return payerPlayer.save()
+    }
+
+    function paymentLogMessage (dueAmount: number): string {
+      if (!moneyCards.length && !paymentSerializedSets.length) {
+        return `${payer} has no money to pay ${payee} $${dueAmount}M`
+      }
+
+      const allCards = moneyCards.concat(paymentSerializedSets.map(s => s.cards.join(', ')))
+
+      return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
     }
   }
 }

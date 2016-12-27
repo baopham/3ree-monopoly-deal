@@ -7,7 +7,7 @@ const GameHistory = thinky.createModel('game_history', {
   id: type.string(),
   gameId: type.string(),
   message: type.string(),
-  notifyUser: type.string(),
+  notifyUsers: type.array().default([]),
   createdAt: type.date().default(r.now())
 })
 

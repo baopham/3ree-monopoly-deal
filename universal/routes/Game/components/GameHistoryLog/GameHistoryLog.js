@@ -22,8 +22,20 @@ export default class GameHistoryLog extends React.Component {
       <Panel header='Logs'>
         <ListGroup fill style={styles.messageList}>
           {records.map(record =>
-            <ListGroupItem key={record.id} header={record.message}>
-              {record.createdAt}
+            <ListGroupItem key={record.id}>
+              <p>
+                <strong>{record.message}</strong>
+
+                {!!record.notifyUsers.length &&
+                  <small className='help-block'>
+                    To users: {record.notifyUsers.join(', ')}
+                  </small>
+                }
+
+                <small className='help-block'>
+                  {record.createdAt}
+                </small>
+              </p>
             </ListGroupItem>
           )}
         </ListGroup>
