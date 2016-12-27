@@ -12,6 +12,12 @@ const history = syncHistoryWithStore(browserHistory, store)
 
 global.socket = socketClient()
 
+window.onbeforeunload = (e) => {
+  const text = 'Are you sure you want to leave?'
+  e.returnValue = text
+  return text
+}
+
 ReactDOM.render(
   <Root store={store} routing={routes} history={history} />,
   document.getElementById('app')
