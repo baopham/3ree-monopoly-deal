@@ -1,0 +1,33 @@
+import React from 'react'
+import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
+
+type Props = {
+  records: GameHistoryRecord[]
+}
+
+const styles = {
+  messageList: {
+    height: 290,
+    overflow: 'auto'
+  }
+}
+
+export default class GameHistoryLog extends React.Component {
+  props: Props
+
+  render () {
+    const { records } = this.props
+
+    return (
+      <Panel header='Logs'>
+        <ListGroup fill style={styles.messageList}>
+          {records.map(record =>
+            <ListGroupItem key={record.id} header={record.message}>
+              {record.createdAt}
+            </ListGroupItem>
+          )}
+        </ListGroup>
+      </Panel>
+    )
+  }
+}

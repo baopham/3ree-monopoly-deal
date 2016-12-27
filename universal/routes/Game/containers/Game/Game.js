@@ -1,8 +1,11 @@
 /* @flow */
 import React from 'react'
 import { connect } from 'react-redux'
+import { Col } from 'react-bootstrap'
 import FullWidth from '../../../../components/FullWidth'
 import TextFormDialog from '../../../../components/TextFormDialog'
+import Container from '../../../../components/Container'
+import GameHistoryLog from '../../components/GameHistoryLog'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
@@ -16,11 +19,13 @@ import { actions as paymentActions } from '../../modules/payment'
 import { MAX_NUMBER_OF_ACTIONS, getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCards'
 import type { PaymentState } from '../../modules/payment'
+import type { GameHistoryState } from '../../modules/gameHistory'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
   currentPlayerCards: CurrentPlayerCardsState,
+  gameHistory: GameHistoryState,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
   drawCards: () => void,
@@ -38,6 +43,7 @@ const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards,
+  gameHistory: state.gameHistory,
   isPlayerTurn: isPlayerTurn(state),
   payment: state.payment
 })
@@ -85,6 +91,7 @@ export class GameComponent extends React.Component {
     const {
       game,
       currentPlayer,
+      gameHistory,
       join,
       currentPlayerCards,
       drawCards,
@@ -109,17 +116,24 @@ export class GameComponent extends React.Component {
 
         {currentPlayer &&
           <div>
-            <CardsOnHand
-              cardsOnHand={currentPlayerCards.cardsOnHand}
-              placedCards={currentPlayer.placedCards}
-              onPlaceCard={placeCard}
-              onPlayCard={playCard}
-              onDrawCards={drawCards}
-              onDiscardCard={discardCard}
-              onFlipCard={flipCardOnHand}
-              currentPlayer={currentPlayer}
-              isPlayerTurn={isPlayerTurn}
-            />
+            <Container fluid>
+              <Col md={3}>
+                <GameHistoryLog records={gameHistory} />
+              </Col>
+              <Col md={9}>
+                <CardsOnHand
+                  cardsOnHand={currentPlayerCards.cardsOnHand}
+                  placedCards={currentPlayer.placedCards}
+                  onPlaceCard={placeCard}
+                  onPlayCard={playCard}
+                  onDrawCards={drawCards}
+                  onDiscardCard={discardCard}
+                  onFlipCard={flipCardOnHand}
+                  currentPlayer={currentPlayer}
+                  isPlayerTurn={isPlayerTurn}
+                />
+              </Col>
+            </Container>
 
             <Board
               game={game}

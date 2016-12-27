@@ -63,19 +63,20 @@ export default class GameService {
     return joinPromise
       .then(newPlayer => {
         promiseContext.newPlayer = newPlayer
-        return this.gameRepository.find(gameId)
+
+        return Promise.all([
+          this.gameRepository.find(gameId),
+          this.gameHistoryService.record(gameId, `${newPlayer.username} has joined`)
+        ])
       })
-      .then(game => {
+      .then(([game, _]) => {
         if (game.currentTurn) {
           return
         }
 
         game.currentTurn = username
 
-        return Promise.all([
-          game.save(),
-          this.gameHistoryService.record(game.id, `${promiseContext.newPlayer.username} has joined`)
-        ])
+        return game.save()
       })
       .then(() => promiseContext.newPlayer)
   }

@@ -9,15 +9,20 @@ function ns (value) {
 // Constants
 // ------------------------------------
 const RECORD = ns('RECORD')
+const RESET = ns('RESET')
 
 // ------------------------------------
 // Action
 // ------------------------------------
-function record (message: string) {
+function record (newRecord: GameHistoryRecord) {
   return {
     type: RECORD,
-    message
+    newRecord
   }
+}
+
+function reset () {
+  return { type: RESET }
 }
 
 function subscribeGameHistoryEvent (socket: Socket, gameId: string) {
@@ -33,10 +38,11 @@ function unsubscribeGameHistoryEvent (socket: Socket) {
 }
 
 function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: GameHistoryRecord) {
-  dispatch(record(newRecord.message))
+  dispatch(record(newRecord))
 }
 
 export const actions = {
+  resetGameHistory: reset,
   subscribeGameHistoryEvent,
   unsubscribeGameHistoryEvent
 }
@@ -44,14 +50,17 @@ export const actions = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-export type GameHistoryState = string[]
+export type GameHistoryState = GameHistoryRecord[]
 
 const inititalState: GameHistoryState = []
 
-export default function reducer (state: GameHistoryState = inititalState, action: ReduxAction) {
+export default function reducer (state: GameHistoryState = inititalState, action: ReduxAction): GameHistoryState {
   switch (action.type) {
     case RECORD:
-      return [...state, action.message]
+      return [action.newRecord, ...state]
+
+    case RESET:
+      return inititalState
 
     default:
       return state
