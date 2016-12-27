@@ -1,5 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
+import type { GameHistoryState } from '../../modules/gameHistory'
 
 type Props = {
   records: GameHistoryRecord[]
@@ -12,7 +14,11 @@ const styles = {
   }
 }
 
-export default class GameHistoryLog extends React.Component {
+const mapStateToProps = (state) => ({
+  records: state.gameHistory
+})
+
+export class GameHistoryLog extends React.Component {
   props: Props
 
   render () {
@@ -43,3 +49,5 @@ export default class GameHistoryLog extends React.Component {
     )
   }
 }
+
+export default connect(mapStateToProps)(GameHistoryLog)

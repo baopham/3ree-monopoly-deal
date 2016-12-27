@@ -5,7 +5,7 @@ import { Col } from 'react-bootstrap'
 import FullWidth from '../../../../components/FullWidth'
 import TextFormDialog from '../../../../components/TextFormDialog'
 import Container from '../../../../components/Container'
-import GameHistoryLog from '../../components/GameHistoryLog'
+import GameHistoryLog from '../GameHistoryLog'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
 import PaymentForm from '../../components/PaymentForm'
@@ -19,13 +19,11 @@ import { actions as paymentActions } from '../../modules/payment'
 import { MAX_NUMBER_OF_ACTIONS, getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCards'
 import type { PaymentState } from '../../modules/payment'
-import type { GameHistoryState } from '../../modules/gameHistory'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
   currentPlayerCards: CurrentPlayerCardsState,
-  gameHistory: GameHistoryState,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
   drawCards: () => void,
@@ -43,7 +41,6 @@ const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards,
-  gameHistory: state.gameHistory,
   isPlayerTurn: isPlayerTurn(state),
   payment: state.payment
 })
@@ -91,7 +88,6 @@ export class GameComponent extends React.Component {
     const {
       game,
       currentPlayer,
-      gameHistory,
       join,
       currentPlayerCards,
       drawCards,
@@ -118,7 +114,7 @@ export class GameComponent extends React.Component {
           <div>
             <Container fluid>
               <Col md={3}>
-                <GameHistoryLog records={gameHistory} />
+                <GameHistoryLog />
               </Col>
               <Col md={9}>
                 <CardsOnHand
