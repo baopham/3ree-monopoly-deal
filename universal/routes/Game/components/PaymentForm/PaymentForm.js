@@ -84,7 +84,7 @@ export default class PaymentForm extends React.Component {
     this.props.onPay(moneyCards, sets)
   }
 
-  isMoneyCardHighlighted = (card: CardKey, index: CardIndex) => {
+  isMoneyCardHighlighted = (card: CardKey, index: CardIndex): boolean => {
     return helper.cardIsSelected([card, index], this.state.selectedMoneyCards)
   }
 
@@ -92,11 +92,11 @@ export default class PaymentForm extends React.Component {
     card: CardKey,
     cardIndex: CardIndex,
     serializedPropertySetIndex: SerializedPropertySetIndex
-  ) => {
+  ): boolean => {
     return helper.cardIsSelected([card, cardIndex, serializedPropertySetIndex], this.state.selectedNonMoneyCards)
   }
 
-  renderTotalAmountAlert () {
+  renderTotalAmountAlert (): Node {
     const { dueAmount } = this.props
 
     const amountSelected = this.getAmountSelected()
@@ -111,7 +111,7 @@ export default class PaymentForm extends React.Component {
     )
   }
 
-  renderBankCards () {
+  renderBankCards (): React.Element<*> {
     const { cards } = this.props
 
     return (
@@ -131,7 +131,7 @@ export default class PaymentForm extends React.Component {
     )
   }
 
-  getAmountSelected () {
+  getAmountSelected (): number {
     const { selectedMoneyCards, selectedNonMoneyCards } = this.state
     const allSelectedCards = selectedMoneyCards.map(([c]) => c).concat(selectedNonMoneyCards.map(([c]) => c))
 
