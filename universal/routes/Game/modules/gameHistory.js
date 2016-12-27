@@ -8,6 +8,7 @@ function ns (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
+const MAX_ITEMS = 20
 const RECORD = ns('RECORD')
 const RESET = ns('RESET')
 
@@ -57,7 +58,7 @@ const inititalState: GameHistoryState = []
 export default function reducer (state: GameHistoryState = inititalState, action: ReduxAction): GameHistoryState {
   switch (action.type) {
     case RECORD:
-      return [action.newRecord, ...state]
+      return [action.newRecord, ...state.slice(0, MAX_ITEMS - 1)]
 
     case RESET:
       return inititalState
