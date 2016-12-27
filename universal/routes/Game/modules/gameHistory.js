@@ -1,5 +1,8 @@
 /* @flow */
 import { namespace } from '../../../ducks-utils'
+import { getCurrentPlayer } from './gameSelectors'
+import audioPlay from 'audio-play'
+import audioLoad from 'audio-loader'
 
 function ns (value) {
   return namespace('GAME_HISTORY', value)
@@ -13,7 +16,7 @@ const RECORD = ns('RECORD')
 const RESET = ns('RESET')
 
 // ------------------------------------
-// Action
+// Action creators
 // ------------------------------------
 function record (newRecord: GameHistoryRecord) {
   return {
@@ -39,6 +42,10 @@ function unsubscribeGameHistoryEvent (socket: Socket) {
 }
 
 function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: GameHistoryRecord) {
+  if (newRecord.notifyUsers.length && newRecord.notifyUsers.includes(getCurrentPlayer(getState()).username)) {
+    audioLoad('/notification.mp3').then(audioPlay)
+  }
+
   dispatch(record(newRecord))
 }
 

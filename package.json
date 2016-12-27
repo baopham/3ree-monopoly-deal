@@ -32,6 +32,8 @@
     "npm": ">=3.8.6"
   },
   "dependencies": {
+    "audio-loader": "^0.6.0",
+    "audio-play": "^2.1.0",
     "body-parser": "1.14.x",
     "classnames": "2.2.x",
     "compression": "^1.6.2",
