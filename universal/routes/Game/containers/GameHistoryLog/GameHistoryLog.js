@@ -4,7 +4,7 @@ import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
 import type { GameHistoryState } from '../../modules/gameHistory'
 
 type Props = {
-  records: GameHistoryRecord[]
+  records: GameHistoryState
 }
 
 const styles = {
