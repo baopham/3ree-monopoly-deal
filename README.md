@@ -40,6 +40,7 @@ TODOs
 - [ ] Collect all the card images
 - [ ] Notification for each action
 - [ ] Draw 5 cards when hand is empty
+- [x] Game history log
 - [x] Show who played the last card
 - [x] Action counter
 - [x] Draw cards on PASS GO
