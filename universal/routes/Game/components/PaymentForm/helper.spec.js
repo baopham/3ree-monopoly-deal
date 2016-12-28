@@ -44,7 +44,7 @@ describe('PaymentForm: helper', function () {
     })
 
     describe('Given I need to pay by giving the HOUSE from a full set', function () {
-      it('should return an empty array of sets and the HOUSE card as left over card', function () {
+      it('should return a map of set id and selected card', function () {
         const propertySets = [
           new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
         ]
