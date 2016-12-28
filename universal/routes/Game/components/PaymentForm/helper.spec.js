@@ -78,7 +78,29 @@ describe('PaymentForm: helper', function () {
         })
       })
     })
+
+    describe('Given I need to pay by giving the HOUSE from a full set', function () {
+      it('should return an empty array of sets and the HOUSE card as left over card', function () {
+        const serializedPropertySets = [
+          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]).serialize()
+        ]
+
+        const nonMoneyCardTuples = [
+          [HOUSE, 2, 0]
+        ]
+
+        const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
+          nonMoneyCardTuples,
+          serializedPropertySets
+        )
+
+        expect(leftOverCards).to.eql([HOUSE])
+
+        expect(sets).to.be.empty
+      })
+    })
   })
+
   describe('#cardIsSelected', function () {
     describe('Given an array of non-money tuples', function () {
       it('should return true if the card is selected', function () {

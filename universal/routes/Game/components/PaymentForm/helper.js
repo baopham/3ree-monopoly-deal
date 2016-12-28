@@ -37,7 +37,7 @@ export function getSerializedPropertySetsFromMoneyCardTuples (
     const sortedCards = sortCards(cards)
 
     allLeftOverCards = allLeftOverCards.concat(sortedCards.filter(c => !propertySet.addCard(c)))
-    !propertySet.getCards.length && newSets.push(propertySet.serialize())
+    propertySet.getCards().length && newSets.push(propertySet.serialize())
   }
 }
 
