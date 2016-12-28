@@ -24,6 +24,7 @@ const END_TURN_REQUEST = ns('END_TURN_REQUEST')
 const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
 const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
 const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
+const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -107,11 +108,16 @@ function unsubscribeGameEvent (socket: Socket) {
   }
 }
 
+function resetCurrentGame () {
+  return { type: RESET }
+}
+
 export const actions = {
   getGame,
   join,
   endTurn,
   setWinner,
+  resetCurrentGame,
   subscribeGameEvent,
   unsubscribeGameEvent
 }
@@ -212,6 +218,9 @@ export default function reducer (state: CurrentGameState = initialState, action:
       nextState.game.winner = action.winner
       return nextState
     }
+
+    case RESET:
+      return initialState
 
     case ERROR:
       return deepmerge(state, {

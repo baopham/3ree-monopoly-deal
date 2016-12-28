@@ -15,7 +15,8 @@ type Props = {
   unsubscribeGameEvent: (socket: Socket) => void,
   subscribeGameHistoryEvent: (socket: Socket, id: string) => void,
   unsubscribeGameHistoryEvent: (socket: Socket) => void,
-  resetGameHistory: () => void
+  resetGameHistory: () => void,
+  resetCurrentGame: () => void
 }
 
 const mapStateToProps = (state) => ({
@@ -38,6 +39,8 @@ export class GameRoute extends React.Component {
 
   componentWillUnmount () {
     this.props.resetGameHistory()
+    this.props.resetCurrentGame()
+
 
     if (!global.socket) {
       return
