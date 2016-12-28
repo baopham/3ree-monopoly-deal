@@ -37,9 +37,11 @@ Notes
 TODOs
 -----
 
-- [ ] Collect all the card images
+- [ ] Fix bug when paying using properties / house / hotel...
+- [ ] There should be a place for cards like house and hotel
+      e.g. payer pays using a property card -> set is no longer a full set -> house and hotel cards should go to a different place
+- [x] Collect all the card images
 - [x] Sound notification for payment notice
-- [ ] Draw 5 cards when hand is empty
 - [x] Game history log
 - [x] Show who played the last card
 - [x] Action counter
@@ -49,6 +51,7 @@ TODOs
 - [x] Modal allows background scrolling
 - [x] Use flow types in React components
 - [ ] Allow player to move wildcard to a particular property group
+- [x] Allow player to select which set the wildcard, house, or hotel card should go to (when these cards are still in hand)
 - [ ] Player can minimize the modal
 - [ ] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
@@ -63,6 +66,7 @@ TODOs
 - [ ] House
 - [ ] Hotel
 - [ ] Double rent
+- [ ] Draw 5 cards when hand is empty
 
 
 License

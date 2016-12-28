@@ -265,6 +265,8 @@ export default class PlayerService {
       }
 
       placedCards.serializedPropertySets.forEach((item, index) => {
+        // TODO: when payer pays using a HOUSE that was part of the set, it is not removed
+        // Shouldn't find the set by identifier alone (e.g. what if there are 2 sets of same colours)
         const paymentSerializedSet = paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
 
         if (!paymentSerializedSet) {
