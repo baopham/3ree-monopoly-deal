@@ -1,6 +1,7 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
+import type { PropertySetId } from '../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('PAYMENT', value)
@@ -31,14 +32,19 @@ function requestForPayment (payee: Username, payers: Username[], cardPlayed: Car
   }
 }
 
-function pay (payer: Username, moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) {
+function pay (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) {
   return {
     types: [PAY_REQUEST, PAY_SUCCESS, ERROR],
     payer,
     promise: (dispatch: Function, getState: Function) => {
       const game = getState().currentGame.game
       const payee = getState().payment.payee
-      return request.put(`${gamesUrl}/${game.id}/pay`, { payer, payee, moneyCards, serializedPropertySets })
+      return request.put(`${gamesUrl}/${game.id}/pay`, {
+        payer,
+        payee,
+        moneyCards,
+        mapOfNonMoneyCards: request.mapToJSON(mapOfNonMoneyCards)
+      })
     }
   }
 }

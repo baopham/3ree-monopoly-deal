@@ -1,5 +1,5 @@
-import GameHistory from '../models/GameHistory'
-import thinky from '../thinky'
+import GameHistory from '../../models/GameHistory'
+import thinky from '../../thinky'
 
 const r = thinky.r
 

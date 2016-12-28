@@ -1,5 +1,5 @@
 /* @flow */
-import GameHistoryRepository from '../repositories/GameHistoryRepository'
+import GameHistoryRepository from '../../repositories/GameHistoryRepository'
 
 export default class GameHistoryService {
   gameHistoryRepository: GameHistoryRepository

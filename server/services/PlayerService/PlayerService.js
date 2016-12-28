@@ -1,15 +1,17 @@
 /* @flow */
-import PlayerRepository from '../repositories/PlayerRepository'
-import GameService from './GameService'
-import GameHistoryService from './GameHistoryService'
-import * as monopoly from '../../universal/monopoly/monopoly'
-import PropertySet from '../../universal/monopoly/PropertySet'
+import PlayerRepository from '../../repositories/PlayerRepository'
+import GameService from '../GameService'
+import GameHistoryService from '../GameHistoryService'
+import * as monopoly from '../../../universal/monopoly/monopoly'
 import {
   PROPERTY_WILDCARD,
   HOUSE,
   HOTEL,
   newDeck
-} from '../../universal/monopoly/cards'
+} from '../../../universal/monopoly/cards'
+import PropertySet from '../../../universal/monopoly/PropertySet'
+import * as paymentHelper from './paymentHelper'
+import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
 export default class PlayerService {
   playerRepository: PlayerRepository
@@ -202,7 +204,7 @@ export default class PlayerService {
     payer: Username,
     payee: Username,
     moneyCards: CardKey[],
-    paymentSerializedSets: SerializedPropertySet[]
+    mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
   ): Promise<*> {
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, payee),
@@ -221,77 +223,20 @@ export default class PlayerService {
 
     //////
     function updatePayee (payeePlayer: Player): Promise<*> {
-      const { payeeInfo } = payeePlayer
-
-      if (!payeeInfo.payers || !payeeInfo.payers.includes(payer)) {
-        return Promise.reject(`${payer} does not owe anything`)
-      }
-
-      // Since payer is paying their due, we remove them from the list.
-      payeePlayer.payeeInfo.payers = payeeInfo.payers.filter(p => p !== payer)
-
-      // If we don't have any payers left, reset payeeInfo.
-      if (!payeePlayer.payeeInfo.payers.length) {
-        payeePlayer.payeeInfo.amount = 0
-        payeePlayer.payeeInfo.cardPlayed = null
-      }
-
-      // Merge the property sets.
-      const { placedCards } = payeePlayer
-
-      const leftOverNonPropertyCards = monopoly.mergeSerializedPropertySets(
-        placedCards.serializedPropertySets,
-        paymentSerializedSets
-      )
-
-      // Put money cards into the bank.
-      placedCards.bank = placedCards.bank.concat(moneyCards).concat(leftOverNonPropertyCards)
-
-      return payeePlayer.save()
+      return paymentHelper.updatePayee(payeePlayer, payer, moneyCards, mapOfNonMoneyCards)
     }
 
     function updatePayer (payerPlayer: Player): Promise<*> {
-      const { placedCards } = payerPlayer
-
-      // Remove the money cards
-      moneyCards.forEach(card => {
-        const indexToRemove = placedCards.bank.findIndex(c => c === card)
-        placedCards.bank.splice(indexToRemove, 1)
-      })
-
-      // Remove the property sets, if there are any to remove.
-      if (!paymentSerializedSets.length) {
-        return payerPlayer.save()
-      }
-
-      placedCards.serializedPropertySets.forEach((item, index) => {
-        // TODO: when payer pays using a HOUSE that was part of the set, it is not removed
-        // Shouldn't find the set by identifier alone (e.g. what if there are 2 sets of same colours)
-        const paymentSerializedSet = paymentSerializedSets.find(s => s.identifier.key === item.identifier.key)
-
-        if (!paymentSerializedSet) {
-          return
-        }
-
-        const thisPropertySet = monopoly.unserializePropertySet(item)
-        const thatPropertySet = monopoly.unserializePropertySet(paymentSerializedSet)
-
-        if (!thisPropertySet.equals(thatPropertySet)) {
-          return
-        }
-
-        placedCards.serializedPropertySets.splice(index, 1)
-      })
-
-      return payerPlayer.save()
+      return paymentHelper.updatePayer(payerPlayer, moneyCards, mapOfNonMoneyCards)
     }
 
     function paymentLogMessage (dueAmount: number): string {
-      if (!moneyCards.length && !paymentSerializedSets.length) {
+      if (!moneyCards.length && !mapOfNonMoneyCards.size) {
         return `${payer} has no money to pay ${payee} $${dueAmount}M`
       }
 
-      const allCards = moneyCards.concat(paymentSerializedSets.map(s => s.cards.join(', ')))
+      const allNonMoneyCards = Array.from(mapOfNonMoneyCards.values()).reduce((acc, cards) => acc.concat(cards), [])
+      const allCards = moneyCards.concat(allNonMoneyCards)
 
       return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
     }

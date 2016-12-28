@@ -213,7 +213,8 @@ export function mergeSerializedPropertySets (
 
   // First get all of my non full sets
   // Keeping references to ensure the order staying the same
-  const nonFullSerializedSets = new Map()
+  const nonFullSerializedSets: Map<CardKey, SerializedPropertySet> = new Map()
+
   mine.forEach((item) => {
     if (unserializePropertySet(item).isFullSet()) {
       return
@@ -239,11 +240,10 @@ export function mergeSerializedPropertySets (
     }
 
     let serializedSetToMerge = nonFullSerializedSets.get(other.identifier.key)
+    const updateExistingSet = !!serializedSetToMerge
 
-    // If we don't have a set of this colour, create a new set
     if (!serializedSetToMerge) {
       serializedSetToMerge = { identifier: other.identifier, cards: [] }
-      mine.push(serializedSetToMerge)
     }
 
     const setToMerge = unserializePropertySet(serializedSetToMerge)
@@ -251,7 +251,10 @@ export function mergeSerializedPropertySets (
     const leftOverCards = setToMerge.mergeWith(otherPropertySet)
 
     // Update in place
-    Object.assign(serializedSetToMerge, setToMerge.serialize())
+    updateExistingSet && Object.assign(serializedSetToMerge, setToMerge.serialize())
+
+    // Or push a new one
+    !updateExistingSet && setToMerge.getCards().length && mine.push(serializedSetToMerge)
 
     leftOverCards && allLeftOverCards.push(...leftOverCards)
   }

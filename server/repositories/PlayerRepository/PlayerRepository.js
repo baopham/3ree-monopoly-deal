@@ -1,5 +1,5 @@
-import Player from '../models/Player'
-import thinky from '../thinky'
+import Player from '../../models/Player'
+import thinky from '../../thinky'
 import _ from 'lodash'
 
 const r = thinky.r

@@ -1,6 +1,7 @@
 /* @flow */
 import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
+import * as request from '../../universal/request-util'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
@@ -47,10 +48,6 @@ export function playCard (req: AppRequest, res: express$Response) {
     .catch(err => handleError(err, res))
 }
 
-export function giveCardToOtherPlayer (req: AppRequest, res: express$Response) {
-  res.json()
-}
-
 export function joinGame (req: AppRequest, res: express$Response) {
   const promise = gameService.addPlayer(req.params.id, req.body.username)
 
@@ -73,7 +70,7 @@ export function pay (req: AppRequest, res: express$Response) {
     req.body.payer,
     req.body.payee,
     req.body.moneyCards,
-    req.body.serializedPropertySets
+    request.jsonToMap(req.body.mapOfNonMoneyCards)
   )
 
   promise

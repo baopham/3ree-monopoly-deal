@@ -8,11 +8,12 @@ import { getCurrentPlayer } from '../../modules/gameSelectors'
 import { actions as paymentActions } from '../../modules/payment'
 import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 import type { PaymentState } from '../../modules/payment'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
   currentPlayer: Player,
   payment: PaymentState,
-  pay: (payer: Username, moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void
+  pay: (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 const mapStateToProps = (state) => ({
@@ -23,9 +24,9 @@ const mapStateToProps = (state) => ({
 export class GamePayment extends React.Component {
   props: Props
 
-  onPay = (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => {
+  onPay = (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => {
     const { pay, currentPlayer } = this.props
-    pay(currentPlayer.username, moneyCards, serializedPropertySets)
+    pay(currentPlayer.username, moneyCards, mapOfNonMoneyCards)
   }
 
   payerHasNotEnoughMoney (): boolean {

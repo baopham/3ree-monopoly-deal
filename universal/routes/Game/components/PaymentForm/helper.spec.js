@@ -2,8 +2,7 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai'
 import * as helper from './helper'
-import * as monopoly from '../../../../../universal/monopoly/monopoly'
-import PropertySet from '../../../../../universal/monopoly/PropertySet'
+import * as monopoly from '../../../../monopoly/monopoly'
 import {
   PROPERTY_BLUE,
   PROPERTY_RED,
@@ -11,17 +10,20 @@ import {
   PROPERTY_WILDCARD,
   MONEY_1M,
   MONEY_2M
-} from '../../../../../universal/monopoly/cards'
+} from '../../../../monopoly/cards'
+import PropertySet from '../../../../monopoly/PropertySet'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 describe('PaymentForm: helper', function () {
-  describe('#getSerializedPropertySetsFromMoneyCardTuples', function () {
+  describe('#getMapOfNonMoneyCards', function () {
     describe('Given I want to pay by giving some of the properties from my full sets', function () {
-      it('should return an array of serialized property sets from the selected non-money cards ' +
-        'and a list of cards that could not go into a set', function () {
-        const serializedPropertySets = [
-          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]).serialize(),
-          new PropertySet(monopoly.getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD]).serialize()
+      it('should return a map of unique property set ids and the selected non-money cards', function () {
+        const propertySets = [
+          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]),
+          new PropertySet(monopoly.getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD])
         ]
+
+        const serializedPropertySets = propertySets.map(s => s.serialize())
 
         const nonMoneyCardTuples = [
           [PROPERTY_BLUE, 1, 0],
@@ -29,74 +31,37 @@ describe('PaymentForm: helper', function () {
           [PROPERTY_RED, 0, 1]
         ]
 
-        const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
+        const map: Map<PropertySetId, CardKey[]> = helper.getMapOfNonMoneyCards(
           nonMoneyCardTuples,
           serializedPropertySets
         )
 
-        expect(leftOverCards).to.eql([HOUSE])
+        expect(map.size).to.equal(2)
 
-        expect(sets).to.have.lengthOf(2)
-
-        expect(sets.shift()).to.eql({
-          identifier: monopoly.getCardObject(PROPERTY_BLUE),
-          cards: [PROPERTY_BLUE]
-        })
-
-        expect(sets.shift()).to.eql({
-          identifier: monopoly.getCardObject(PROPERTY_RED),
-          cards: [PROPERTY_RED]
-        })
-      })
-    })
-
-    describe('Given I need to pay by giving my full sets including HOUSE, HOTEL', function () {
-      it('should return an array of serialized property sets from the selected non-money cards ' +
-        'and an empty list of left over cards', function () {
-        const serializedPropertySets = [
-          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_WILDCARD, HOUSE]).serialize()
-        ]
-
-        const nonMoneyCardTuples = [
-          [PROPERTY_BLUE, 0, 0],
-          [PROPERTY_WILDCARD, 1, 0],
-          [HOUSE, 2, 0]
-        ]
-
-        const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
-          nonMoneyCardTuples,
-          serializedPropertySets
-        )
-
-        expect(leftOverCards).to.be.empty
-
-        expect(sets).to.have.lengthOf(1)
-
-        expect(sets.shift()).to.eql({
-          identifier: monopoly.getCardObject(PROPERTY_BLUE),
-          cards: [PROPERTY_BLUE, PROPERTY_WILDCARD, HOUSE]
-        })
+        expect(map.get(propertySets[0].getId())).to.eql([PROPERTY_BLUE, HOUSE])
+        expect(map.get(propertySets[1].getId())).to.eql([PROPERTY_RED])
       })
     })
 
     describe('Given I need to pay by giving the HOUSE from a full set', function () {
       it('should return an empty array of sets and the HOUSE card as left over card', function () {
-        const serializedPropertySets = [
-          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]).serialize()
+        const propertySets = [
+          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
         ]
+
+        const serializedPropertySets = propertySets.map(s => s.serialize())
 
         const nonMoneyCardTuples = [
           [HOUSE, 2, 0]
         ]
 
-        const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
+        const map: Map<PropertySetId, CardKey[]> = helper.getMapOfNonMoneyCards(
           nonMoneyCardTuples,
           serializedPropertySets
         )
 
-        expect(leftOverCards).to.eql([HOUSE])
-
-        expect(sets).to.be.empty
+        expect(map.size).to.equal(1)
+        expect(map.get(propertySets[0].getId())).to.eql([HOUSE])
       })
     })
   })
@@ -125,6 +90,7 @@ describe('PaymentForm: helper', function () {
         expect(helper.cardIsSelected(tuple, selected)).to.be.false
       })
     })
+
     describe('Given an array of money tuples', function () {
       it('should return true if the card is selected', function () {
         const selected = [

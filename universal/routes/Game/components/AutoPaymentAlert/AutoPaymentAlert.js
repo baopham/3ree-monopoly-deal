@@ -6,7 +6,8 @@ import {
   Alert,
   Button
 } from 'react-bootstrap'
-import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
+import { getTotalMoneyFromPlacedCards, unserializePropertySet } from '../../../../monopoly/monopoly'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 const INITIAL_COUNTER = 10
 const INTERVAL_DELAY = 1000
@@ -14,7 +15,7 @@ const INTERVAL_DELAY = 1000
 type Props = {
   payee: Username,
   dueAmount: number,
-  onPay: (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
+  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void,
   cards: PlacedCards
 }
 
@@ -58,7 +59,14 @@ export default class AutoPaymentAlert extends React.Component {
   pay = () => {
     const { cards, onPay } = this.props
 
-    onPay(cards.bank, cards.serializedPropertySets)
+    const mapOfNonMoneyCards: Map<PropertySetId, CardKey[]> = new Map()
+
+    cards.serializedPropertySets.forEach(item => {
+      const set = unserializePropertySet(item)
+      mapOfNonMoneyCards.set(set.getId(), set.getCards())
+    })
+
+    onPay(cards.bank, mapOfNonMoneyCards)
   }
 
   render () {

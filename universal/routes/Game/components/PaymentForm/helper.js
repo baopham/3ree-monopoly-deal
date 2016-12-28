@@ -1,44 +1,27 @@
 /* @flow */
-import PropertySet from '../../../../../universal/monopoly/PropertySet'
-import {
-  PROPERTY_WILDCARD,
-  HOUSE,
-  HOTEL
-} from '../../../../../universal/monopoly/cards'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
+import * as monopoly from '../../../../monopoly/monopoly'
 
 export type CardIndex = number
 export type SerializedPropertySetIndex = number
 export type MoneyCardTuple = [CardKey, CardIndex]
 export type NonMoneyCardTuple = [CardKey, CardIndex, SerializedPropertySetIndex]
 
-export function getSerializedPropertySetsFromMoneyCardTuples (
+export function getMapOfNonMoneyCards (
   tuples: NonMoneyCardTuple[],
   serializedPropertySets: SerializedPropertySet[]
-): [SerializedPropertySet[], CardKey[]] {
-  const mapOfCards: Map<SerializedPropertySetIndex, CardKey[]> = new Map()
+): Map<PropertySetId, CardKey[]> {
+  const map: Map<PropertySetId, CardKey[]> = new Map()
 
-  tuples.forEach(([card, cardIndex, serializedPropertySetIndex]) => {
-    const cards = mapOfCards.get(serializedPropertySetIndex) || []
+  tuples.forEach(([card, cardIndex, setIndex]) => {
+    const originalSet = monopoly.unserializePropertySet(serializedPropertySets[setIndex])
+    const setId = originalSet.getId()
+    const cards = map.get(setId) || []
     cards.push(card)
-    mapOfCards.set(serializedPropertySetIndex, cards)
+    map.set(setId, cards)
   })
 
-  let allLeftOverCards: CardKey[] = []
-  let newSets: SerializedPropertySet[] = []
-
-  mapOfCards.forEach(putIntoASet)
-
-  return [newSets, allLeftOverCards]
-
-  //////
-  function putIntoASet (cards: CardKey[], setIndex: SerializedPropertySetIndex) {
-    const originalSet = serializedPropertySets[setIndex]
-    const propertySet = new PropertySet(originalSet.identifier, [])
-    const sortedCards = sortCards(cards)
-
-    allLeftOverCards = allLeftOverCards.concat(sortedCards.filter(c => !propertySet.addCard(c)))
-    propertySet.getCards().length && newSets.push(propertySet.serialize())
-  }
+  return map
 }
 
 export function selectCard (tuple: Array<*>, tuples: Array<*>): Array<*> {
@@ -55,26 +38,4 @@ export function cardIsSelected (tuple: Array<*>, tuples: Array<*>): boolean {
 
 function tuplesAreEqual (a: Array<mixed>, b: Array<mixed>) {
   return a.length === b.length && a.every((item, index) => item === b[index])
-}
-
-function sortCards (cards: CardKey[]): CardKey[] {
-  const sortedCards = cards.filter(c => c !== HOUSE && c !== HOTEL && c !== PROPERTY_WILDCARD)
-
-  if (sortedCards.length === cards.length) {
-    return sortedCards
-  }
-
-  if (cards.includes(PROPERTY_WILDCARD)) {
-    sortedCards.push(PROPERTY_WILDCARD)
-  }
-
-  if (cards.includes(HOUSE)) {
-    sortedCards.push(HOUSE)
-  }
-
-  if (cards.includes(HOTEL)) {
-    sortedCards.push(HOTEL)
-  }
-
-  return sortedCards
 }

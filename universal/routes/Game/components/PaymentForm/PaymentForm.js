@@ -9,11 +9,12 @@ import Properties from '../Properties'
 import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import * as monopoly from '../../../../monopoly/monopoly'
-import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
 import * as helper from './helper'
+import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
-  onPay: (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
+  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void,
   cards: PlacedCards,
   payee: Username,
   dueAmount: number
@@ -75,13 +76,10 @@ export default class PaymentForm extends React.Component {
   pay = () => {
     const { selectedMoneyCards, selectedNonMoneyCards } = this.state
     const { serializedPropertySets } = this.props.cards
-    const [sets, leftOverCards] = helper.getSerializedPropertySetsFromMoneyCardTuples(
-      selectedNonMoneyCards,
-      serializedPropertySets
-    )
-    const moneyCards = selectedMoneyCards.map(([c]) => c).concat(leftOverCards)
+    const mapOfNonMoneyCards = helper.getMapOfNonMoneyCards(selectedNonMoneyCards, serializedPropertySets)
+    const moneyCards = selectedMoneyCards.map(([c]) => c)
 
-    this.props.onPay(moneyCards, sets)
+    this.props.onPay(moneyCards, mapOfNonMoneyCards)
   }
 
   isMoneyCardHighlighted = (card: CardKey, index: CardIndex): boolean => {

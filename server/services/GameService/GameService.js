@@ -1,9 +1,9 @@
 /* @flow */
-import GameRepository from '../repositories/GameRepository'
-import PlayerRepository from '../repositories/PlayerRepository'
-import GameHistoryService from './GameHistoryService'
-import { newDeck } from '../../universal/monopoly/cards'
-import * as monopoly from '../../universal/monopoly/monopoly'
+import GameRepository from '../../repositories/GameRepository'
+import PlayerRepository from '../../repositories/PlayerRepository'
+import GameHistoryService from '../GameHistoryService'
+import { newDeck } from '../../../universal/monopoly/cards'
+import * as monopoly from '../../../universal/monopoly/monopoly'
 
 export default class GameService {
   gameRepository: GameRepository

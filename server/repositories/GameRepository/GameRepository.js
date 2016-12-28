@@ -1,5 +1,5 @@
-import Game from '../models/Game'
-import thinky from '../thinky'
+import Game from '../../models/Game'
+import thinky from '../../thinky'
 
 const r = thinky.r
 

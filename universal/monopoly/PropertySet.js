@@ -8,6 +8,8 @@ import {
   HOTEL_ADDON_AMOUNT
 } from './cards'
 
+export type PropertySetId = string
+
 export default class PropertySet {
   identifier: Card
   cards: CardKey[]
@@ -99,9 +101,7 @@ export default class PropertySet {
   }
 
   equals (other: PropertySet): boolean {
-    return this.identifier.key === other.identifier.key &&
-    this.getCards().length === other.getCards().length &&
-    this.getCards().filter(card => !other.getCards().includes(card)).length === 0
+    return this.getId() === other.getId()
   }
 
   /**
@@ -122,5 +122,36 @@ export default class PropertySet {
     if (leftOverCards.length) {
       return leftOverCards
     }
+  }
+
+  static sortCards (cards: CardKey[]): CardKey[] {
+    const sortedCards = cards.filter(c => c !== HOUSE && c !== HOTEL && c !== PROPERTY_WILDCARD).sort()
+
+    if (sortedCards.length === cards.length) {
+      return sortedCards
+    }
+
+    if (cards.includes(PROPERTY_WILDCARD)) {
+      sortedCards.push(PROPERTY_WILDCARD)
+    }
+
+    if (cards.includes(HOUSE)) {
+      sortedCards.push(HOUSE)
+    }
+
+    if (cards.includes(HOTEL)) {
+      sortedCards.push(HOTEL)
+    }
+
+    return sortedCards
+  }
+
+  static fromIdToIdentifierKey (id: PropertySetId): string {
+    const [identifierKey] = id.split(':')
+    return identifierKey
+  }
+
+  getId (): PropertySetId {
+    return `${this.identifier.key}:${PropertySet.sortCards(this.cards).join('-')}`
   }
 }
