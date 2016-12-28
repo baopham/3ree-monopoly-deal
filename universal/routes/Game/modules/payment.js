@@ -14,8 +14,9 @@ const gamesUrl = `${apiUrl}/games`
 const PAYMENT_REQUEST = ns('PAYMENT_REQUEST')
 const PAY_REQUEST = ns('PAY_REQUEST')
 const PAY_SUCCESS = ns('PAY_SUCCESS')
-const ERROR = ns('ERROR')
 const PAYMENT_UPDATE = ns('PAYMENT_UPDATE')
+const RESET = ns('RESET')
+const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action creators
@@ -52,10 +53,15 @@ function updatePayment (payee: ?Username, payers: ?Username[], amount: ?number, 
   }
 }
 
+function reset () {
+  return { type: RESET }
+}
+
 export const actions = {
   requestForPayment,
   pay,
-  updatePayment
+  updatePayment,
+  reset
 }
 
 // ------------------------------------
@@ -109,6 +115,9 @@ export default function reducer (state: PaymentState = initialState, action: Red
         payers: action.payers,
         cardPlayed: action.cardPlayed
       }
+
+    case RESET:
+      return initialState
 
     case ERROR:
       return deepmerge({}, state, { error: action.message })

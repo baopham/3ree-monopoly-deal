@@ -50,7 +50,7 @@ function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: 
 }
 
 export const actions = {
-  resetGameHistory: reset,
+  reset,
   subscribeGameHistoryEvent,
   unsubscribeGameHistoryEvent
 }

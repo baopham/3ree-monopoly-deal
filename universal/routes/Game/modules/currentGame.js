@@ -2,6 +2,8 @@
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { actions as paymentActions } from './payment'
+import { actions as gameHistoryActions } from './gameHistory'
+import { actions as currentPlayerCardsActions } from './currentPlayerCards'
 
 function ns (value) {
   return namespace('GAME', value)
@@ -109,7 +111,12 @@ function unsubscribeGameEvent (socket: Socket) {
 }
 
 function resetCurrentGame () {
-  return { type: RESET }
+  return (dispatch: Function, getState: Function) => {
+    dispatch({ type: RESET })
+    dispatch(paymentActions.reset())
+    dispatch(gameHistoryActions.reset())
+    dispatch(currentPlayerCardsActions.reset())
+  }
 }
 
 export const actions = {

@@ -24,6 +24,7 @@ const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
 const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
 const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
 const FLIP_CARD_ON_HAND = ns('FLIP_CARD_ON_HAND')
+const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
@@ -104,7 +105,12 @@ function flipCardOnHand (card: CardKey) {
   }
 }
 
+function reset () {
+  return { type: RESET }
+}
+
 export const actions = {
+  reset,
   drawCards,
   playCard,
   placeCard,
@@ -164,6 +170,9 @@ export default function reducer (state: CurrentPlayerCardsState = initialState, 
         ]
       }
     }
+
+    case RESET:
+      return initialState
 
     default:
       return state
