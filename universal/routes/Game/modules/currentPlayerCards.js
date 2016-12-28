@@ -51,23 +51,21 @@ function discardCard (card: CardKey) {
   }
 }
 
-function placeCard (card: CardKey, asMoney: boolean = false) {
+function placeCard (card: CardKey, asMoney: boolean = false, setToPutIn?: SerializedPropertySet) {
   return {
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
     promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney })
+      return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney, setToPutIn })
     }
   }
 }
 
 function playCard (card: CardKey) {
   return (dispatch: Function, getState: Function) => {
-    dispatch({
-      type: PLAY_CARD_REQUEST
-    })
+    dispatch({ type: PLAY_CARD_REQUEST })
 
     const currentGame = getState().currentGame
     const currentPlayer = getCurrentPlayer(getState())

@@ -31,8 +31,8 @@ export function discardCard (req: AppRequest, res: express$Response) {
     .catch(err => handleError(err, res))
 }
 
-export function placeCard (req: AppRequest, res: express$Response) {
-  const promise = playerService.placeCard(req.params.id, req.body.username, req.body.card, req.body.asMoney)
+export function placeCard ({ params, body }: AppRequest, res: express$Response) {
+  const promise = playerService.placeCard(params.id, body.username, body.card, body.asMoney, body.setToPutIn)
 
   promise
     .then(() => res.json({ success: true }))

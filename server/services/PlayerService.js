@@ -28,7 +28,13 @@ export default class PlayerService {
     })
   }
 
-  placeCard (gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false): Promise<*> {
+  placeCard (
+    gameId: string,
+    username: Username,
+    cardKey: CardKey,
+    asMoney: boolean = false,
+    setToPutIn?: SerializedPropertySet
+  ): Promise<*> {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
       .then(increaseActionCounter)
@@ -36,20 +42,19 @@ export default class PlayerService {
       .then(logAction.bind(this))
 
     //////
-    function increaseActionCounter (player: Player) {
+    function increaseActionCounter (player: Player): Player {
       player.actionCounter = player.actionCounter + 1
       return player
     }
 
-    function putCardInTheRightPlace (player: Player) {
+    function putCardInTheRightPlace (player: Player): Promise<*> {
       if (asMoney) {
         player.placedCards.bank.push(cardKey)
         return player.save()
       }
 
-      // TODO: deal with wildcard, house, hotel
-      if (cardKey === PROPERTY_WILDCARD || cardKey === HOUSE || cardKey === HOTEL) {
-        return Promise.reject(`Not ready for ${cardKey}`)
+      if ([HOUSE, HOTEL, PROPERTY_WILDCARD].includes(cardKey)) {
+        return putIntoASet(player)
       }
 
       const card = monopoly.getCardObject(cardKey)
@@ -59,16 +64,11 @@ export default class PlayerService {
       const hasBeenPlaced = player.placedCards
         .serializedPropertySets
         .some((set, index) => {
-          if (set.identifier.key !== card.treatAs) {
-            return false
-          }
-
-          if (monopoly.unserializePropertySet(set).isFullSet()) {
+          if (set.identifier.key !== card.treatAs || monopoly.unserializePropertySet(set).isFullSet()) {
             return false
           }
 
           set.cards.push(cardKey)
-
           return true
         })
 
@@ -80,7 +80,33 @@ export default class PlayerService {
       return player.save()
     }
 
-    function logAction (player: Player) {
+    function putIntoASet (player: Player): Promise<*> {
+      if (!setToPutIn) {
+        return Promise.reject(`Need to provide what set to put ${cardKey} in`)
+      }
+
+      const propertySetToPutIn = monopoly.unserializePropertySet(setToPutIn)
+
+      const playerSerializedSet = player.placedCards.serializedPropertySets
+        .find(s => monopoly.unserializePropertySet(s).equals(propertySetToPutIn))
+
+      if (!playerSerializedSet) {
+        return Promise.reject('Cannot place card in the set. Player has no such set')
+      }
+
+      const playerUnserializedSet = monopoly.unserializePropertySet(playerSerializedSet)
+
+      if (!playerUnserializedSet.addCard(cardKey)) {
+        return Promise.reject(`Cannot place ${cardKey}. Invalid property set`)
+      }
+
+      // Update in place
+      Object.assign(playerSerializedSet, playerUnserializedSet.serialize())
+
+      return player.save()
+    }
+
+    function logAction (player: Player): Promise<*> {
       return this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
     }
   }
