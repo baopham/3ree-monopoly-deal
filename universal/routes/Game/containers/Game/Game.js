@@ -6,19 +6,15 @@ import FullWidth from '../../../../components/FullWidth'
 import TextFormDialog from '../../../../components/TextFormDialog'
 import Container from '../../../../components/Container'
 import GameHistoryLog from '../GameHistoryLog'
+import GamePayment from '../GamePayment'
 import CardsOnHand from '../../components/CardsOnHand'
 import Board from '../../components/Board'
-import PaymentForm from '../../components/PaymentForm'
-import AutoPaymentAlert from '../../components/AutoPaymentAlert'
-import PaymentInProgress from '../../components/PaymentInProgress'
 import WinnerNotification from '../../components/WinnerNotification'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
-import { actions as paymentActions } from '../../modules/payment'
-import { MAX_NUMBER_OF_ACTIONS, getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
+import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
 import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCards'
-import type { PaymentState } from '../../modules/payment'
 
 type Props = {
   game: Game,
@@ -31,18 +27,15 @@ type Props = {
   flipCardOnHand: (card: CardKey) => void,
   setWinner: (username: Username) => void,
   join: (username: Username) => void,
-  pay: (payer: Username, moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => void,
   endTurn: () => void,
-  isPlayerTurn: boolean,
-  payment: PaymentState
+  isPlayerTurn: boolean
 }
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
   currentPlayerCards: state.currentPlayerCards,
-  isPlayerTurn: isPlayerTurn(state),
-  payment: state.payment
+  isPlayerTurn: isPlayerTurn(state)
 })
 
 export class GameComponent extends React.Component {
@@ -62,28 +55,6 @@ export class GameComponent extends React.Component {
     }
   }
 
-  onPay = (moneyCards: CardKey[], serializedPropertySets: SerializedPropertySet[]) => {
-    const { pay, currentPlayer } = this.props
-    pay(currentPlayer.username, moneyCards, serializedPropertySets)
-  }
-
-  payerHasNotEnoughMoney (): boolean {
-    const { currentPlayer, payment } = this.props
-    const { placedCards } = currentPlayer
-    const totalAmount = getTotalMoneyFromPlacedCards(placedCards)
-    return !!(payment.amount && totalAmount <= payment.amount)
-  }
-
-  isPayee (): boolean {
-    const { currentPlayer, payment } = this.props
-    return !!(currentPlayer && payment.amount && payment.payee === currentPlayer.username)
-  }
-
-  needToPay (): boolean {
-    const { currentPlayer, payment } = this.props
-    return !!(currentPlayer && !this.isPayee() && payment.payers && payment.payers.includes(currentPlayer.username))
-  }
-
   render () {
     const {
       game,
@@ -97,13 +68,9 @@ export class GameComponent extends React.Component {
       discardCard,
       flipCardOnHand,
       isPlayerTurn,
-      setWinner,
-      payment
+      setWinner
     } = this.props
 
-    const isPayee = this.isPayee()
-    const needToPay = this.needToPay()
-    const needToPayAndHaveEnoughMoney = needToPay && !this.payerHasNotEnoughMoney()
     const gameHasAWinner = currentPlayer && !!game.winner
 
     return (
@@ -139,6 +106,8 @@ export class GameComponent extends React.Component {
               isPlayerTurn={isPlayerTurn}
               currentPlayer={currentPlayer}
             />
+
+            <GamePayment />
           </div>
         }
 
@@ -148,30 +117,6 @@ export class GameComponent extends React.Component {
             inputLabel='Username'
             submitLabel='Join'
             onSubmit={join}
-          />
-        }
-
-        {payment.payee && needToPayAndHaveEnoughMoney &&
-          <PaymentForm
-            onPay={this.onPay}
-            cards={currentPlayer.placedCards}
-            payee={payment.payee}
-            dueAmount={payment.amount}
-          />
-        }
-
-        {payment.payee && needToPay && !needToPayAndHaveEnoughMoney &&
-          <AutoPaymentAlert
-            onPay={this.onPay}
-            cards={currentPlayer.placedCards}
-            payee={payment.payee}
-            dueAmount={payment.amount}
-          />
-        }
-
-        {isPayee &&
-          <PaymentInProgress
-            amount={payment.amount}
           />
         }
 
@@ -190,7 +135,6 @@ export default connect(
   mapStateToProps,
   {
     ...gameActions,
-    ...playerCardsActions,
-    ...paymentActions
+    ...playerCardsActions
   }
 )(GameComponent)
