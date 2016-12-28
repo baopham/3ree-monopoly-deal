@@ -37,7 +37,7 @@ Notes
 TODOs
 -----
 
-- [ ] Fix bug when paying using properties / house / hotel...
+- [x] Fix bug when paying using properties / house / hotel...
 - [ ] There should be a place for cards like house and hotel
       e.g. payer pays using a property card -> set is no longer a full set -> house and hotel cards should go to a different place
 - [x] Collect all the card images
