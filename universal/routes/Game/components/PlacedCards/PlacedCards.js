@@ -5,7 +5,7 @@ import Properties from '../Properties'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
 import * as monopoly from '../../../../monopoly/monopoly'
-import PropertySetClass from '../../../../monopoly/PropertySet'
+import PropertySetType from '../../../../monopoly/PropertySet'
 
 type Props = {
   cards: PlacedCards,
@@ -27,7 +27,7 @@ export default class PlacedCardsComponent extends React.Component {
   render () {
     const { cards, onWinning } = this.props
     const { bank, serializedPropertySets } = cards
-    const propertySets: PropertySetClass[] = serializedPropertySets.map(monopoly.unserializePropertySet)
+    const propertySets: PropertySetType[] = serializedPropertySets.map(monopoly.unserializePropertySet)
 
     return (
       <Container fluid>

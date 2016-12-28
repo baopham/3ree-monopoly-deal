@@ -2,16 +2,16 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
+import PropertySetType from '../../../../monopoly/PropertySet'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { unserializePropertySet } from '../../../../monopoly/monopoly'
 
 type Props = {
   header: string,
   subheader: string,
-  propertySets: SerializedPropertySet[],
-  onSelect: (selectedSet: SerializedPropertySet) => void,
-  onCancel: () => void,
-  fullSetOnly: boolean
+  propertySets: PropertySetType[],
+  onSelect: (selectedSet: PropertySetType) => void,
+  onCancel: () => void
 }
 
 type State = {
@@ -25,10 +25,6 @@ export default class PropertySetSelector extends React.Component {
 
   state = {
     selectedSetIndex: undefined
-  }
-
-  static defaultProps = {
-    fullSetOnly: false
   }
 
   select = () => {
@@ -66,7 +62,7 @@ export default class PropertySetSelector extends React.Component {
   }
 
   render () {
-    const { header, subheader, propertySets, onCancel, fullSetOnly } = this.props
+    const { header, subheader, propertySets, onCancel } = this.props
     const { selectedSetIndex } = this.state
 
     return (
@@ -78,7 +74,7 @@ export default class PropertySetSelector extends React.Component {
         </Modal.Header>
 
         <Modal.Body>
-          <h4>{subheader}</h4>
+          <h5>{subheader}</h5>
           <ul className='list-inline'>
             {propertySets.map((set, setIndex) =>
               <li
@@ -87,8 +83,7 @@ export default class PropertySetSelector extends React.Component {
                 onClick={() => this.toggleSelectSet(setIndex)}
               >
                 <PropertySet
-                  propertySet={unserializePropertySet(set)}
-                  fullSetOnly={fullSetOnly}
+                  propertySet={set}
                 />
               </li>
             )}

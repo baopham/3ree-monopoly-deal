@@ -1,11 +1,11 @@
 /* @flow */
 import React from 'react'
-import type PropertySetClass from '../../../../monopoly/PropertySet'
+import type PropertySetType from '../../../../monopoly/PropertySet'
 import PropertySet from '../PropertySet'
 import * as monopoly from '../../../../monopoly/monopoly'
 
 type Props = {
-  propertySets: PropertySetClass[],
+  propertySets: PropertySetType[],
   onCardClick: (card: CardKey, index: number, serializedPropertySetIndex: number) => void,
   isCardHighlighted: (card: CardKey, index: number, serializedPropertySetIndex: number) => boolean,
   onWinning: () => void

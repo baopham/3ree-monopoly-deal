@@ -11,8 +11,10 @@ import {
   isActionCard,
   isRentCard,
   canPlayCard,
-  canFlipCard
+  canFlipCard,
+  unserializePropertySet
 } from '../../../../monopoly/monopoly'
+import PropertySetType from '../../../../monopoly/PropertySet'
 import { HOUSE, HOTEL, PROPERTY_WILDCARD } from '../../../../monopoly/cards'
 
 type Props = {
@@ -76,11 +78,33 @@ export default class CardOnHand extends React.Component {
     })
   }
 
-  onSelectPropertySet = (setToPutIn: SerializedPropertySet) => {
+  onSelectPropertySet = (setToPutIn: PropertySetType) => {
     const { card } = this.props
     const asMoney = false
-    this.props.onPlaceCard(card, asMoney, setToPutIn)
+    this.props.onPlaceCard(card, asMoney, setToPutIn.serialize())
     this.onCancelSelectingPropertySet()
+  }
+
+  renderPropertySetSelector () {
+    const { placedCards, card } = this.props
+
+    let propertySetsToSelect: PropertySetType[] = placedCards.serializedPropertySets
+      .map(unserializePropertySet)
+      .filter(s => s.canAddCard(card))
+
+    return (
+      <PropertySetSelector
+        header='Select a property set'
+        subheader={
+          propertySetsToSelect.length ?
+            'Click to select a property set for your card' :
+            `No eligible sets for ${card}`
+        }
+        propertySets={propertySetsToSelect}
+        onCancel={this.onCancelSelectingPropertySet}
+        onSelect={this.onSelectPropertySet}
+      />
+    )
   }
 
   render () {
@@ -118,14 +142,7 @@ export default class CardOnHand extends React.Component {
           />
         }
         {selectingPropertySet &&
-          <PropertySetSelector
-            header='Select a property set'
-            subheader='Click to select a property set for your card'
-            propertySets={placedCards.serializedPropertySets}
-            onCancel={this.onCancelSelectingPropertySet}
-            onSelect={this.onSelectPropertySet}
-            fullSetOnly={[HOUSE, HOTEL].includes(card)}
-          />
+          this.renderPropertySetSelector()
         }
       </div>
     )
