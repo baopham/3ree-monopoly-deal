@@ -220,7 +220,10 @@ export default function reducer (state: CurrentGameState = initialState, action:
     }
 
     case RESET:
-      return initialState
+      return {
+        ...initialState,
+        membership: state.membership
+      }
 
     case ERROR:
       return deepmerge(state, {
