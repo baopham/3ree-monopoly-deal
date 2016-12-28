@@ -1,6 +1,7 @@
 /* @flow */
 import React from 'react'
 import { Modal, Glyphicon } from 'react-bootstrap'
+import { Link } from 'react-router'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
 type Props = {
@@ -39,6 +40,10 @@ export default class WinnerNotification extends React.Component {
             }
           </h1>
         </Modal.Body>
+
+        <Modal.Footer>
+          <Link to='/games' className='btn btn-default'>Go back to home page</Link>
+        </Modal.Footer>
       </ScrollableBackgroundModal>
     )
   }
