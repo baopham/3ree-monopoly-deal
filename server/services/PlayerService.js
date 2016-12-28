@@ -172,7 +172,7 @@ export default class PlayerService {
 
         return Promise.all([
           game.saveAll(),
-          this.gameHistoryService.record(gameId, `${nextTurn}'s turn`)
+          this.gameHistoryService.record(gameId, `${nextTurn}'s turn`, [nextTurn])
         ])
       })
       .then(([game, _]) => game.currentTurn)
