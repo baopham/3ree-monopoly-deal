@@ -69,7 +69,8 @@ export function updatePayer (
     }
 
     // Update in place
-    item.cards = thisPropertySet.getCards().filter(card => !cardsToPay.includes(card))
+    const itemIndexesToRemove = cardsToPay.map(card => item.cards.findIndex(c => c === card))
+    item.cards = item.cards.filter((card, index) => !itemIndexesToRemove.includes(index))
 
     if (!item.cards.length) {
       placedCards.serializedPropertySets.splice(index, 1)
