@@ -4,7 +4,6 @@ import { Button, Modal } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
 import PropertySetType from '../../../../monopoly/PropertySet'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import { unserializePropertySet } from '../../../../monopoly/monopoly'
 
 type Props = {
   header: string,

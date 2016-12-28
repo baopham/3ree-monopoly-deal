@@ -96,9 +96,9 @@ export default class CardOnHand extends React.Component {
       <PropertySetSelector
         header='Select a property set'
         subheader={
-          propertySetsToSelect.length ?
-            'Click to select a property set for your card' :
-            `No eligible sets for ${card}`
+          propertySetsToSelect.length
+            ? 'Click to select a property set for your card'
+            : `No eligible sets for ${card}`
         }
         propertySets={propertySetsToSelect}
         onCancel={this.onCancelSelectingPropertySet}
