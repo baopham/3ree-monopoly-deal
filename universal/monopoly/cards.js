@@ -81,6 +81,12 @@ export const MONEY_3M = 'MONEY_3M'
 export const MONEY_2M = 'MONEY_2M'
 export const MONEY_1M = 'MONEY_1M'
 
+// ------------------------------------
+// Others
+// ------------------------------------
+export const HOUSE_ADDON_AMOUNT = 3
+export const HOTEL_ADDON_AMOUNT = 4
+
 export const CARDS: MapOfCards = setKeyAndTreatAs({
   [HOUSE]: {
     count: 3,

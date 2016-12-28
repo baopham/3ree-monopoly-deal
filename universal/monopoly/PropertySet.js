@@ -3,7 +3,9 @@ import {
   HOUSE,
   HOTEL,
   PROPERTY_WILDCARD,
-  RENT_ALL_COLOUR
+  RENT_ALL_COLOUR,
+  HOUSE_ADDON_AMOUNT,
+  HOTEL_ADDON_AMOUNT
 } from './cards'
 
 export default class PropertySet {
@@ -16,15 +18,7 @@ export default class PropertySet {
   }
 
   addCard (card: CardKey): boolean {
-    if (this.isFullSet() && card !== HOUSE && card !== HOTEL) {
-      return false
-    }
-
-    if ((card === HOUSE || card === HOTEL) && (this.cards.includes(card) || !this.isFullSet())) {
-      return false
-    }
-
-    if (card === HOTEL && !this.cards.includes(HOUSE)) {
+    if (!this.canAddCard(card)) {
       return false
     }
 
@@ -40,13 +34,39 @@ export default class PropertySet {
     return this.cards
   }
 
+  canAddCard (card: CardKey): boolean {
+    if (this.isFullSet() && card !== HOUSE && card !== HOTEL) {
+      return false
+    }
+
+    if ((card === HOUSE || card === HOTEL) && (this.cards.includes(card) || !this.isFullSet())) {
+      return false
+    }
+
+    if (card === HOTEL && !this.cards.includes(HOUSE)) {
+      return false
+    }
+
+    return true
+  }
+
   isFullSet (): boolean {
     return this.getProperties().length === this.identifier.needs
   }
 
   getRentAmount () {
     const numberOfProperties = this.getProperties().length
-    return this.identifier.rent[numberOfProperties - 1]
+    let rent = this.identifier.rent[numberOfProperties - 1]
+
+    if (this.cards.includes(HOUSE)) {
+      rent += HOUSE_ADDON_AMOUNT
+    }
+
+    if (this.cards.includes(HOTEL)) {
+      rent += HOTEL_ADDON_AMOUNT
+    }
+
+    return rent
   }
 
   isRentable (rentCard: Card) {
