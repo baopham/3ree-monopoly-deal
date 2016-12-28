@@ -113,12 +113,13 @@ export default function reducer (state: GamesState = initialState, action: Redux
       }
 
     case ADD_SUCCESS:
-      return deepmerge(state, {
+      return {
+        ...state,
         isWorking: false,
         error: null,
         games: [action.payload.game, ...state.games.slice(0, state.limit - 1)],
         count: action.payload.count
-      })
+      }
 
     case DELETE_SUCCESS:
       return {
