@@ -31,7 +31,7 @@ Notes
 
 - Currently, only the client knows about what cards the player is holding
 - Rules are loosely applied
-- If you unexpected errors, try to clear local storage: `localStorage.removeItem('redux')`
+- If you get unexpected errors, try to clear local storage: `localStorage.removeItem('redux')`
 
 
 TODOs
