@@ -28,26 +28,15 @@ export class GameRoute extends React.Component {
 
   componentDidMount () {
     this.props.getGame(this.props.params.id)
-
-    if (!global.socket) {
-      return
-    }
-
     this.props.subscribeGameEvent(global.socket, this.props.params.id)
     this.props.subscribeGameHistoryEvent(global.socket, this.props.params.id)
   }
 
   componentWillUnmount () {
-    this.props.resetGameHistory()
-    this.props.resetCurrentGame()
-
-
-    if (!global.socket) {
-      return
-    }
-
     this.props.unsubscribeGameEvent(global.socket)
     this.props.unsubscribeGameHistoryEvent(global.socket)
+    this.props.resetGameHistory()
+    this.props.resetCurrentGame()
   }
 
   render () {
