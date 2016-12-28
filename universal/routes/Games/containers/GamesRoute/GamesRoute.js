@@ -35,11 +35,11 @@ export class GamesRoute extends React.Component {
 
   componentDidMount () {
     this.props.getGames(this.props.games.page)
-    !!global.socket && this.props.subscribeSocket(global.socket)
+    this.props.subscribeSocket(global.socket)
   }
 
   componentWillUnmount () {
-    !!global.socket && this.props.unsubscribeSocket(global.socket)
+    this.props.unsubscribeSocket(global.socket)
   }
 
   addGame = (name: string) => {
