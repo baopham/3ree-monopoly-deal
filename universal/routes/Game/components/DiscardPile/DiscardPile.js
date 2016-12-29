@@ -15,19 +15,11 @@ export default class DiscardPile extends React.Component {
     cards: []
   }
 
-  renderHeader () {
-    return (
-      <div>
-        Discard Pile
-      </div>
-    )
-  }
-
   render () {
     const { cards, lastCardPlayedBy } = this.props
 
     return (
-      <Panel header={this.renderHeader()}>
+      <Panel header={<span>Discard Pile</span>}>
         {lastCardPlayedBy &&
           <p>
             <strong>{lastCardPlayedBy}</strong> played:

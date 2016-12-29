@@ -26,7 +26,7 @@ export class GameHistoryLog extends React.Component {
     const { records } = this.props
 
     return (
-      <Panel header={<h1>Log</h1>}>
+      <Panel header={<span>Log</span>}>
         <ListGroup fill style={styles.messageList}>
           {records.map(record =>
             <ListGroupItem key={record.id}>

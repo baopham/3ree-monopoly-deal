@@ -57,7 +57,7 @@ export default class CardsOnHand extends React.Component {
 
   renderHeader () {
     return (
-      <span>
+      <div>
         {this.state.open &&
           <Glyphicon glyph='chevron-up' />
         }
@@ -66,7 +66,7 @@ export default class CardsOnHand extends React.Component {
         }
         {' '}
         Hand
-      </span>
+      </div>
     )
   }
 

@@ -1,6 +1,5 @@
 /* @flow */
 import React from 'react'
-import { Panel } from 'react-bootstrap'
 import PlayerComponent from '../Player'
 import ActionCounter from '../ActionCounter'
 
@@ -31,16 +30,12 @@ export default class Players extends React.Component {
     return (
       <div>
         {players.map(player =>
-          <Panel
+          <PlayerComponent
             key={player.id}
-            header={this.renderHeader(player)}
-            bsStyle={currentPlayer.username === player.username ? 'success' : 'default'}
-          >
-            <PlayerComponent
-              player={player}
-              onWinning={onWinning}
-            />
-          </Panel>
+            isCurrentPlayer={currentPlayer.username === player.username}
+            player={player}
+            onWinning={onWinning}
+          />
         )}
       </div>
     )
