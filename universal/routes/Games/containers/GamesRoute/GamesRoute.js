@@ -75,20 +75,17 @@ export class GamesRoute extends React.Component {
 
     return (
       <FullWidth>
-        <GamesList games={games} />
-        <Button onClick={this.addingGame}>
-          Add
+        <h1>Games</h1>
+        <Button onClick={this.addingGame} bsStyle='primary'>
+          Add new Game
         </Button>
-        {page < (totalPages - 1) &&
-          <Button onClick={this.nextPage}>
-            Next
-          </Button>
-        }
-        {page > 0 &&
-          <Button onClick={this.previousPage}>
-            Previous
-          </Button>
-        }
+        <GamesList
+          games={games}
+          page={page}
+          totalPages={totalPages}
+          onNextPage={this.nextPage}
+          onPreviousPage={this.previousPage}
+        />
         {addingGame &&
           <TextFormDialog
             allowSpaces
