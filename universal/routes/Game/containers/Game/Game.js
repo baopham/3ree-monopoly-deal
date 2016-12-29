@@ -12,14 +12,14 @@ import Board from '../Board'
 import WinnerNotification from '../../components/WinnerNotification'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
-import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
+import { actions as playerCardsActions } from '../../modules/currentPlayerCardsOnHand'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
-import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCards'
+import type { CurrentPlayerCardsState } from '../../modules/currentPlayerCardsOnHand'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
-  currentPlayerCards: CurrentPlayerCardsState,
+  cardsOnHand: CardKey[],
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
   discardCard: (card: CardKey) => void,
@@ -32,7 +32,7 @@ type Props = {
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
   currentPlayer: getCurrentPlayer(state),
-  currentPlayerCards: state.currentPlayerCards,
+  cardsOnHand: state.currentPlayerCardsOnHand.cardsOnHand,
   isPlayerTurn: isPlayerTurn(state)
 })
 
@@ -58,7 +58,7 @@ export class GameComponent extends React.Component {
       game,
       currentPlayer,
       join,
-      currentPlayerCards,
+      cardsOnHand,
       placeCard,
       playCard,
       discardCard,
@@ -80,7 +80,7 @@ export class GameComponent extends React.Component {
               </Col>
               <Col md={9}>
                 <CardsOnHand
-                  cardsOnHand={currentPlayerCards.cardsOnHand}
+                  cardsOnHand={cardsOnHand}
                   placedCards={currentPlayer.placedCards}
                   onPlaceCard={placeCard}
                   onPlayCard={playCard}

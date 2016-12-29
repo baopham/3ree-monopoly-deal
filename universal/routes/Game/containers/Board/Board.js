@@ -11,7 +11,7 @@ import Players from '../../components/Players'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
-import { actions as playerCardsActions } from '../../modules/currentPlayerCards'
+import { actions as playerCardsActions } from '../../modules/currentPlayerCardsOnHand'
 
 type Props = {
   game: Game,

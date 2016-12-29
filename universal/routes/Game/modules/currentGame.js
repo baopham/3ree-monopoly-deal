@@ -3,7 +3,7 @@ import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
 import { actions as paymentActions } from './payment'
 import { actions as gameHistoryActions } from './gameHistory'
-import { actions as currentPlayerCardsActions } from './currentPlayerCards'
+import { actions as currentPlayerCardsOnHandActions } from './currentPlayerCardsOnHand'
 import { getCurrentPlayer } from './gameSelectors'
 import type { PropertySetId } from '../../../monopoly/PropertySet'
 
@@ -148,7 +148,7 @@ function resetCurrentGame () {
     dispatch({ type: RESET })
     dispatch(paymentActions.reset())
     dispatch(gameHistoryActions.reset())
-    dispatch(currentPlayerCardsActions.reset())
+    dispatch(currentPlayerCardsOnHandActions.reset())
   }
 }
 
