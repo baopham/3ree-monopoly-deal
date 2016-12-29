@@ -247,13 +247,14 @@ export default class PlayerService {
 
     return this.playerRepository.findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
-        const setToUpdate = player.placedCards.serializedPropertySets
-          .find(set => monopoly.unserializePropertySet(set).getId() === propertySetId)
+        const setToUpdateIndex = player.placedCards.serializedPropertySets
+          .findIndex(set => monopoly.unserializePropertySet(set).getId() === propertySetId)
 
-        if (!setToUpdate) {
+        if (!setToUpdateIndex) {
           return Promise.reject(`Cannot find the set with id ${propertySetId}`)
         }
 
+        const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
         const cardIndex = setToUpdate.cards.findIndex(c => c === cardKey)
 
         // Update in place
@@ -261,9 +262,16 @@ export default class PlayerService {
         const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
         player.placedCards.serializedPropertySets.push(newSet.serialize())
 
+        if (!setToUpdate.cards.length) {
+          player.placedCards.serializedPropertySets.splice(setToUpdateIndex, 1)
+        }
+
         player.actionCounter += 1
 
-        return player.save()
+        return Promise.all([
+          player.save(),
+          this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
+        ])
       })
       .then(() => flippedCardKey)
   }
@@ -306,7 +314,10 @@ export default class PlayerService {
 
         player.actionCounter += 1
 
-        return player.save()
+        return Promise.all([
+          player.save(),
+          this.gameHistoryService.record(gameId, `${username} moved ${cardKey} to another set`)
+        ])
       })
   }
 }
