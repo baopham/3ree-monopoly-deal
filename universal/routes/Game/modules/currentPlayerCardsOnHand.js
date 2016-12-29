@@ -5,7 +5,6 @@ import { PASS_GO } from '../../../monopoly/cards'
 import * as monopoly from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
-import type { PropertySetId } from '../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('PLAYER', value)

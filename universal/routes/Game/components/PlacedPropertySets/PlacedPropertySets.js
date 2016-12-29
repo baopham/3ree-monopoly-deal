@@ -5,11 +5,6 @@ import FlipCardButton from '../FlipCardButton'
 import MoveCardButton from '../MoveCardButton'
 import PropertySetSelector from '../PropertySetSelector'
 import * as monopoly from '../../../../monopoly/monopoly'
-import {
-  HOUSE,
-  HOTEL,
-  PROPERTY_WILDCARD
-} from '../../../../monopoly/cards'
 import PropertySetType from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
