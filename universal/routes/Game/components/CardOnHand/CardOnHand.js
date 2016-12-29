@@ -22,7 +22,6 @@ type Props = {
   card: CardKey,
   onPlaceCard: (card: CardKey, boolean) => void,
   onPlayCard: (card: CardKey) => void,
-  onDrawCards: () => void,
   onDiscardCard: (card: CardKey) => void,
   onFlipCard: (card: CardKey) => void,
   needsToDiscard: boolean,

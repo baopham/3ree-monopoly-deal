@@ -3,11 +3,15 @@ import React from 'react'
 import PlacedCards from '../PlacedCards'
 import ActionCounter from '../ActionCounter'
 import { Panel } from 'react-bootstrap'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
   player: Player,
+  isPlayerTurn: boolean,
   isCurrentPlayer: boolean,
-  onWinning: (username: Username) => void
+  onWinning: (username: Username) => void,
+  onFlipCard: (card: CardKey, propertySetId: PropertySetId) => void,
+  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void
 }
 
 export default class PlayerComponent extends React.Component {
@@ -32,7 +36,7 @@ export default class PlayerComponent extends React.Component {
   }
 
   render () {
-    const { player, isCurrentPlayer } = this.props
+    const { player, isCurrentPlayer, isPlayerTurn, onFlipCard, onMoveCard } = this.props
 
     return (
       <Panel
@@ -42,6 +46,9 @@ export default class PlayerComponent extends React.Component {
         <PlacedCards
           cards={player.placedCards}
           onWinning={this.onWinning}
+          onFlipCard={onFlipCard}
+          onMoveCard={onMoveCard}
+          immutable={!isCurrentPlayer || !isPlayerTurn}
         />
       </Panel>
     )

@@ -118,6 +118,14 @@ describe('PropertySet', function () {
         })
       })
     })
+
+    describe('Given the card being added is not of the same colour', function () {
+      it('should not allow to add the card', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
+
+        expect(propertySet.addCard(PROPERTY_BLACK)).to.be.false
+      })
+    })
   })
 
   describe('#toArray', function () {

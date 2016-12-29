@@ -4,6 +4,8 @@ import * as request from '../../../request-util'
 import { actions as paymentActions } from './payment'
 import { actions as gameHistoryActions } from './gameHistory'
 import { actions as currentPlayerCardsActions } from './currentPlayerCards'
+import { getCurrentPlayer } from './gameSelectors'
+import type { PropertySetId } from '../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('GAME', value)
@@ -26,6 +28,10 @@ const END_TURN_REQUEST = ns('END_TURN_REQUEST')
 const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
 const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
 const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
+const FLIP_PLACED_CARD_REQUEST = ns('FLIP_PLACED_CARD_REQUEST')
+const FLIP_PLACED_CARD_SUCCESS = ns('FLIP_PLACED_CARD_SUCCESS')
+const MOVE_CARD_REQUEST = ns('MOVE_CARD_REQUEST')
+const MOVE_CARD_SUCCESS = ns('MOVE_CARD_SUCCESS')
 const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
@@ -57,6 +63,33 @@ function endTurn () {
     promise: (dispatch: Function, getState: Function) => {
       const id = getState().currentGame.game.id
       return request.put(`${gamesUrl}/${id}/end-turn`)
+    }
+  }
+}
+
+function flipPlacedCard (card: CardKey, propertySetId: PropertySetId) {
+  return {
+    types: [FLIP_PLACED_CARD_REQUEST, FLIP_PLACED_CARD_SUCCESS, ERROR],
+    card,
+    propertySetId,
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      const username = getCurrentPlayer(getState()).username
+      return request.put(`${gamesUrl}/${id}/flip-card`, { card, username, propertySetId })
+    }
+  }
+}
+
+function moveCard (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) {
+  return {
+    types: [MOVE_CARD_REQUEST, MOVE_CARD_SUCCESS, ERROR],
+    card,
+    fromSetId,
+    toSetId,
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      const username = getCurrentPlayer(getState()).username
+      return request.put(`${gamesUrl}/${id}/move-card`, { card, username, fromSetId, toSetId })
     }
   }
 }
@@ -124,6 +157,8 @@ export const actions = {
   join,
   endTurn,
   setWinner,
+  flipPlacedCard,
+  moveCard,
   resetCurrentGame,
   subscribeGameEvent,
   unsubscribeGameEvent
@@ -154,6 +189,8 @@ export default function reducer (state: CurrentGameState = initialState, action:
     case LOAD_REQUEST:
     case END_TURN_REQUEST:
     case SET_WINNER_REQUEST:
+    case FLIP_PLACED_CARD_REQUEST:
+    case MOVE_CARD_REQUEST:
       return requestActionHandler(state)
 
     case JOIN_REQUEST: {
@@ -225,6 +262,11 @@ export default function reducer (state: CurrentGameState = initialState, action:
       nextState.game.winner = action.winner
       return nextState
     }
+
+    case MOVE_CARD_SUCCESS:
+    case FLIP_PLACED_CARD_SUCCESS:
+      // Currently, we are relying on websocket to update...
+      return state
 
     case RESET:
       return {

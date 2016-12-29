@@ -9,7 +9,6 @@ type Props = {
   placedCards: PlacedCards,
   onPlaceCard: (card: CardKey) => void,
   onPlayCard: (card: CardKey) => void,
-  onDrawCards: () => void,
   onDiscardCard: (card: CardKey) => void,
   onFlipCard: (card: CardKey) => void,
   isPlayerTurn: boolean
@@ -76,7 +75,6 @@ export default class CardsOnHand extends React.Component {
       placedCards,
       onPlaceCard,
       onPlayCard,
-      onDrawCards,
       onDiscardCard,
       onFlipCard,
       isPlayerTurn
@@ -102,7 +100,6 @@ export default class CardsOnHand extends React.Component {
                   card={card}
                   onPlaceCard={onPlaceCard}
                   onPlayCard={onPlayCard}
-                  onDrawCards={onDrawCards}
                   onDiscardCard={onDiscardCard}
                   onFlipCard={onFlipCard}
                   needsToDiscard={this.state.needsToDiscard}

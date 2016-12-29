@@ -85,3 +85,25 @@ export function setWinner (req: AppRequest, res: express$Response) {
     .then(() => res.json('success'))
     .catch(err => handleError(err, res))
 }
+
+export function flipPlacedCard (req: AppRequest, res: express$Response) {
+  const promise = playerService.flipPlacedCard(req.params.id, req.body.username, req.body.card, req.body.propertySetId)
+
+  promise
+    .then(flippedCard => res.json({ flippedCard }))
+    .catch(err => handleError(err, res))
+}
+
+export function moveCard (req: AppRequest, res: express$Response) {
+  const promise = playerService.moveCard(
+    req.params.id,
+    req.body.username,
+    req.body.card,
+    req.body.fromSetId,
+    req.body.toSetId
+  )
+
+  promise
+    .then(() => res.json())
+    .catch(err => handleError(err, res))
+}

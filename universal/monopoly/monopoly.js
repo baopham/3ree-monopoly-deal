@@ -23,6 +23,10 @@ export function getCardObject (cardKeyOrCard: CardKeyOrCard): Card {
   return typeof cardKeyOrCard === 'string' ? CARDS[cardKeyOrCard] : cardKeyOrCard
 }
 
+export function getPropertySetIdentifier (cardKeyOrCard: CardKeyOrCard): Card {
+  return getCardObject(getCardObject(cardKeyOrCard).treatAs)
+}
+
 export function isMoneyCard (card: CardKeyOrCard): boolean {
   card = getCardObject(card)
   return card.type === MONEY_CARD_TYPE
@@ -66,8 +70,7 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
     return properties.some((c: CardKey): boolean => {
       const property = getCardObject(c)
       const forCards = card.forCards || []
-      const propertyKey = property.treatAs ? property.treatAs : property.key
-      return forCards.includes(propertyKey)
+      return forCards.includes(card.treatAs)
     })
   }
 

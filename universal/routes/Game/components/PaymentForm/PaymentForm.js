@@ -5,7 +5,7 @@ import {
   Modal,
   Alert
 } from 'react-bootstrap'
-import Properties from '../Properties'
+import PropertySet from '../PropertySet'
 import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import * as monopoly from '../../../../monopoly/monopoly'
@@ -157,11 +157,13 @@ export default class PaymentForm extends React.Component {
           <h4>Select cards to pay {payee} ${dueAmount}M</h4>
           {this.renderTotalAmountAlert()}
           {this.renderBankCards()}
-          <Properties
-            propertySets={propertySets}
-            onCardClick={this.toggleSelectNonMoneyCard}
-            isCardHighlighted={this.isNonMoneyCardHighlighted}
-          />
+          {propertySets.map((set, setIndex) =>
+            <PropertySet
+              onCardClick={(card, cardIndex) => this.toggleSelectNonMoneyCard(card, cardIndex, setIndex)}
+              isCardHighlighted={(card, cardIndex) => this.isNonMoneyCardHighlighted(card, cardIndex, setIndex)}
+              propertySet={set}
+            />
+          )}
         </Modal.Body>
 
         <Modal.Footer>

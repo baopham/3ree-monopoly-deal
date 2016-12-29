@@ -6,6 +6,7 @@ import { Panel } from 'react-bootstrap'
 
 type Props = {
   propertySet: PropertySetType,
+  renderCardFooter: (card: CardKey) => React$Element<*>,
   onCardClick: (card: CardKey, index: number) => void,
   isCardHighlighted: (card: CardKey, index: number) => boolean
 }
@@ -14,6 +15,7 @@ export default class PropertySet extends React.Component {
   props: Props
 
   static defaultProps = {
+    renderCardFooter: (card: CardKey) => <div />,
     onCardClick: (card: CardKey, index: number) => {},
     isCardHighlighted: (card: CardKey, index: number) => false
   }
@@ -22,7 +24,8 @@ export default class PropertySet extends React.Component {
     const {
       propertySet,
       isCardHighlighted,
-      onCardClick
+      onCardClick,
+      renderCardFooter
     } = this.props
     const bsStyle = propertySet.isFullSet() ? 'primary' : 'default'
 
@@ -38,6 +41,9 @@ export default class PropertySet extends React.Component {
                 size='small'
                 faceUp
               />
+              <div className='pull-left'>
+                {renderCardFooter(card)}
+              </div>
             </li>
           )}
         </ul>

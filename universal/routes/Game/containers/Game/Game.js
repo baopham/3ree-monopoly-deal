@@ -8,7 +8,7 @@ import Container from '../../../../components/Container'
 import GameHistoryLog from '../GameHistoryLog'
 import GamePayment from '../GamePayment'
 import CardsOnHand from '../../components/CardsOnHand'
-import Board from '../../components/Board'
+import Board from '../Board'
 import WinnerNotification from '../../components/WinnerNotification'
 import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
@@ -22,10 +22,8 @@ type Props = {
   currentPlayerCards: CurrentPlayerCardsState,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
-  drawCards: () => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void,
-  setWinner: (username: Username) => void,
   join: (username: Username) => void,
   endTurn: () => void,
   isPlayerTurn: boolean
@@ -61,14 +59,11 @@ export class GameComponent extends React.Component {
       currentPlayer,
       join,
       currentPlayerCards,
-      drawCards,
       placeCard,
       playCard,
-      endTurn,
       discardCard,
       flipCardOnHand,
-      isPlayerTurn,
-      setWinner
+      isPlayerTurn
     } = this.props
 
     const gameHasAWinner = currentPlayer && !!game.winner
@@ -89,7 +84,6 @@ export class GameComponent extends React.Component {
                   placedCards={currentPlayer.placedCards}
                   onPlaceCard={placeCard}
                   onPlayCard={playCard}
-                  onDrawCards={drawCards}
                   onDiscardCard={discardCard}
                   onFlipCard={flipCardOnHand}
                   currentPlayer={currentPlayer}
@@ -98,14 +92,7 @@ export class GameComponent extends React.Component {
               </Col>
             </Container>
 
-            <Board
-              game={game}
-              onEndTurn={endTurn}
-              onDrawCards={drawCards}
-              onWinning={setWinner}
-              isPlayerTurn={isPlayerTurn}
-              currentPlayer={currentPlayer}
-            />
+            <Board />
 
             <GamePayment />
           </div>

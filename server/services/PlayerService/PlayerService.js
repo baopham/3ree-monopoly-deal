@@ -31,11 +31,7 @@ export default class PlayerService {
   }
 
   placeCard (
-    gameId: string,
-    username: Username,
-    cardKey: CardKey,
-    asMoney: boolean = false,
-    setToPutIn?: SerializedPropertySet
+    gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false, setToPutIn?: SerializedPropertySet
   ): Promise<*> {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
@@ -200,10 +196,8 @@ export default class PlayerService {
   }
 
   pay (
-    gameId: string,
-    payer: Username,
-    payee: Username,
-    moneyCards: CardKey[],
+    gameId: string, payer: Username,
+    payee: Username, moneyCards: CardKey[],
     mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
   ): Promise<*> {
     const promises = [
@@ -240,5 +234,79 @@ export default class PlayerService {
 
       return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
     }
+  }
+
+  flipPlacedCard (
+    gameId: string, username: Username, cardKey: CardKey, propertySetId: PropertySetId
+  ): Promise<CardKey> {
+    if (!monopoly.canFlipCard(cardKey)) {
+      return Promise.reject(`Cannot flip ${cardKey}`)
+    }
+
+    const flippedCardKey: CardKey = monopoly.flipCard(cardKey)
+
+    return this.playerRepository.findByGameIdAndUsername(gameId, username)
+      .then((player: Player) => {
+        const setToUpdate = player.placedCards.serializedPropertySets
+          .find(set => monopoly.unserializePropertySet(set).getId() === propertySetId)
+
+        if (!setToUpdate) {
+          return Promise.reject(`Cannot find the set with id ${propertySetId}`)
+        }
+
+        const cardIndex = setToUpdate.cards.findIndex(c => c === cardKey)
+
+        // Update in place
+        setToUpdate.cards.splice(cardIndex, 1)
+        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
+        player.placedCards.serializedPropertySets.push(newSet.serialize())
+
+        player.actionCounter += 1
+
+        return player.save()
+      })
+      .then(() => flippedCardKey)
+  }
+
+  moveCard (
+    gameId: string, username: Username, cardKey: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId
+  ): Promise<*> {
+    return this.playerRepository.findByGameIdAndUsername(gameId, username)
+      .then((player: Player) => {
+        const mapOfSetIndexes: Map<PropertySetId, number> = new Map()
+
+        player.placedCards.serializedPropertySets.forEach((set, index) => {
+          mapOfSetIndexes.set(monopoly.unserializePropertySet(set).getId(), index)
+        })
+
+        const fromSetIndex = mapOfSetIndexes.get(fromSetId)
+        const toSetIndex = mapOfSetIndexes.get(toSetId)
+
+        if (fromSetIndex === undefined || toSetIndex === undefined) {
+          return Promise.reject(`Cannot find sets: ${fromSetId}, ${toSetId}`)
+        }
+
+        const fromSet = player.placedCards.serializedPropertySets[fromSetIndex]
+        const toSet = player.placedCards.serializedPropertySets[toSetIndex]
+
+        // Validate the move
+        if (!monopoly.unserializePropertySet(toSet).canAddCard(cardKey)) {
+          return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
+        }
+
+        // Update in place
+        const indexToRemove = fromSet.cards.findIndex(c => c === cardKey)
+        fromSet.cards.splice(indexToRemove, 1)
+        toSet.cards.push(cardKey)
+
+        // After moving, if the set is empty, remove it completely
+        if (!fromSet.cards.length) {
+          player.placedCards.serializedPropertySets.splice(fromSetIndex, 1)
+        }
+
+        player.actionCounter += 1
+
+        return player.save()
+      })
   }
 }

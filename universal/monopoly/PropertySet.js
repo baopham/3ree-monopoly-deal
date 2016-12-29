@@ -1,5 +1,6 @@
 /* @flow */
 import {
+  CARDS,
   HOUSE,
   HOTEL,
   PROPERTY_WILDCARD,
@@ -50,6 +51,10 @@ export default class PropertySet {
     }
 
     if (card === HOTEL && !this.cards.includes(HOUSE)) {
+      return false
+    }
+
+    if (![HOUSE, HOTEL, PROPERTY_WILDCARD].includes(card) && CARDS[card].treatAs !== this.identifier.key) {
       return false
     }
 
