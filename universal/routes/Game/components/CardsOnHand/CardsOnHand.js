@@ -57,7 +57,7 @@ export default class CardsOnHand extends React.Component {
 
   renderHeader () {
     return (
-      <div>
+      <div onClick={this.togglePanel}>
         {this.state.open &&
           <Glyphicon glyph='chevron-up' />
         }
@@ -87,7 +87,6 @@ export default class CardsOnHand extends React.Component {
         header={this.renderHeader()}
         collapsible
         expanded={this.state.open}
-        onClick={this.togglePanel}
       >
         <div>
           {this.state.needsToDiscard &&

@@ -43,7 +43,6 @@ export default class CardOnHand extends React.Component {
   }
 
   onPlaceCard = (e: Event) => {
-    e.stopPropagation()
     const { card } = this.props
 
     if ([HOUSE, HOTEL, PROPERTY_WILDCARD].includes(card)) {
@@ -55,19 +54,16 @@ export default class CardOnHand extends React.Component {
   }
 
   onPlayCard = (e: Event) => {
-    e.stopPropagation()
     const { card } = this.props
     this.props.onPlayCard(card)
   }
 
   onDiscardCard = (e: Event) => {
-    e.stopPropagation()
     const { card } = this.props
     this.props.onDiscardCard(card)
   }
 
   onFlipCard = (e: Event) => {
-    e.stopPropagation()
     const { card } = this.props
     this.props.onFlipCard(card)
   }
