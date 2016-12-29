@@ -70,7 +70,7 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
     return properties.some((c: CardKey): boolean => {
       const property = getCardObject(c)
       const forCards = card.forCards || []
-      return forCards.includes(card.treatAs)
+      return forCards.includes(property.treatAs)
     })
   }
 
