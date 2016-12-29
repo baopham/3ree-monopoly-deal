@@ -157,17 +157,22 @@ export default class PaymentForm extends React.Component {
           <h4>Select cards to pay {payee} ${dueAmount}M</h4>
           {this.renderTotalAmountAlert()}
           {this.renderBankCards()}
-          {propertySets.map((set, setIndex) =>
-            <PropertySet
-              onCardClick={(card, cardIndex) => this.toggleSelectNonMoneyCard(card, cardIndex, setIndex)}
-              isCardHighlighted={(card, cardIndex) => this.isNonMoneyCardHighlighted(card, cardIndex, setIndex)}
-              propertySet={set}
-            />
-          )}
+          <ul className='list-inline'>
+            {propertySets.map((set, setIndex) =>
+              <li key={setIndex}>
+                <PropertySet
+                  onCardClick={(card, cardIndex) => this.toggleSelectNonMoneyCard(card, cardIndex, setIndex)}
+                  isCardHighlighted={(card, cardIndex) => this.isNonMoneyCardHighlighted(card, cardIndex, setIndex)}
+                  propertySet={set}
+                />
+              </li>
+            )}
+          </ul>
         </Modal.Body>
 
         <Modal.Footer>
           <Button
+            bsStyle='primary'
             disabled={this.getAmountSelected() < dueAmount}
             onClick={this.pay}
           >
