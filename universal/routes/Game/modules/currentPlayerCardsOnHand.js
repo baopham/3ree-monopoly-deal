@@ -121,27 +121,25 @@ export const actions = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-export type CurrentPlayerCardsState = {
+export type CurrentPlayerCardsOnHandState = {
   cardsOnHand: CardKey[],
   isWorking: boolean,
   error: mixed
 }
 
-const initialState: CurrentPlayerCardsState = {
+const initialState: CurrentPlayerCardsOnHandState = {
   cardsOnHand: [],
   isWorking: false,
   error: null
 }
 
-const requestActionHandler = (state: CurrentPlayerCardsState) => deepmerge(state, { isWorking: true, error: null })
-
-export default function reducer (state: CurrentPlayerCardsState = initialState, action: ReduxAction) {
+export default function reducer (state: CurrentPlayerCardsOnHandState = initialState, action: ReduxAction) {
   switch (action.type) {
     case DRAW_CARDS_REQUEST:
     case DISCARD_CARD_REQUEST:
     case PLACE_CARD_REQUEST:
     case PLAY_CARD_REQUEST:
-      return requestActionHandler(state)
+      return deepmerge(state, { isWorking: true, error: null })
 
     case DRAW_CARDS_SUCCESS:
       return {
