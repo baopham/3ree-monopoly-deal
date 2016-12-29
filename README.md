@@ -50,7 +50,7 @@ TODOs
 - [x] Winner notification
 - [x] Modal allows background scrolling
 - [x] Use flow types in React components
-- [ ] Allow player to move wildcard to a particular property group
+- [x] Allow player to move wildcard to a particular property group
 - [x] Allow player to select which set the wildcard, house, or hotel card should go to (when these cards are still in hand)
 - [ ] Player can minimize the modal
 - [ ] Handle actions that require other players' responses
