@@ -41,7 +41,11 @@ export default class PropertySet {
       return false
     }
 
-    if ((card === HOUSE || card === HOTEL) && (this.cards.includes(card) || !this.isFullSet())) {
+    if ([HOUSE, HOTEL].includes(card) && !this.identifier.canAddHouseOrHotel) {
+      return false
+    }
+
+    if ([HOUSE, HOTEL].includes(card) && (this.cards.includes(card) || !this.isFullSet())) {
       return false
     }
 

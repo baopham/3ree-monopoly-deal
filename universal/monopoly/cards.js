@@ -87,7 +87,7 @@ export const MONEY_1M = 'MONEY_1M'
 export const HOUSE_ADDON_AMOUNT = 3
 export const HOTEL_ADDON_AMOUNT = 4
 
-export const CARDS: MapOfCards = setKeyAndTreatAs({
+export const CARDS: MapOfCards = setMissingProperties({
   [HOUSE]: {
     count: 3,
     value: 3,
@@ -219,6 +219,7 @@ export const CARDS: MapOfCards = setKeyAndTreatAs({
     value: 2,
     needs: 4,
     rent: [1, 2, 3, 4],
+    canAddHouseOrHotel: false,
     image: '/images/cards/property-black.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -246,6 +247,7 @@ export const CARDS: MapOfCards = setKeyAndTreatAs({
     value: 2,
     needs: 2,
     rent: [1, 2],
+    canAddHouseOrHotel: false,
     image: '/images/cards/property-light-green.png',
     type: PROPERTY_CARD_TYPE
   },
@@ -494,11 +496,12 @@ export function shuffle (cards: CardKey[]): CardKey[] {
 }
 
 // Side effect
-function setKeyAndTreatAs (cards: Object): MapOfCards {
+function setMissingProperties (cards: Object): MapOfCards {
   Object.keys(cards).map((key) => {
     const card = cards[key]
     card.key = key
     card.treatAs = card.treatAs ? card.treatAs : card.key
+    card.canAddHouseOrHotel = card.hasOwnProperty('canAddHouseOrHotel') ? card.canAddHouseOrHotel : true
   })
   return cards
 }

@@ -9,5 +9,6 @@ type Card = {
   rent: number[],
   forCards: string[],
   treatAs: string,
-  flipTo: string
+  flipTo: string,
+  canAddHouseOrHotel: boolean
 }
