@@ -64,7 +64,7 @@ export default class OtherPlayerCardSelector extends React.Component {
     this.props.onSelect(player, unserializePropertySet(set), set.cards[selectedCardIndex])
   }
 
-  renderPlayerPropertySets (player) {
+  renderPlayerPropertySets (player: Player) {
     return (
       <ul className='list-inline'>
         {player.placedCards.serializedPropertySets.map((set, setIndex) =>
