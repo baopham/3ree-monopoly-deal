@@ -96,8 +96,7 @@ export default class OtherPlayerCardSelector extends React.Component {
         <Modal.Body>
           <h5>{subheader}</h5>
           {players.map(player =>
-            <Panel header={<div>Player: {player.username}</div>}
-            >
+            <Panel header={<div>Player: {player.username}</div>}>
               {this.renderPlayerPropertySets(player)}
             </Panel>
           )}
