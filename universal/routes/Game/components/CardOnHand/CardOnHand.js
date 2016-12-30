@@ -22,12 +22,12 @@ import { HOUSE, HOTEL, PROPERTY_WILDCARD } from '../../../../monopoly/cards'
 type Props = {
   placedCards: PlacedCards,
   card: CardKey,
+  needsToDiscard: boolean,
+  isPlayerTurn: boolean,
   onPlaceCard: (card: CardKey, boolean) => void,
   onPlayCard: (card: CardKey) => void,
   onDiscardCard: (card: CardKey) => void,
-  onFlipCard: (card: CardKey) => void,
-  needsToDiscard: boolean,
-  isPlayerTurn: boolean
+  onFlipCard: (card: CardKey) => void
 }
 
 type State = {
@@ -75,9 +75,7 @@ export default class CardOnHand extends React.Component {
   }
 
   onCancelSelectingPropertySet = () => {
-    this.setState({
-      selectingPropertySet: false
-    })
+    this.setState({ selectingPropertySet: false })
   }
 
   onSelectPropertySet = (setToPutIn: PropertySetType) => {
