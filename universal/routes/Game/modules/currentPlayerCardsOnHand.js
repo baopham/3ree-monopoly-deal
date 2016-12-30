@@ -5,6 +5,7 @@ import { PASS_GO } from '../../../monopoly/cards'
 import * as monopoly from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
+import PropertySet from '../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('PLAYER', value)
@@ -97,6 +98,10 @@ function playCard (card: CardKey) {
   }
 }
 
+function slyDeal (fromPlayer: Player, fromSet: PropertySet, selectedCard: CardKey) {
+
+}
+
 function flipCardOnHand (card: CardKey) {
   return {
     type: FLIP_CARD_ON_HAND,
@@ -115,7 +120,8 @@ export const actions = {
   playCard,
   placeCard,
   discardCard,
-  flipCardOnHand
+  flipCardOnHand,
+  slyDeal
 }
 
 // ------------------------------------

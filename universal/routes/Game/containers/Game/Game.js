@@ -14,18 +14,20 @@ import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { actions as playerCardsActions } from '../../modules/currentPlayerCardsOnHand'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
+import PropertySetType from '../../../../monopoly/PropertySet'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
   cardsOnHand: CardKey[],
+  isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void,
+  slyDeal: (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
   join: (username: Username) => void,
-  endTurn: () => void,
-  isPlayerTurn: boolean
+  endTurn: () => void
 }
 
 const mapStateToProps = (state) => ({
@@ -62,10 +64,12 @@ export class GameComponent extends React.Component {
       playCard,
       discardCard,
       flipCardOnHand,
+      slyDeal,
       isPlayerTurn
     } = this.props
 
     const gameHasAWinner = currentPlayer && !!game.winner
+    const otherPlayers = currentPlayer && game.players.filter(player => player.id !== currentPlayer.id)
 
     return (
       <FullWidth fluid>
@@ -79,14 +83,16 @@ export class GameComponent extends React.Component {
               </Col>
               <Col md={9}>
                 <CardsOnHand
+                  currentPlayer={currentPlayer}
+                  isPlayerTurn={isPlayerTurn}
+                  otherPlayers={otherPlayers}
                   cardsOnHand={cardsOnHand}
                   placedCards={currentPlayer.placedCards}
                   onPlaceCard={placeCard}
                   onPlayCard={playCard}
                   onDiscardCard={discardCard}
                   onFlipCard={flipCardOnHand}
-                  currentPlayer={currentPlayer}
-                  isPlayerTurn={isPlayerTurn}
+                  onSlyDeal={slyDeal}
                 />
               </Col>
             </Container>
