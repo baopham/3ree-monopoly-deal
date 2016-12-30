@@ -5,6 +5,7 @@ import PlaceCardButton from '../PlaceCardButton'
 import PlayCardButton from '../PlayCardButton'
 import DiscardCardButton from '../DiscardCardButton'
 import FlipCardButton from '../FlipCardButton'
+import MoneySignButton from '../MoneySignButton'
 import PropertySetSelector from '../PropertySetSelector'
 import {
   isMoneyCard,
@@ -12,6 +13,7 @@ import {
   isRentCard,
   canPlayCard,
   canFlipCard,
+  cardCanBeMoney,
   unserializePropertySet
 } from '../../../../monopoly/monopoly'
 import PropertySetType from '../../../../monopoly/PropertySet'
@@ -49,7 +51,12 @@ export default class CardOnHand extends React.Component {
       return
     }
 
-    this.props.onPlaceCard(card, isMoneyCard(card) || isActionCard(card) || isRentCard(card))
+    this.props.onPlaceCard(card, this.cannotPutIntoPropertyArea(card))
+  }
+
+  onPlaceCardAsMoney = (e: Event) => {
+    const { card } = this.props
+    this.props.onPlaceCard(card, true)
   }
 
   onPlayCard = (e: Event) => {
@@ -78,6 +85,10 @@ export default class CardOnHand extends React.Component {
     const asMoney = false
     this.props.onPlaceCard(card, asMoney, setToPutIn.serialize())
     this.onCancelSelectingPropertySet()
+  }
+
+  cannotPutIntoPropertyArea (card: CardKey) {
+    return isMoneyCard(card) || isActionCard(card) || isRentCard(card)
   }
 
   renderPropertySetSelector () {
@@ -114,14 +125,23 @@ export default class CardOnHand extends React.Component {
     const cannotPlaceCard = !isPlayerTurn
     const cannotPlayCard = !isPlayerTurn || !canPlayCard(card, placedCards)
     const showFlipCardButton = canFlipCard(card)
+    const canBeMoney = cardCanBeMoney(card)
+    const canOnlyBeMoney = this.cannotPutIntoPropertyArea(card)
 
     return (
       <div>
         <Card card={card} faceUp />
-        <PlaceCardButton
-          disabled={cannotPlaceCard}
-          onClick={this.onPlaceCard}
-        />
+        {!canOnlyBeMoney &&
+          <PlaceCardButton
+            disabled={cannotPlaceCard}
+            onClick={this.onPlaceCard}
+          />
+        }
+        {canBeMoney &&
+          <MoneySignButton
+            onClick={this.onPlaceCardAsMoney}
+          />
+        }
         <PlayCardButton
           disabled={cannotPlayCard}
           onClick={this.onPlayCard}

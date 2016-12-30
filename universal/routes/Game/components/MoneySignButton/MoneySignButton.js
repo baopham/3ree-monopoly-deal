@@ -4,14 +4,15 @@ import { Button, Glyphicon } from 'react-bootstrap'
 
 type Props = {
   disabled?: boolean,
+  className?: string,
   onClick: (e: Event) => void
 }
 
-export default class PlayCardButton extends React.Component {
+export default class MoneySignButton extends React.Component {
   props: Props
 
   render () {
-    const { disabled, onClick } = this.props
+    const { disabled, onClick, className } = this.props
 
     return (
       <Button
@@ -19,9 +20,10 @@ export default class PlayCardButton extends React.Component {
         onClick={onClick}
         bsStyle='primary'
         bsSize='xsmall'
-        title='Play card in the center'
+        title='Money?'
+        className={className}
       >
-        <Glyphicon glyph='play' />
+        <Glyphicon glyph='piggy-bank' />
       </Button>
     )
   }

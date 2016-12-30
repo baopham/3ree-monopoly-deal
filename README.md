@@ -40,6 +40,7 @@ TODOs
 - [x] Fix bug when paying using properties / house / hotel...
 - [ ] There should be a place for cards like house and hotel
       e.g. payer pays using a property card -> set is no longer a full set -> house and hotel cards should go to a different place
+- [x] Allow player to indicate if cards should be treated as money
 - [x] Collect all the card images
 - [x] Sound notification for payment notice
 - [x] Game history log

@@ -47,6 +47,11 @@ export function isPropertyCard (card: CardKeyOrCard): boolean {
   return card.type === PROPERTY_CARD_TYPE || card.type === PROPERTY_WILDCARD_ALL_COLOUR_TYPE
 }
 
+export function cardCanBeMoney (card: CardKeyOrCard): boolean {
+  card = getCardObject(card)
+  return card.value > 0
+}
+
 export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCards): boolean {
   const card = getCardObject(cardKeyOrCard)
 
