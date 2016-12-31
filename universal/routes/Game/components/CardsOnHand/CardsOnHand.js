@@ -78,14 +78,16 @@ export default class CardsOnHand extends React.Component {
     this.setState({ slyDealing: false })
   }
 
-  renderOtherPlayerCardSelectorForSlyDealing () {
+  renderOtherPlayerCardSelectorForSlyDealing = () => {
     const { otherPlayers } = this.props
+    const propertySetFilter = (set: PropertySetType) => !set.isFullSet()
 
     return (
       <OtherPlayerPropertyCardSelector
         header='Select a card'
         subheader='Click to select a card to sly deal'
         players={otherPlayers}
+        playerPropertySetFilter={propertySetFilter}
         onSelect={this.onSlyDeal}
         onCancel={this.onCancelSlyDealing}
       />

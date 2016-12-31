@@ -210,6 +210,26 @@ export function unserializePropertySet (serializedItem: SerializedPropertySet): 
 }
 
 /**
+ * Side effect on serializedPropertySets
+ * Return boolean: if false, no set to put in, if true, the card has been put in a set
+ */
+export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySets: SerializedPropertySet[]): boolean {
+  const card = getCardObject(cardKey)
+
+  const hasBeenPlaced = serializedPropertySets
+    .some((set, index) => {
+      if (set.identifier.key !== card.treatAs || unserializePropertySet(set).isFullSet()) {
+        return false
+      }
+
+      set.cards.push(cardKey)
+      return true
+    })
+
+  return hasBeenPlaced
+}
+
+/**
  * Side effect on `mine`
  * Return any left over cards that cannot be used to form property sets.
  */

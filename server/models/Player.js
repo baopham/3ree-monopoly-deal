@@ -8,7 +8,8 @@ const Player = thinky.createModel('game_players', {
   gameId: type.string(),
   actionCounter: type.number().default(0),
   placedCards: type.object(),
-  payeeInfo: type.object()
+  payeeInfo: type.object(),
+  leftOverCards: type.array().default([])
 })
 
 module.exports = Player

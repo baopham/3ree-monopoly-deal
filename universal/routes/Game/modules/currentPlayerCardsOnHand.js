@@ -1,7 +1,7 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
 import * as request from '../../../request-util'
-import { PASS_GO } from '../../../monopoly/cards'
+import { PASS_GO, SLY_DEAL } from '../../../monopoly/cards'
 import * as monopoly from '../../../monopoly/monopoly'
 import { actions as paymentActions } from './payment'
 import { getCurrentPlayer } from './gameSelectors'
@@ -25,6 +25,8 @@ const PLACE_CARD_SUCCESS = ns('PLACE_CARD_SUCCESS')
 const PLAY_CARD_REQUEST = ns('PLAY_CARD_REQUEST')
 const PLAY_CARD_SUCCESS = ns('PLAY_CARD_SUCCESS')
 const FLIP_CARD_ON_HAND = ns('FLIP_CARD_ON_HAND')
+const SLY_DEAL_REQUEST = ns('SLY_DEAL_REQUEST')
+const SLY_DEAL_SUCCESS = ns('SLY_DEAL_SUCCESS')
 const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
@@ -98,8 +100,20 @@ function playCard (card: CardKey) {
   }
 }
 
-function slyDeal (fromPlayer: Player, fromSet: PropertySet, selectedCard: CardKey) {
-
+function slyDeal (otherPlayer: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
+  return {
+    types: [SLY_DEAL_REQUEST, SLY_DEAL_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const currentGame = getState().currentGame
+      const username = getCurrentPlayer(getState()).username
+      return request.put(`${gamesUrl}/${currentGame.game.id}/sly-deal`, {
+        username,
+        otherPlayerUsername: otherPlayer.username,
+        fromSetId: fromSet.getId(),
+        cardToSlyDeal
+      })
+    }
+  }
 }
 
 function flipCardOnHand (card: CardKey) {
@@ -139,6 +153,8 @@ const initialState: CurrentPlayerCardsOnHandState = {
   error: null
 }
 
+const nextStateRelyOnWebSocket = (state: CurrentPlayerCardsOnHandState) => state
+
 export default function reducer (state: CurrentPlayerCardsOnHandState = initialState, action: ReduxAction) {
   switch (action.type) {
     case DRAW_CARDS_REQUEST:
@@ -174,6 +190,18 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
         ]
       }
     }
+
+    case SLY_DEAL_SUCCESS:
+      const { cardsOnHand } = state
+      const indexToRemove = cardsOnHand.indexOf(SLY_DEAL)
+
+      return {
+        ...state,
+        cardsOnHand: [
+          ...cardsOnHand.slice(0, indexToRemove),
+          ...cardsOnHand.slice(indexToRemove + 1)
+        ]
+      }
 
     case RESET:
       return initialState

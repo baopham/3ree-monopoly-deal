@@ -183,6 +183,7 @@ const initialState: CurrentGameState = {
 }
 
 const requestActionHandler = (state: CurrentGameState) => deepmerge(state, { isWorking: true, error: null })
+const nextStateRelyOnWebSocket = (state: CurrentGameState) => state
 
 export default function reducer (state: CurrentGameState = initialState, action: ReduxAction) {
   switch (action.type) {
@@ -265,8 +266,7 @@ export default function reducer (state: CurrentGameState = initialState, action:
 
     case MOVE_CARD_SUCCESS:
     case FLIP_PLACED_CARD_SUCCESS:
-      // Currently, we are relying on websocket to update...
-      return state
+      return nextStateRelyOnWebSocket(state)
 
     case RESET:
       return {

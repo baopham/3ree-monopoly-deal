@@ -20,5 +20,6 @@ router.put('/api/v1/games/:id/pay', game.pay)
 router.put('/api/v1/games/:id/winner', game.setWinner)
 router.put('/api/v1/games/:id/flip-card', game.flipPlacedCard)
 router.put('/api/v1/games/:id/move-card', game.moveCard)
+router.put('/api/v1/games/:id/sly-deal', game.slyDeal)
 
 module.exports = router

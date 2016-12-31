@@ -11,7 +11,8 @@ type Props = {
   subheader: string,
   players: Player[],
   onSelect: (player: Player, set: PropertySetType, card: CardKey) => void,
-  onCancel: () => void
+  onCancel: () => void,
+  playerPropertySetFilter: (propertySet: PropertySetType) => boolean
 }
 
 type State = {
@@ -57,21 +58,25 @@ export default class OtherPlayerCardSelector extends React.Component {
 
   select = () => {
     const { player, setIndex, selectedCardIndex } = this.state
-    if (!player || !setIndex || !selectedCardIndex) {
+    if (player === undefined || setIndex === undefined || selectedCardIndex === undefined) {
       return
     }
     const set = player.placedCards.serializedPropertySets[setIndex]
     this.props.onSelect(player, unserializePropertySet(set), set.cards[selectedCardIndex])
   }
 
-  renderPlayerPropertySets (player: Player) {
+  renderPlayerPropertySets = (player: Player) => {
+    const { playerPropertySetFilter } = this.props
+    const propertySets = player.placedCards.serializedPropertySets
+      .map(unserializePropertySet)
+      .filter(playerPropertySetFilter)
+
     return (
       <ul className='list-inline'>
-        {player.placedCards.serializedPropertySets.map((set, setIndex) =>
+        {propertySets.map((set, setIndex) =>
           <li key={`${player.id}-${setIndex}`}>
             <PropertySet
-              key={`${player.id}-${setIndex}`}
-              propertySet={unserializePropertySet(set)}
+              propertySet={set}
               onCardClick={(card, cardIndex) => this.onCardClick(player, setIndex, cardIndex)}
               isCardHighlighted={(card, cardIndex) => this.isCardHighlighted(player, setIndex, cardIndex)}
             />
@@ -96,7 +101,7 @@ export default class OtherPlayerCardSelector extends React.Component {
         <Modal.Body>
           <h5>{subheader}</h5>
           {players.map(player =>
-            <Panel header={<div>Player: {player.username}</div>}>
+            <Panel key={player.id} header={<div>Player: {player.username}</div>}>
               {this.renderPlayerPropertySets(player)}
             </Panel>
           )}

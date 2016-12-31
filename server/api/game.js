@@ -104,6 +104,20 @@ export function moveCard (req: AppRequest, res: express$Response) {
   )
 
   promise
-    .then(() => res.json())
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
+export function slyDeal (req: AppRequest, res: express$Response) {
+  const promise = playerService.slyDeal(
+    req.params.id,
+    req.body.username,
+    req.body.otherPlayerUsername,
+    req.body.fromSetId,
+    req.body.cardToSlyDeal
+  )
+
+  promise
+    .then(() => res.json('success'))
     .catch(err => handleError(err, res))
 }
