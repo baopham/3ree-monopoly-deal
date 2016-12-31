@@ -30,8 +30,12 @@ const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
 const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
 const FLIP_PLACED_CARD_REQUEST = ns('FLIP_PLACED_CARD_REQUEST')
 const FLIP_PLACED_CARD_SUCCESS = ns('FLIP_PLACED_CARD_SUCCESS')
-const MOVE_CARD_REQUEST = ns('MOVE_CARD_REQUEST')
-const MOVE_CARD_SUCCESS = ns('MOVE_CARD_SUCCESS')
+const FLIP_PLACED_LEFT_OVER_CARD_REQUEST = ns('FLIP_PLACED_LEFT_OVER_CARD_REQUEST')
+const FLIP_PLACED_LEFT_OVER_CARD_SUCCESS = ns('FLIP_PLACED_LEFT_OVER_CARD_SUCCESS')
+const MOVE_PLACED_CARD_REQUEST = ns('MOVE_PLACED_CARD_REQUEST')
+const MOVE_PLACED_CARD_SUCCESS = ns('MOVE_PLACED_CARD_SUCCESS')
+const MOVE_PLACED_LEFT_OVER_CARD_REQUEST = ns('MOVE_PLACED_LEFT_OVER_CARD_REQUEST')
+const MOVE_PLACED_LEFT_OVER_CARD_SUCCESS = ns('MOVE_PLACED_LEFT_OVER_CARD_SUCCESS')
 const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
@@ -70,8 +74,6 @@ function endTurn () {
 function flipPlacedCard (card: CardKey, propertySetId: PropertySetId) {
   return {
     types: [FLIP_PLACED_CARD_REQUEST, FLIP_PLACED_CARD_SUCCESS, ERROR],
-    card,
-    propertySetId,
     promise: (dispatch: Function, getState: Function) => {
       const id = getState().currentGame.game.id
       const username = getCurrentPlayer(getState()).username
@@ -80,16 +82,35 @@ function flipPlacedCard (card: CardKey, propertySetId: PropertySetId) {
   }
 }
 
-function moveCard (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) {
+function flipPlacedLeftOverCard (card: CardKey) {
   return {
-    types: [MOVE_CARD_REQUEST, MOVE_CARD_SUCCESS, ERROR],
-    card,
-    fromSetId,
-    toSetId,
+    types: [FLIP_PLACED_LEFT_OVER_CARD_REQUEST, FLIP_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      const username = getCurrentPlayer(getState()).username
+      return request.put(`${gamesUrl}/${id}/flip-left-over-card`, { card, username })
+    }
+  }
+}
+
+function movePlacedCard (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) {
+  return {
+    types: [MOVE_PLACED_CARD_REQUEST, MOVE_PLACED_CARD_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
       const id = getState().currentGame.game.id
       const username = getCurrentPlayer(getState()).username
       return request.put(`${gamesUrl}/${id}/move-card`, { card, username, fromSetId, toSetId })
+    }
+  }
+}
+
+function movePlacedLeftOverCard (card: CardKey, toSetId: PropertySetId) {
+  return {
+    types: [MOVE_PLACED_LEFT_OVER_CARD_REQUEST, MOVE_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      const username = getCurrentPlayer(getState()).username
+      return request.put(`${gamesUrl}/${id}/move-left-over-card`, { card, username, toSetId })
     }
   }
 }
@@ -158,7 +179,9 @@ export const actions = {
   endTurn,
   setWinner,
   flipPlacedCard,
-  moveCard,
+  flipPlacedLeftOverCard,
+  movePlacedCard,
+  movePlacedLeftOverCard,
   resetCurrentGame,
   subscribeGameEvent,
   unsubscribeGameEvent
@@ -191,7 +214,9 @@ export default function reducer (state: CurrentGameState = initialState, action:
     case END_TURN_REQUEST:
     case SET_WINNER_REQUEST:
     case FLIP_PLACED_CARD_REQUEST:
-    case MOVE_CARD_REQUEST:
+    case FLIP_PLACED_LEFT_OVER_CARD_REQUEST:
+    case MOVE_PLACED_CARD_REQUEST:
+    case MOVE_PLACED_LEFT_OVER_CARD_REQUEST:
       return requestActionHandler(state)
 
     case JOIN_REQUEST: {
@@ -264,8 +289,10 @@ export default function reducer (state: CurrentGameState = initialState, action:
       return nextState
     }
 
-    case MOVE_CARD_SUCCESS:
+    case MOVE_PLACED_CARD_SUCCESS:
+    case MOVE_PLACED_LEFT_OVER_CARD_SUCCESS:
     case FLIP_PLACED_CARD_SUCCESS:
+    case FLIP_PLACED_LEFT_OVER_CARD_SUCCESS:
       return nextStateRelyOnWebSocket(state)
 
     case RESET:

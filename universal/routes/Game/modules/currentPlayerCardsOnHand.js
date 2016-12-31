@@ -153,8 +153,6 @@ const initialState: CurrentPlayerCardsOnHandState = {
   error: null
 }
 
-const nextStateRelyOnWebSocket = (state: CurrentPlayerCardsOnHandState) => state
-
 export default function reducer (state: CurrentPlayerCardsOnHandState = initialState, action: ReduxAction) {
   switch (action.type) {
     case DRAW_CARDS_REQUEST:

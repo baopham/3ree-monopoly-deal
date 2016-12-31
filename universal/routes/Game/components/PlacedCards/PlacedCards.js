@@ -2,6 +2,7 @@
 import React from 'react'
 import CardPile from '../CardPile'
 import PlacedPropertySets from '../PlacedPropertySets'
+import PlacedLeftOverCards from '../PlacedLeftOverCards'
 import { Panel, Col } from 'react-bootstrap'
 import Container from '../../../../components/Container'
 import * as monopoly from '../../../../monopoly/monopoly'
@@ -13,7 +14,9 @@ type Props = {
   immutable: boolean,
   onWinning: () => void,
   onFlipCard: (card: CardKey, propertySetId: PropertySetId) => void,
-  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void
+  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void,
+  onFlipLeftOverCard: (card: CardKey) => void,
+  onMoveLeftOverCard: (card: CardKey, toSetId: PropertySetId) => void
 }
 
 const styles = {
@@ -29,8 +32,8 @@ export default class PlacedCardsComponent extends React.Component {
   props: Props
 
   render () {
-    const { cards, immutable, onWinning, onMoveCard, onFlipCard } = this.props
-    const { bank, serializedPropertySets } = cards
+    const { cards, immutable, onWinning, onMoveCard, onFlipCard, onMoveLeftOverCard, onFlipLeftOverCard } = this.props
+    const { bank, serializedPropertySets, leftOverCards } = cards
     const propertySets: PropertySetType[] = serializedPropertySets.map(monopoly.unserializePropertySet)
 
     return (
@@ -50,6 +53,15 @@ export default class PlacedCardsComponent extends React.Component {
               onMoveCard={onMoveCard}
               onWinning={onWinning}
             />
+            {!!leftOverCards.length &&
+              <PlacedLeftOverCards
+                propertySets={propertySets}
+                leftOverCards={leftOverCards}
+                immutable={immutable}
+                onFlipCard={onFlipLeftOverCard}
+                onMoveCard={onMoveLeftOverCard}
+              />
+            }
           </Panel>
         </Col>
       </Container>

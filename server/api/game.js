@@ -1,10 +1,12 @@
 /* @flow */
 import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
+import PlayerPlacedCardService from '../services/PlayerPlacedCardService'
 import * as request from '../../universal/request-util'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
+const playerPlacedCardService = new PlayerPlacedCardService()
 
 declare class AppRequest extends AppRequest {
   body: any
@@ -87,19 +89,49 @@ export function setWinner (req: AppRequest, res: express$Response) {
 }
 
 export function flipPlacedCard (req: AppRequest, res: express$Response) {
-  const promise = playerService.flipPlacedCard(req.params.id, req.body.username, req.body.card, req.body.propertySetId)
+  const promise = playerPlacedCardService.flipPlacedCard(
+    req.params.id,
+    req.body.username,
+    req.body.card,
+    req.body.propertySetId
+  )
 
   promise
     .then(flippedCard => res.json({ flippedCard }))
     .catch(err => handleError(err, res))
 }
 
-export function moveCard (req: AppRequest, res: express$Response) {
-  const promise = playerService.moveCard(
+export function flipPlacedLeftOverCard (req: AppRequest, res: express$Response) {
+  const promise = playerPlacedCardService.flipPlacedLeftOverCard(
+    req.params.id,
+    req.body.username,
+    req.body.card
+  )
+
+  promise
+    .then(flippedCard => res.json({ flippedCard }))
+    .catch(err => handleError(err, res))
+}
+
+export function movePlacedCard (req: AppRequest, res: express$Response) {
+  const promise = playerPlacedCardService.movePlacedCard(
     req.params.id,
     req.body.username,
     req.body.card,
     req.body.fromSetId,
+    req.body.toSetId
+  )
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
+export function movePlacedLeftOverCard (req: AppRequest, res: express$Response) {
+  const promise = playerPlacedCardService.movePlacedLeftOverCard(
+    req.params.id,
+    req.body.username,
+    req.body.card,
     req.body.toSetId
   )
 

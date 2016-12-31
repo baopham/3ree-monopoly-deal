@@ -49,6 +49,10 @@ export function isPropertyCard (card: CardKeyOrCard): boolean {
     card.type === PROPERTY_WILDCARD_TYPE
 }
 
+export function canBePutIntoANewSet (card: CardKeyOrCard): boolean {
+  return isPropertyCard(card) && card !== PROPERTY_WILDCARD
+}
+
 export function cardCanBeMoney (card: CardKeyOrCard): boolean {
   card = getCardObject(card)
   return card.value > 0

@@ -11,7 +11,9 @@ type Props = {
   isCurrentPlayer: boolean,
   onWinning: (username: Username) => void,
   onFlipCard: (card: CardKey, propertySetId: PropertySetId) => void,
-  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void
+  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void,
+  onFlipLeftOverCard: (card: CardKey) => void,
+  onMoveLeftOverCard: (card: CardKey, toSetId: PropertySetId) => void
 }
 
 export default class PlayerComponent extends React.Component {
@@ -36,7 +38,15 @@ export default class PlayerComponent extends React.Component {
   }
 
   render () {
-    const { player, isCurrentPlayer, isPlayerTurn, onFlipCard, onMoveCard } = this.props
+    const {
+      player,
+      isCurrentPlayer,
+      isPlayerTurn,
+      onFlipCard,
+      onMoveCard,
+      onFlipLeftOverCard,
+      onMoveLeftOverCard
+    } = this.props
 
     return (
       <Panel
@@ -44,11 +54,13 @@ export default class PlayerComponent extends React.Component {
         bsStyle={isCurrentPlayer ? 'success' : 'default'}
       >
         <PlacedCards
+          immutable={!isCurrentPlayer || !isPlayerTurn}
           cards={player.placedCards}
           onWinning={this.onWinning}
           onFlipCard={onFlipCard}
           onMoveCard={onMoveCard}
-          immutable={!isCurrentPlayer || !isPlayerTurn}
+          onFlipLeftOverCard={onFlipLeftOverCard}
+          onMoveLeftOverCard={onMoveLeftOverCard}
         />
       </Panel>
     )

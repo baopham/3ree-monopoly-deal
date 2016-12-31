@@ -21,7 +21,9 @@ type Props = {
   drawCards: () => void,
   setWinner: (username: Username) => void,
   flipPlacedCard: (card: CardKey, propertySetId: PropertySetId) => void,
-  moveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void
+  movePlacedCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void,
+  flipPlacedLeftOverCard: (card: CardKey) => void,
+  movePlacedLeftOverCard: (card: CardKey, toSetId: PropertySetId) => void
 }
 
 const mapStateToProps = (state) => ({
@@ -41,7 +43,9 @@ export class Board extends React.Component {
       currentPlayer,
       drawCards,
       flipPlacedCard,
-      moveCard,
+      movePlacedCard,
+      flipPlacedLeftOverCard,
+      movePlacedLeftOverCard,
       setWinner
     } = this.props
 
@@ -80,7 +84,9 @@ export class Board extends React.Component {
             players={game.players}
             onWinning={setWinner}
             onFlipCard={flipPlacedCard}
-            onMoveCard={moveCard}
+            onMoveCard={movePlacedCard}
+            onFlipLeftOverCard={flipPlacedLeftOverCard}
+            onMoveLeftOverCard={movePlacedLeftOverCard}
           />
         </Col>
       </Container>

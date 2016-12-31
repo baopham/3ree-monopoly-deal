@@ -10,7 +10,9 @@ type Props = {
   isPlayerTurn: boolean,
   onWinning: (username: Username) => void,
   onFlipCard: (card: CardKey, propertySetId: PropertySetId) => void,
-  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void
+  onMoveCard: (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) => void,
+  onFlipLeftOverCard: (card: CardKey) => void,
+  onMoveLeftOverCard: (card: CardKey, toSetId: PropertySetId) => void
 }
 
 export default class Players extends React.Component {
@@ -29,7 +31,16 @@ export default class Players extends React.Component {
   }
 
   render () {
-    const { currentPlayer, isPlayerTurn, players, onWinning, onMoveCard, onFlipCard } = this.props
+    const {
+      currentPlayer,
+      isPlayerTurn,
+      players,
+      onWinning,
+      onMoveCard,
+      onFlipCard,
+      onMoveLeftOverCard,
+      onFlipLeftOverCard
+    } = this.props
 
     return (
       <div>
@@ -42,6 +53,8 @@ export default class Players extends React.Component {
             onWinning={onWinning}
             onMoveCard={onMoveCard}
             onFlipCard={onFlipCard}
+            onFlipLeftOverCard={onFlipLeftOverCard}
+            onMoveLeftOverCard={onMoveLeftOverCard}
           />
         )}
       </div>
