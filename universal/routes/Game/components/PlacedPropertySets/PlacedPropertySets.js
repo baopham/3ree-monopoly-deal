@@ -40,7 +40,6 @@ export default class PlacedPropertySet extends React.Component {
       setsForMovingCardTo: []
     }
     this.hasWon = monopoly.hasEnoughFullSetsToWin(props.propertySets)
-    this.hasWon && this.props.onWinning()
   }
 
   shouldComponentUpdate () {
