@@ -2,6 +2,6 @@ type GameHistoryRecord = {
   id: string,
   gameId: string,
   message: string,
-  notifyUsers: Username[],
+  playersToNotify: Username[],
   createdAt: string
 }

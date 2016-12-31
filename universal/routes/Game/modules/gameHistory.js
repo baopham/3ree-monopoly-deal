@@ -42,7 +42,7 @@ function unsubscribeGameHistoryEvent (socket: Socket) {
 }
 
 function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: GameHistoryRecord) {
-  if (newRecord.notifyUsers.length && newRecord.notifyUsers.includes(getCurrentPlayer(getState()).username)) {
+  if (newRecord.playersToNotify.length && newRecord.playersToNotify.includes(getCurrentPlayer(getState()).username)) {
     audioLoad('/notification.mp3').then(audioPlay)
   }
 

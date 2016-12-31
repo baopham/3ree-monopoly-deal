@@ -125,11 +125,11 @@ export default class PlayerService {
           }
         }
 
-        const notifyUsers = player.payeeInfo ? player.payeeInfo.payers : undefined
+        const playersToNotify = player.payeeInfo ? player.payeeInfo.payers : undefined
 
         return Promise.all([
           player.saveAll(),
-          this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, notifyUsers)
+          this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, playersToNotify)
         ])
       })
   }

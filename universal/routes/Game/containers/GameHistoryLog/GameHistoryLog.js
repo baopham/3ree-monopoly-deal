@@ -33,9 +33,9 @@ export class GameHistoryLog extends React.Component {
               <p>
                 <strong>{record.message}</strong>
 
-                {!!record.notifyUsers.length &&
+                {!!record.playersToNotify.length &&
                   <small className='help-block'>
-                    To users: {record.notifyUsers.join(', ')}
+                    To users: {record.playersToNotify.join(', ')}
                   </small>
                 }
 
