@@ -61,13 +61,14 @@ TODOs
   - [x] Payment: handle when the payer does not have enough money to pay
   - [x] Payment: rent
   - [ ] Payment: target rent
-  - [ ] Sly deal
-  - [ ] Forced deal
-  - [ ] Deal breaker
   - [ ] Debt collector
-- [ ] House
-- [ ] Hotel
+- [ ] Say no
+- [ ] Deal breaker
+- [x] Sly deal
+- [ ] Forced deal
 - [ ] Double rent
+- [x] House
+- [x] Hotel
 - [ ] Draw 5 cards when hand is empty
 
 
