@@ -6,7 +6,7 @@ const getCurrentGame = (state) => state.currentGame
 
 export const getCurrentPlayer = createSelector(
   [getCurrentGame],
-  (currentGame: CurrentGameState) => {
+  (currentGame: CurrentGameState): ?Player => {
     const game = currentGame.game
 
     if (!game) {
@@ -20,10 +20,21 @@ export const getCurrentPlayer = createSelector(
 
 export const isPlayerTurn = createSelector(
   [getCurrentGame, getCurrentPlayer],
-  (currentGame: CurrentGameState, currentPlayer: Player) => {
-    return currentPlayer &&
+  (currentGame: CurrentGameState, currentPlayer: Player): boolean => {
+    return !!(
+      currentPlayer &&
       currentGame.game &&
       currentGame.game.currentTurn &&
       currentGame.game.currentTurn === currentPlayer.username
+    )
+  }
+)
+
+export const getOtherPlayers = createSelector(
+  [getCurrentGame, getCurrentPlayer],
+  (currentGame: CurrentGameState, currentPlayer: Player): ?Player[] => {
+    return currentPlayer &&
+      currentGame.game &&
+      currentGame.game.players.filter(player => player.id !== currentPlayer.id)
   }
 )

@@ -1,10 +1,13 @@
 /* @flow */
 import React from 'react'
+import { connect } from 'react-redux'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
-import CardOnHand from '../CardOnHand'
-import OtherPlayerPropertyCardSelector from '../OtherPlayerPropertyCardSelector'
+import CardOnHand from '../../components/CardOnHand'
+import OtherPlayerPropertyCardSelector from '../../components/OtherPlayerPropertyCardSelector'
 import { MAX_CARDS_IN_HAND, SLY_DEAL } from '../../../../monopoly/cards'
 import PropertySetType from '../../../../monopoly/PropertySet'
+import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
+import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
 
 type Props = {
   otherPlayers: Player[],
@@ -33,7 +36,14 @@ const styles = {
   }
 }
 
-export default class CardsOnHand extends React.Component {
+const mapStateToProps = (state) => ({
+  otherPlayers: getOtherPlayers(state),
+  cardsOnHand: state.currentPlayerCardsOnHand.cardsOnHand,
+  placedCards: getCurrentPlayer(state).placedCards,
+  isPlayerTurn: isPlayerTurn(state)
+})
+
+export class CardsOnHand extends React.Component {
   props: Props
 
   state: State
@@ -157,3 +167,8 @@ export default class CardsOnHand extends React.Component {
     )
   }
 }
+
+export default connect(
+  mapStateToProps,
+  { ...cardsOnHandActions }
+)(CardsOnHand)

@@ -7,34 +7,23 @@ import TextFormDialog from '../../../../components/TextFormDialog'
 import Container from '../../../../components/Container'
 import GameHistoryLog from '../GameHistoryLog'
 import GamePayment from '../GamePayment'
-import CardsOnHand from '../../components/CardsOnHand'
+import CardsOnHand from '../CardsOnHand'
 import Board from '../Board'
 import WinnerNotification from '../../components/WinnerNotification'
-import { getCurrentPlayer, isPlayerTurn } from '../../modules/gameSelectors'
+import { getCurrentPlayer } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
-import { actions as playerCardsActions } from '../../modules/currentPlayerCardsOnHand'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
-import PropertySetType from '../../../../monopoly/PropertySet'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
-  cardsOnHand: CardKey[],
-  isPlayerTurn: boolean,
-  placeCard: (card: CardKey) => void,
-  playCard: (card: CardKey) => void,
-  discardCard: (card: CardKey) => void,
-  flipCardOnHand: (card: CardKey) => void,
-  slyDeal: (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
   join: (username: Username) => void,
   endTurn: () => void
 }
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
-  currentPlayer: getCurrentPlayer(state),
-  cardsOnHand: state.currentPlayerCardsOnHand.cardsOnHand,
-  isPlayerTurn: isPlayerTurn(state)
+  currentPlayer: getCurrentPlayer(state)
 })
 
 export class GameComponent extends React.Component {
@@ -58,18 +47,10 @@ export class GameComponent extends React.Component {
     const {
       game,
       currentPlayer,
-      join,
-      cardsOnHand,
-      placeCard,
-      playCard,
-      discardCard,
-      flipCardOnHand,
-      slyDeal,
-      isPlayerTurn
+      join
     } = this.props
 
     const gameHasAWinner = currentPlayer && !!game.winner
-    const otherPlayers = currentPlayer && game.players.filter(player => player.id !== currentPlayer.id)
 
     return (
       <FullWidth fluid>
@@ -82,18 +63,7 @@ export class GameComponent extends React.Component {
                 <GameHistoryLog />
               </Col>
               <Col md={9}>
-                <CardsOnHand
-                  currentPlayer={currentPlayer}
-                  isPlayerTurn={isPlayerTurn}
-                  otherPlayers={otherPlayers}
-                  cardsOnHand={cardsOnHand}
-                  placedCards={currentPlayer.placedCards}
-                  onPlaceCard={placeCard}
-                  onPlayCard={playCard}
-                  onDiscardCard={discardCard}
-                  onFlipCard={flipCardOnHand}
-                  onSlyDeal={slyDeal}
-                />
+                <CardsOnHand />
               </Col>
             </Container>
 
@@ -125,8 +95,5 @@ export class GameComponent extends React.Component {
 
 export default connect(
   mapStateToProps,
-  {
-    ...gameActions,
-    ...playerCardsActions
-  }
+  { ...gameActions }
 )(GameComponent)
