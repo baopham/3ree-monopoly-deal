@@ -7,6 +7,7 @@ import {
   PROPERTY_WILDCARD,
   HOUSE,
   HOTEL,
+  SLY_DEAL,
   newDeck
 } from '../../../universal/monopoly/cards'
 import PropertySet from '../../../universal/monopoly/PropertySet'
@@ -323,7 +324,7 @@ export default class PlayerService {
         return Promise.all([
           updateThisPlayer(thisPlayer),
           updateOtherPlayer(otherPlayer),
-          logActionAndNotifyOtherPlayer.bind(this, otherPlayer)
+          logActionAndNotifyOtherPlayer.bind(this)(otherPlayer)
         ])
       })
 
@@ -334,13 +335,20 @@ export default class PlayerService {
         thisPlayer.placedCards.serializedPropertySets
       )
 
-      if (!hasBeenPlaced) {
-        thisPlayer.leftOverCards.push(cardToSlyDeal)
+      if (!hasBeenPlaced && monopoly.isPropertyCard(cardToSlyDeal)) {
+        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(cardToSlyDeal), [cardToSlyDeal])
+        thisPlayer.placedCards.serializedPropertySets.push(newSet.serialize())
       }
 
+      if (!hasBeenPlaced && !monopoly.isPropertyCard(cardToSlyDeal)) {
+        thisPlayer.placedCards.leftOverCards.push(cardToSlyDeal)
+      }
+
+      thisPlayer.game.lastCardPlayedBy = thisPlayer.username
+      thisPlayer.game.discardedCards.push(SLY_DEAL)
       thisPlayer.actionCounter += 1
 
-      return thisPlayer.save()
+      return thisPlayer.saveAll()
     }
 
     function updateOtherPlayer (otherPlayer: Player): Promise<*> {
@@ -365,7 +373,7 @@ export default class PlayerService {
     function logActionAndNotifyOtherPlayer (otherPlayer): Promise<*> {
       return this.gameHistoryService.record(
         gameId,
-        `${username} sly dealt ${cardToSlyDeal} from ${otherPlayer}`,
+        `${username} sly dealt ${cardToSlyDeal} from ${otherPlayer.username}`,
         [otherPlayer.username]
       )
     }

@@ -66,8 +66,6 @@ export default class PlayerRepository {
   }
 
   joinGame (gameId, username) {
-    const placedCards = { bank: [], serializedPropertySets: [] }
-
     return Player
       .filter({ gameId, username })
       .run()
@@ -75,7 +73,7 @@ export default class PlayerRepository {
         if (result.length) {
           return Promise.reject(new Error('Player already exists'))
         }
-        return this.insert({ gameId, username, placedCards })
+        return this.insert({ gameId, username })
       })
   }
 

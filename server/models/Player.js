@@ -7,9 +7,12 @@ const Player = thinky.createModel('game_players', {
   username: type.string(),
   gameId: type.string(),
   actionCounter: type.number().default(0),
-  placedCards: type.object(),
-  payeeInfo: type.object(),
-  leftOverCards: type.array().default([])
+  placedCards: type.object().default({
+    bank: [],
+    serializedPropertySets: [],
+    leftOverCards: []
+  }),
+  payeeInfo: type.object()
 })
 
 module.exports = Player

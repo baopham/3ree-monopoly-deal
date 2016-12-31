@@ -27,7 +27,8 @@ describe('monopoly', function () {
         serializedPropertySets: [{
           identifier: monopoly.getCardObject(PROPERTY_BLUE),
           cards: [PROPERTY_BLUE]
-        }]
+        }],
+        leftOverCards: []
       }
       expect(monopoly.canPlayCard(card, placedCards)).to.be.true
     })
@@ -39,7 +40,8 @@ describe('monopoly', function () {
         serializedPropertySets: [{
           identifier: monopoly.getCardObject(PROPERTY_PINK),
           cards: [PROPERTY_PINK]
-        }]
+        }],
+        leftOverCards: []
       }
       expect(monopoly.canPlayCard(card, placedCards)).to.be.false
     })
@@ -48,7 +50,8 @@ describe('monopoly', function () {
       const actionCard = BIRTHDAY
       const placedCards = {
         bank: [],
-        serializedPropertySets: []
+        serializedPropertySets: [],
+        leftOverCards: []
       }
       expect(monopoly.canPlayCard(actionCard, placedCards)).to.be.true
     })
@@ -58,7 +61,8 @@ describe('monopoly', function () {
         const card = FORCED_DEAL
         const placedCards: PlacedCards = {
           bank: [],
-          serializedPropertySets: []
+          serializedPropertySets: [],
+          leftOverCards: []
         }
         expect(monopoly.canPlayCard(card, placedCards)).to.be.false
       })
@@ -70,7 +74,8 @@ describe('monopoly', function () {
           serializedPropertySets: [{
             identifier: monopoly.getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED]
-          }]
+          }],
+          leftOverCards: []
         }
         expect(monopoly.canPlayCard(card, placedCards)).to.be.true
       })
@@ -81,7 +86,8 @@ describe('monopoly', function () {
         const card = RENT_ALL_COLOUR
         const placedCards: PlacedCards = {
           bank: [],
-          serializedPropertySets: []
+          serializedPropertySets: [],
+          leftOverCards: []
         }
         expect(monopoly.canPlayCard(card, placedCards)).to.be.false
       })
@@ -93,7 +99,8 @@ describe('monopoly', function () {
           serializedPropertySets: [{
             identifier: monopoly.getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED]
-          }]
+          }],
+          leftOverCards: []
         }
         expect(monopoly.canPlayCard(card, placedCards)).to.be.true
       })
@@ -108,7 +115,8 @@ describe('monopoly', function () {
             serializedPropertySets: [{
               identifier: monopoly.getCardObject(PROPERTY_BLUE),
               cards: [PROPERTY_BLUE_OR_GREEN]
-            }]
+            }],
+            leftOverCards: []
           }
           expect(monopoly.canPlayCard(card, placedCards)).to.be.true
         })
@@ -120,7 +128,8 @@ describe('monopoly', function () {
             serializedPropertySets: [{
               identifier: monopoly.getCardObject(PROPERTY_PINK),
               cards: [PROPERTY_PINK_OR_ORANGE]
-            }]
+            }],
+            leftOverCards: []
           }
           expect(monopoly.canPlayCard(card, placedCards)).to.be.false
         })
