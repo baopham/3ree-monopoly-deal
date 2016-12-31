@@ -137,6 +137,7 @@ export default class CardOnHand extends React.Component {
         }
         {canBeMoney &&
           <MoneySignButton
+            disabled={cannotPlaceCard}
             onClick={this.onPlaceCardAsMoney}
           />
         }
