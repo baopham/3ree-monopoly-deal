@@ -29,6 +29,10 @@ const mapStateToProps = (state) => ({
 export class GameComponent extends React.Component {
   props: Props
 
+  shouldComponentUpdate () {
+    return !this.gameHasAWinner()
+  }
+
   componentWillReceiveProps (nextProps: Props) {
     if (!this.props.currentPlayer || !nextProps.currentPlayer) {
       return
@@ -43,6 +47,12 @@ export class GameComponent extends React.Component {
     }
   }
 
+  gameHasAWinner () {
+    const { game, currentPlayer } = this.props
+
+    return currentPlayer && !!game.winner
+  }
+
   render () {
     const {
       game,
@@ -50,7 +60,7 @@ export class GameComponent extends React.Component {
       join
     } = this.props
 
-    const gameHasAWinner = currentPlayer && !!game.winner
+    const gameHasAWinner = this.gameHasAWinner()
 
     return (
       <FullWidth fluid>
