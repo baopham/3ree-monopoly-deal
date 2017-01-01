@@ -35,9 +35,9 @@ function subscribeGameHistoryEvent (socket: Socket, gameId: string) {
   }
 }
 
-function unsubscribeGameHistoryEvent (socket: Socket) {
+function unsubscribeGameHistoryEvent (socket: Socket, gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${getState().currentGame.game.id}-history`)
+    socket.off(`game-${gameId}-history`)
   }
 }
 

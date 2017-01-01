@@ -158,14 +158,18 @@ function onGameChange (dispatch, game) {
   dispatch({ type: UPDATE_GAME, payload: { game } })
 }
 
-function unsubscribeGameEvent (socket: Socket) {
+function unsubscribeGameEvent (socket: Socket, gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${getState().currentGame.game.id}-player-change`)
+    socket.off(`game-${gameId}-player-change`)
   }
 }
 
-function resetCurrentGame () {
+function resetCurrentGame (socket: Socket) {
   return (dispatch: Function, getState: Function) => {
+    const gameId = getState().currentGame.game.id
+    unsubscribeGameEvent(socket, gameId)
+    gameHistoryActions.unsubscribeGameHistoryEvent(socket, gameId)
+
     dispatch({ type: RESET })
     dispatch(paymentActions.reset())
     dispatch(gameHistoryActions.reset())
