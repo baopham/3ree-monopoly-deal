@@ -14,11 +14,11 @@ type Props = {
   cardsOnHand: CardKey[],
   placedCards: PlacedCards,
   isPlayerTurn: boolean,
-  onPlaceCard: (card: CardKey) => void,
-  onPlayCard: (card: CardKey) => void,
-  onSlyDeal: (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
-  onDiscardCard: (card: CardKey) => void,
-  onFlipCard: (card: CardKey) => void
+  placeCard: (card: CardKey) => void,
+  playCard: (card: CardKey) => void,
+  slyDeal: (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
+  discardCard: (card: CardKey) => void,
+  flipCardOnHand: (card: CardKey) => void
 }
 
 type State = {
@@ -76,11 +76,11 @@ export class CardsOnHand extends React.Component {
       return
     }
 
-    this.props.onPlayCard(card)
+    this.props.playCard(card)
   }
 
   onSlyDeal = (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => {
-    this.props.onSlyDeal(fromPlayer, fromSet, selectedCard)
+    this.props.slyDeal(fromPlayer, fromSet, selectedCard)
     this.onCancelSlyDealing()
   }
 
@@ -123,9 +123,9 @@ export class CardsOnHand extends React.Component {
     const {
       cardsOnHand,
       placedCards,
-      onPlaceCard,
-      onDiscardCard,
-      onFlipCard,
+      placeCard,
+      discardCard,
+      flipCardOnHand,
       isPlayerTurn
     } = this.props
 
@@ -154,10 +154,10 @@ export class CardsOnHand extends React.Component {
                   card={card}
                   needsToDiscard={this.state.needsToDiscard}
                   isPlayerTurn={isPlayerTurn}
-                  onPlaceCard={onPlaceCard}
+                  onPlaceCard={placeCard}
                   onPlayCard={this.onPlayCard}
-                  onDiscardCard={onDiscardCard}
-                  onFlipCard={onFlipCard}
+                  onDiscardCard={discardCard}
+                  onFlipCard={flipCardOnHand}
                 />
               </li>
             )}
@@ -170,5 +170,5 @@ export class CardsOnHand extends React.Component {
 
 export default connect(
   mapStateToProps,
-  { ...cardsOnHandActions }
+  cardsOnHandActions
 )(CardsOnHand)
