@@ -14,10 +14,11 @@ import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCar
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
-  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void,
   cards: PlacedCards,
   payee: Username,
-  dueAmount: number
+  dueAmount: number,
+  sayNoButton: ?Node,
+  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 type State = {
@@ -140,7 +141,8 @@ export default class PaymentForm extends React.Component {
     const {
       cards,
       payee,
-      dueAmount
+      dueAmount,
+      sayNoButton
     } = this.props
 
     const propertySets = cards.serializedPropertySets.map(monopoly.unserializePropertySet)
@@ -171,6 +173,11 @@ export default class PaymentForm extends React.Component {
         </Modal.Body>
 
         <Modal.Footer>
+          {!!sayNoButton &&
+            <div className='pull-left'>
+              {sayNoButton}
+            </div>
+          }
           <Button
             bsStyle='primary'
             disabled={this.getAmountSelected() < dueAmount}
