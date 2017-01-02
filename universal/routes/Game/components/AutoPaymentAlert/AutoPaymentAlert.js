@@ -1,11 +1,7 @@
 /* @flow */
 import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import {
-  Modal,
-  Alert,
-  Button
-} from 'react-bootstrap'
+import { Modal, Button } from 'react-bootstrap'
 import { getTotalMoneyFromPlacedCards, unserializePropertySet } from '../../../../monopoly/monopoly'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
