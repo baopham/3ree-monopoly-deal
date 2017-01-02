@@ -4,21 +4,29 @@ import { connect } from 'react-redux'
 import PaymentForm from '../../components/PaymentForm'
 import AutoPaymentAlert from '../../components/AutoPaymentAlert'
 import PaymentInProgress from '../../components/PaymentInProgress'
-import { getCurrentPlayer } from '../../modules/gameSelectors'
+import SayNoButton from '../SayNoButton'
+import { getCurrentPlayer, isPayee, isPayer, canSayNo } from '../../modules/gameSelectors'
 import { actions as paymentActions } from '../../modules/payment'
 import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
 import type { PaymentState } from '../../modules/payment'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
+import sayNoCauses from '../../../../monopoly/sayNoCauses'
 
 type Props = {
   currentPlayer: Player,
   payment: PaymentState,
+  isPayee: boolean,
+  isPayer: boolean,
+  canSayNo: boolean,
   pay: (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 const mapStateToProps = (state) => ({
   currentPlayer: getCurrentPlayer(state),
-  payment: state.payment
+  payment: state.payment,
+  isPayee: isPayee(state),
+  isPayer: isPayer(state),
+  canSayNo: canSayNo(state)
 })
 
 export class GamePayment extends React.Component {
@@ -36,21 +44,17 @@ export class GamePayment extends React.Component {
     return !!(payment.amount && totalAmount <= payment.amount)
   }
 
-  isPayee (): boolean {
-    const { currentPlayer, payment } = this.props
-    return !!(currentPlayer && payment.amount && payment.payee === currentPlayer.username)
-  }
+  renderSayNoToPayeeButton () {
+    const { canSayNo, payment } = this.props
 
-  needToPay (): boolean {
-    const { currentPlayer, payment } = this.props
-    return !!(currentPlayer && !this.isPayee() && payment.payers && payment.payers.includes(currentPlayer.username))
+    return canSayNo
+      ? <SayNoButton toUser={payment.payee} cause={sayNoCauses.PAYMENT} clickOnceOnly>Say No?</SayNoButton>
+      : null
   }
 
   render () {
-    const { currentPlayer, payment } = this.props
-    const isPayee = this.isPayee()
-    const needToPay = this.needToPay()
-    const needToPayAndHaveEnoughMoney = needToPay && !this.payerHasNotEnoughMoney()
+    const { currentPlayer, payment, isPayee, isPayer } = this.props
+    const needToPayAndHaveEnoughMoney = isPayer && !this.payerHasNotEnoughMoney()
 
     return (
       <div>
@@ -60,15 +64,17 @@ export class GamePayment extends React.Component {
             cards={currentPlayer.placedCards}
             payee={payment.payee}
             dueAmount={payment.amount}
+            sayNoButton={this.renderSayNoToPayeeButton()}
           />
         }
 
-        {payment.payee && needToPay && !needToPayAndHaveEnoughMoney &&
+        {payment.payee && isPayer && !needToPayAndHaveEnoughMoney &&
           <AutoPaymentAlert
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
             payee={payment.payee}
             dueAmount={payment.amount}
+            sayNoButton={this.renderSayNoToPayeeButton()}
           />
         }
 
@@ -84,5 +90,5 @@ export class GamePayment extends React.Component {
 
 export default connect(
   mapStateToProps,
-  { ...paymentActions }
+  paymentActions
 )(GamePayment)

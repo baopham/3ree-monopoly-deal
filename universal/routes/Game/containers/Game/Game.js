@@ -10,6 +10,7 @@ import GamePayment from '../GamePayment'
 import CardsOnHand from '../CardsOnHand'
 import Board from '../Board'
 import WinnerNotification from '../../components/WinnerNotification'
+import SayNoAlert from '../SayNoAlert'
 import { getCurrentPlayer } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
@@ -80,6 +81,8 @@ export class GameComponent extends React.Component {
             <Board />
 
             <GamePayment />
+
+            <SayNoAlert />
           </div>
         }
 

@@ -1,22 +1,16 @@
 /* @flow */
 import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import {
-  Modal,
-  Alert,
-  Button
-} from 'react-bootstrap'
+import { Modal, Button } from 'react-bootstrap'
 import { getTotalMoneyFromPlacedCards, unserializePropertySet } from '../../../../monopoly/monopoly'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
-
-const INITIAL_COUNTER = 10
-const INTERVAL_DELAY = 1000
 
 type Props = {
   payee: Username,
   dueAmount: number,
-  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void,
-  cards: PlacedCards
+  cards: PlacedCards,
+  sayNoButton: ?Node,
+  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 type State = {
@@ -27,34 +21,6 @@ export default class AutoPaymentAlert extends React.Component {
   props: Props
 
   state: State
-
-  intervalId: number
-
-  constructor (props: Props) {
-    super(props)
-
-    this.state = {
-      counter: INITIAL_COUNTER
-    }
-
-    this.intervalId = setInterval(() => {
-      this.setState({
-        counter: this.state.counter - 1
-      })
-    }, INTERVAL_DELAY)
-  }
-
-  componentWillUnmount () {
-    clearInterval(this.intervalId)
-  }
-
-  componentWillUpdate (nextProps: Props, nextState: State) {
-    if (nextState.counter > 0) {
-      return
-    }
-
-    this.pay()
-  }
 
   pay = () => {
     const { cards, onPay } = this.props
@@ -69,10 +35,14 @@ export default class AutoPaymentAlert extends React.Component {
     onPay(cards.bank, mapOfNonMoneyCards)
   }
 
+  hasSayNoOption () {
+    return !!this.props.sayNoButton
+  }
+
   render () {
-    const { payee, dueAmount, cards } = this.props
-    const { counter } = this.state
+    const { payee, dueAmount, cards, sayNoButton } = this.props
     const hasNoMoney = getTotalMoneyFromPlacedCards(cards) === 0
+    const hasSayNoOption = this.hasSayNoOption()
 
     return (
       <ScrollableBackgroundModal show>
@@ -84,21 +54,14 @@ export default class AutoPaymentAlert extends React.Component {
 
         <Modal.Body>
           <p>You don't have enough money to pay <strong>{payee}</strong> ${dueAmount}M :(</p>
-
-          {!hasNoMoney &&
-            <Alert bsStyle='warning'>
-              Giving all your cards to <strong>{payee}</strong> in {counter} seconds
-            </Alert>
-          }
-
-          {hasNoMoney &&
-            <Alert bsStyle='info'>
-              This will close in {counter} seconds
-            </Alert>
-          }
         </Modal.Body>
 
         <Modal.Footer>
+          {hasSayNoOption &&
+            <div className='pull-left'>
+              {sayNoButton}
+            </div>
+          }
           <Button
             onClick={this.pay}
           >

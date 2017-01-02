@@ -4,6 +4,7 @@ import * as request from '../../../request-util'
 import { actions as paymentActions } from './payment'
 import { actions as gameHistoryActions } from './gameHistory'
 import { actions as currentPlayerCardsOnHandActions } from './currentPlayerCardsOnHand'
+import { actions as sayNoActions } from './sayNo'
 import { getCurrentPlayer } from './gameSelectors'
 import type { PropertySetId } from '../../../monopoly/PropertySet'
 
@@ -115,10 +116,39 @@ function movePlacedLeftOverCard (card: CardKey, toSetId: PropertySetId) {
   }
 }
 
-function subscribeGameEvent (socket: Socket, gameId: string) {
+function setWinner (winner: Username) {
+  return {
+    types: [SET_WINNER_REQUEST, SET_WINNER_SUCCESS, ERROR],
+    winner,
+    promise: (dispatch: Function, getState: Function) => {
+      const id = getState().currentGame.game.id
+      return request.put(`${gamesUrl}/${id}/winner`, { winner })
+    }
+  }
+}
+
+function resetCurrentGame (socket: Socket) {
   return (dispatch: Function, getState: Function) => {
-    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
+    const gameId = getState().currentGame.game.id
+    socket.off(`game-${gameId}-change`)
+    socket.off(`game-${gameId}-player-change`)
+
+    dispatch(gameHistoryActions.unsubscribeGameHistoryEvent(socket, gameId))
+    dispatch(sayNoActions.unsubscribeSayNoEvent(socket, gameId))
+    dispatch({ type: RESET })
+    dispatch(paymentActions.reset())
+    dispatch(gameHistoryActions.reset())
+    dispatch(currentPlayerCardsOnHandActions.reset())
+    dispatch(sayNoActions.reset())
+  }
+}
+
+function subscribeGameEvents (socket: Socket, gameId: string) {
+  return (dispatch: Function, getState: Function) => {
     socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
+    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
+    dispatch(gameHistoryActions.subscribeGameHistoryEvent(socket, gameId))
+    dispatch(sayNoActions.subscribeSayNoEvent(socket, gameId))
   }
 }
 
@@ -143,38 +173,8 @@ function onGamePlayerChange (dispatch: Function, getState: Function, change: Soc
   }
 }
 
-function setWinner (winner: Username) {
-  return {
-    types: [SET_WINNER_REQUEST, SET_WINNER_SUCCESS, ERROR],
-    winner,
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${id}/winner`, { winner })
-    }
-  }
-}
-
 function onGameChange (dispatch, game) {
   dispatch({ type: UPDATE_GAME, payload: { game } })
-}
-
-function unsubscribeGameEvent (socket: Socket, gameId: string) {
-  return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${gameId}-player-change`)
-  }
-}
-
-function resetCurrentGame (socket: Socket) {
-  return (dispatch: Function, getState: Function) => {
-    const gameId = getState().currentGame.game.id
-    unsubscribeGameEvent(socket, gameId)
-    gameHistoryActions.unsubscribeGameHistoryEvent(socket, gameId)
-
-    dispatch({ type: RESET })
-    dispatch(paymentActions.reset())
-    dispatch(gameHistoryActions.reset())
-    dispatch(currentPlayerCardsOnHandActions.reset())
-  }
 }
 
 export const actions = {
@@ -187,8 +187,7 @@ export const actions = {
   movePlacedCard,
   movePlacedLeftOverCard,
   resetCurrentGame,
-  subscribeGameEvent,
-  unsubscribeGameEvent
+  subscribeGameEvents
 }
 
 // ------------------------------------
