@@ -2,11 +2,13 @@
 import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
 import PlayerPlacedCardService from '../services/PlayerPlacedCardService'
+import SayNoService from '../services/SayNoService'
 import * as request from '../../universal/request-util'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
 const playerPlacedCardService = new PlayerPlacedCardService()
+const sayNoService = new SayNoService()
 
 declare class AppRequest extends AppRequest {
   body: any
@@ -148,6 +150,28 @@ export function slyDeal (req: AppRequest, res: express$Response) {
     req.body.fromSetId,
     req.body.cardToSlyDeal
   )
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
+export function sayNoToUser (req: AppRequest, res: express$Response) {
+  const promise = sayNoService.sayNoToUser(
+    req.params.id,
+    req.params.fromUser,
+    req.params.toUser,
+    req.body.cause,
+    req.body.causeInfo
+  )
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
+export function acceptSayNo (req: AppRequest, res: express$Response) {
+  const promise = sayNoService.acceptSayNo(req.params.id, req.params.fromUser, req.params.toUser)
 
   promise
     .then(() => res.json('success'))
