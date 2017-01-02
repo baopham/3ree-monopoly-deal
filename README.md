@@ -40,8 +40,9 @@ TODOs
 - [ ] Say no to
   - [ ] sly deal
   - [ ] forced deal
-  - [ ] payment (birthday, debt collector, rent)
-  - [ ] say no
+  - [ ] deal breaker
+  - [x] payment (birthday, debt collector, rent)
+  - [x] say no
 - [x] Fix bug when paying using properties / house / hotel...
 - [ ] There should be a place for cards like house and hotel
       e.g. payer pays using a property card -> set is no longer a full set -> house and hotel cards should go to a different place
