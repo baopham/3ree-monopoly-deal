@@ -1,6 +1,7 @@
 /* @flow */
 import {
   CARDS,
+  SAY_NO,
   PROPERTY_CARD_TYPE,
   PROPERTY_WILDCARD_TYPE,
   PROPERTY_WILDCARD_ALL_COLOUR_TYPE,
@@ -60,6 +61,10 @@ export function cardCanBeMoney (card: CardKeyOrCard): boolean {
 
 export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCards): boolean {
   const card = getCardObject(cardKeyOrCard)
+
+  if (card.key === SAY_NO) {
+    return false
+  }
 
   if (card.key === FORCED_DEAL && placedCards.serializedPropertySets.length) {
     return true
