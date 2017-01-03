@@ -15,7 +15,6 @@ import {
   DEBT_COLLECTOR
 } from './cards'
 import PropertySet from './PropertySet'
-import WildcardAllColourSet from './WildcardAllColourSet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
 export const NUMBER_OF_FULL_SETS_TO_WIN = 3
@@ -105,56 +104,6 @@ export function flipCard (cardKeyOrCard: CardKeyOrCard): CardKey {
 
 export function getCardImageSrc (cardKeyOrCard: CardKeyOrCard): string {
   return getCardObject(cardKeyOrCard).image
-}
-
-export function groupPropertiesIntoSets (cardKeys: CardKey[]): PropertySet[] {
-  const sets: PropertySet[] = []
-  const groups = new Map()
-  const cardKeysWithoutWildcards = cardKeys.filter(c => c !== PROPERTY_WILDCARD)
-
-  // Property groups (without wildcards)
-  cardKeysWithoutWildcards.forEach((cardKey: CardKey): void => {
-    const card = getCardObject(cardKey)
-    let treatAs = card.treatAs
-
-    const group = groups.get(treatAs) || []
-    group.push(cardKey)
-    groups.set(treatAs, group)
-  })
-
-  // Property sets (without using wildcards)
-  groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
-    const treatAsCard = getCardObject(treatAs)
-    let set = new PropertySet(treatAsCard, [])
-    sets.push(set)
-
-    cardKeys.forEach(cardKey => {
-      if (set.addCard(cardKey)) {
-        return
-      }
-
-      set = new PropertySet(treatAsCard, [])
-      sets.push(set)
-      set.addCard(cardKey)
-    })
-  })
-
-  // Now, try to use the wildcards
-  const wildcards = cardKeys.filter(c => c === PROPERTY_WILDCARD)
-  const unusedWildcards = wildcards.filter((cardKey: CardKey) => {
-    const used = sets.some((set: PropertySet) => {
-      return set.addCard(cardKey)
-    })
-
-    return !used
-  })
-
-  // Finally, a set for unused wildcards
-  if (unusedWildcards.length) {
-    sets.push(new WildcardAllColourSet(getCardObject(PROPERTY_WILDCARD), unusedWildcards))
-  }
-
-  return sets
 }
 
 export function cardRequiresPayment (cardKey: CardKey) {
@@ -306,7 +255,7 @@ export function mergeSerializedPropertySets (
     const leftOverProperties = allLeftOverCards.filter(c => isPropertyCard(c))
     const leftOverNonProperties = allLeftOverCards.filter(c => !isPropertyCard(c))
 
-    const newPropertySets = groupPropertiesIntoSets(leftOverProperties)
+    const [newPropertySets, unusedWildcards] = groupPropertiesIntoSets(leftOverProperties)
 
     mine.push(...newPropertySets.map(set => set.serialize()))
 
@@ -315,8 +264,53 @@ export function mergeSerializedPropertySets (
       used && leftOverNonProperties.splice(index, 1)
     })
 
-    return leftOverNonProperties
+    return leftOverNonProperties.concat(unusedWildcards)
   }
+}
+
+function groupPropertiesIntoSets (cardKeys: CardKey[]): [PropertySet[], CardKey[]] {
+  const sets: PropertySet[] = []
+  const groups = new Map()
+  const cardKeysWithoutWildcards = cardKeys.filter(c => c !== PROPERTY_WILDCARD)
+
+  // Property groups (without wildcards)
+  cardKeysWithoutWildcards.forEach((cardKey: CardKey): void => {
+    const card = getCardObject(cardKey)
+    let treatAs = card.treatAs
+
+    const group = groups.get(treatAs) || []
+    group.push(cardKey)
+    groups.set(treatAs, group)
+  })
+
+  // Property sets (without using wildcards)
+  groups.forEach((cardKeys: CardKey[], treatAs: CardKey) => {
+    const treatAsCard = getCardObject(treatAs)
+    let set = new PropertySet(treatAsCard, [])
+    sets.push(set)
+
+    cardKeys.forEach(cardKey => {
+      if (set.addCard(cardKey)) {
+        return
+      }
+
+      set = new PropertySet(treatAsCard, [])
+      sets.push(set)
+      set.addCard(cardKey)
+    })
+  })
+
+  // Now, try to use the wildcards
+  const wildcards = cardKeys.filter(c => c === PROPERTY_WILDCARD)
+  const unusedWildcards = wildcards.filter((cardKey: CardKey) => {
+    const used = sets.some((set: PropertySet) => {
+      return set.addCard(cardKey)
+    })
+
+    return !used
+  })
+
+  return [sets, unusedWildcards]
 }
 
 function flattenSerializedPropertySetCards (serializedPropertySets: SerializedPropertySet[]): CardKey[] {
