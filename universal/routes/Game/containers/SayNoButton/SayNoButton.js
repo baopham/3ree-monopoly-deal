@@ -21,9 +21,7 @@ type State = {
   clicked: boolean
 }
 
-const mapStateToProps = (state) => ({
-
-})
+const mapStateToProps = (state) => ({})
 
 export class SayNoButton extends React.Component {
   props: Props

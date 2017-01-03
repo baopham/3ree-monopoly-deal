@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import { Modal, Button } from 'react-bootstrap'
+import { Alert, Modal, Button } from 'react-bootstrap'
 import { getTotalMoneyFromPlacedCards, unserializePropertySet } from '../../../../monopoly/monopoly'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
@@ -17,10 +17,44 @@ type State = {
   counter: number
 }
 
+const INITIAL_COUNTER_IN_SECONDS = 10
+
 export default class AutoPaymentAlert extends React.Component {
   props: Props
 
   state: State
+
+  shouldCountDown: boolean
+
+  intervalId: number
+
+  state = {
+    counter: INITIAL_COUNTER_IN_SECONDS
+  }
+
+  constructor (props: Props) {
+    super(props)
+
+    this.shouldCountDown = !this.props.sayNoButton
+
+    if (this.shouldCountDown) {
+      this.intervalId = setInterval(() => {
+        this.setState({ counter: this.state.counter - 1 })
+      }, 1000)
+    }
+  }
+
+  componentWillUnmount () {
+    this.intervalId && clearInterval(this.intervalId)
+  }
+
+  componentWillUpdate (nextProps: Props, nextState: State) {
+    if (!nextProps.countDown || nextState.counter > 0) {
+      return
+    }
+
+    this.pay()
+  }
 
   pay = () => {
     const { cards, onPay } = this.props
@@ -41,6 +75,7 @@ export default class AutoPaymentAlert extends React.Component {
 
   render () {
     const { payee, dueAmount, cards, sayNoButton } = this.props
+    const { counter } = this.state
     const hasNoMoney = getTotalMoneyFromPlacedCards(cards) === 0
     const hasSayNoOption = this.hasSayNoOption()
 
@@ -54,6 +89,18 @@ export default class AutoPaymentAlert extends React.Component {
 
         <Modal.Body>
           <p>You don't have enough money to pay <strong>{payee}</strong> ${dueAmount}M :(</p>
+
+          {this.shouldCountDown && !hasNoMoney &&
+            <Alert bsStyle='warning'>
+              Giving all your cards to <strong>{payee}</strong> in {counter} seconds
+            </Alert>
+          }
+
+          {this.shouldCountDown && hasNoMoney &&
+            <Alert bsStyle='info'>
+              This will close in {counter} seconds
+            </Alert>
+          }
         </Modal.Body>
 
         <Modal.Footer>

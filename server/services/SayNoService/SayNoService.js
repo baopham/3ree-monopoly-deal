@@ -36,6 +36,7 @@ export default class SayNoService {
         sayNo.toUser = toUser
         sayNo.cause = cause
         sayNo.causeInfo = causeInfo
+
         return Promise.all([
           sayNo.save(),
           logAction()
