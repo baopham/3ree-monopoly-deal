@@ -3,7 +3,7 @@ import GameService from '../services/GameService'
 
 const service = new GameService()
 
-declare class AppRequest extends AppRequest {
+declare class AppRequest extends express$Request {
   body: any
 }
 
@@ -15,7 +15,7 @@ function handleError (err, res) {
 
 export function getGames (req: AppRequest, res: express$Response) {
   const promise = Promise.all([
-    service.getGames(req.query.page),
+    service.getGames(parseInt(req.query.page, 10)),
     service.getCount()
   ])
 

@@ -10,10 +10,7 @@ const playerService = new PlayerService()
 const playerPlacedCardService = new PlayerPlacedCardService()
 const sayNoService = new SayNoService()
 
-declare class AppRequest extends AppRequest {
-  params: {
-    id: string
-  },
+declare class AppRequest extends express$Request {
   body: any
 }
 
