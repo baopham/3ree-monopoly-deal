@@ -8,7 +8,7 @@ import { getCurrentPlayer } from './gameSelectors'
 import PropertySet from '../../../monopoly/PropertySet'
 
 function ns (value) {
-  return namespace('PLAYER', value)
+  return namespace('CARDS_ON_HAND', value)
 }
 
 // ------------------------------------
