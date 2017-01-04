@@ -11,6 +11,9 @@ const playerPlacedCardService = new PlayerPlacedCardService()
 const sayNoService = new SayNoService()
 
 declare class AppRequest extends AppRequest {
+  params: {
+    id: string
+  },
   body: any
 }
 
