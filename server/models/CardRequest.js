@@ -6,8 +6,7 @@ const type = thinky.type
 const CardRequest = thinky.createModel('game_card_requests', {
   id: type.string(),
   gameId: type.string(),
-  fromUser: type.string(),
-  toUser: type.string(),
+  info: type.object(),
   type: type.string().enums(Object.keys(cardRequestTypes))
 })
 
