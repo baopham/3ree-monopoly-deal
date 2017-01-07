@@ -186,6 +186,21 @@ export default class PlayerService {
       .then(([drawnCards]) => drawnCards)
   }
 
+  removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
+    const promises = [
+      this.playerRepository.findByGameIdAndUsername(gameId, payee),
+      this.playerRepository.findByGameIdAndUsername(gameId, payer)
+    ]
+
+    return Promise.all(promises)
+      .then(([payeePlayer: Player, payerPlayer: Player]) => {
+        return Promise.all([
+          paymentHelper.updatePayee(payeePlayer, payer, [], new Map()),
+          paymentHelper.updatePayer(payerPlayer, [], new Map())
+        ])
+      })
+  }
+
   pay (
     gameId: string, payer: Username,
     payee: Username, moneyCards: CardKey[],

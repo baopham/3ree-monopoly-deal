@@ -96,7 +96,7 @@ export default class SayNoService {
         const payeeAcceptedSayNo = payee === sayNo.toUser
 
         if (payeeAcceptedSayNo) {
-          return this.playerService.pay(sayNo.gameId, payer, payee, [], new Map())
+          return this.playerService.removePayer(sayNo.gameId, payer, payee)
         }
 
         return Promise.resolve()
