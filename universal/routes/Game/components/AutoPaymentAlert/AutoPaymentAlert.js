@@ -49,7 +49,7 @@ export default class AutoPaymentAlert extends React.Component {
   }
 
   componentWillUpdate (nextProps: Props, nextState: State) {
-    if (!nextProps.countDown || nextState.counter > 0) {
+    if (!nextProps.countDown || nextState.counter !== 0) {
       return
     }
 
