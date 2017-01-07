@@ -1,6 +1,6 @@
 /* @flow */
-import { namespace } from '../../../ducks-utils'
-import { getCurrentPlayer } from './gameSelectors'
+import { namespace } from '../../../../ducks-utils'
+import { getCurrentPlayer } from '../gameSelectors'
 import audioPlay from 'audio-play'
 import audioLoad from 'audio-loader'
 

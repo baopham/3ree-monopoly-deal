@@ -1,11 +1,11 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
-import * as request from '../../../request-util'
-import { PASS_GO, SLY_DEAL } from '../../../monopoly/cards'
-import * as monopoly from '../../../monopoly/monopoly'
-import { actions as paymentActions } from './payment'
-import { getCurrentPlayer } from './gameSelectors'
-import PropertySet from '../../../monopoly/PropertySet'
+import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
+import * as request from '../../../../request-util'
+import { PASS_GO, SLY_DEAL } from '../../../../monopoly/cards'
+import * as monopoly from '../../../../monopoly/monopoly'
+import { actions as paymentActions } from '../payment'
+import { getCurrentPlayer } from '../gameSelectors'
+import PropertySet from '../../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('CARDS_ON_HAND', value)
@@ -100,22 +100,6 @@ function playCard (card: CardKey) {
   }
 }
 
-function slyDeal (otherPlayer: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
-  return {
-    types: [SLY_DEAL_REQUEST, SLY_DEAL_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const currentGame = getState().currentGame
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/sly-deal`, {
-        username,
-        otherPlayerUsername: otherPlayer.username,
-        fromSetId: fromSet.getId(),
-        cardToSlyDeal
-      })
-    }
-  }
-}
-
 function flipCardOnHand (card: CardKey) {
   return {
     type: FLIP_CARD_ON_HAND,
@@ -134,8 +118,7 @@ export const actions = {
   playCard,
   placeCard,
   discardCard,
-  flipCardOnHand,
-  slyDeal
+  flipCardOnHand
 }
 
 // ------------------------------------

@@ -1,9 +1,9 @@
 /* @flow */
-import * as request from '../../../request-util'
-import { namespace, apiUrl } from '../../../ducks-utils'
-import { getCurrentPlayer } from './gameSelectors'
-import sayNoCauses from '../../../monopoly/sayNoCauses'
-import type { SayNoCause, SayNoCauseInfo } from '../../../monopoly/sayNoCauses'
+import * as request from '../../../../request-util'
+import { namespace, apiUrl } from '../../../../ducks-utils'
+import { getCurrentPlayer } from '../gameSelectors'
+import sayNoCauses from '../../../../monopoly/sayNoCauses'
+import type { SayNoCause, SayNoCauseInfo } from '../../../../monopoly/sayNoCauses'
 
 function ns (value) {
   return namespace('SAY_NO', value)
@@ -57,6 +57,12 @@ function getCauseInfo (getState: Function, fromUser: Username, toUser: Username,
       return {
         payer: payment.payers.find(p => p === fromUser || p === toUser),
         payee: payment.payee
+      }
+
+    case sayNoCauses.SLY_DEAL:
+      const { slyDeal } = getState().cardRequest
+      return {
+        slyDealRequestId: slyDeal && slyDeal.slyDealRequestId
       }
 
     default:
