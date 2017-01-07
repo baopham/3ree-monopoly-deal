@@ -20,16 +20,18 @@ const ASK_REQUEST = ns('ASK_REQUEST')
 const ASK_SUCCESS = ns('ASK_SUCCESS')
 const ACCEPT_REQUEST = ns('ACCEPT_REQUEST')
 const ACCEPT_SUCCESS = ns('ACCEPT_SUCCESS')
+const RESET = ns('RESET')
 const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function updateSlyDealRequest (info: SlyDealInfo) {
-  return {
-    type: UPDATE,
-    ...info
+function onSlyDealUpdateEvent (change: Object) {
+  if (change.deleted) {
+    return reset()
   }
+
+  return { type: UPDATE, payload: { cardRequest: change.new_val } }
 }
 
 function askToSlyDeal (otherPlayer: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
@@ -60,10 +62,15 @@ function acceptSlyDeal (slyDealRequestId: string) {
   }
 }
 
+function reset () {
+  return { type: RESET }
+}
+
 export const actions = {
-  updateSlyDealRequest,
+  onSlyDealUpdateEvent,
   askToSlyDeal,
-  acceptSlyDeal
+  acceptSlyDeal,
+  reset
 }
 
 // ------------------------------------
@@ -72,7 +79,7 @@ export const actions = {
 export type SlyDealState = {
   toUser: ?Username,
   fromUser: ?Username,
-  slyDealRequestId: ?string,
+  slyDealRequestId: string,
   setId: ?PropertySetId,
   card: ?CardKey,
   isWorking: boolean,
@@ -82,7 +89,7 @@ export type SlyDealState = {
 const initialState: SlyDealState = {
   toUser: null,
   fromUser: null,
-  slyDealRequestId: null,
+  slyDealRequestId: '',
   setId: null,
   card: null,
   isWorking: false,
@@ -97,14 +104,17 @@ export default function reducer (state: SlyDealState = initialState, action: Red
         isWorking: true
       }
 
+    case UPDATE:
     case ASK_SUCCESS:
+      const { cardRequest }: { cardRequest: CardRequest } = action.payload
+      const { info }: { info: SlyDealInfo } = cardRequest
       return {
         ...initialState,
-        toUser: action.payload.toUser,
-        fromUser: action.payload.fromUser,
-        slyDealRequestId: action.payload.id,
-        setId: action.payload.setId,
-        card: action.payload.card
+        toUser: info.toUser,
+        fromUser: info.fromUser,
+        slyDealRequestId: cardRequest.id,
+        setId: info.setId,
+        card: info.card
       }
 
     case ACCEPT_REQUEST:
@@ -117,15 +127,8 @@ export default function reducer (state: SlyDealState = initialState, action: Red
     case ACCEPT_SUCCESS:
       return { ...initialState }
 
-    case UPDATE:
-      return {
-        ...initialState,
-        toUser: action.toUser,
-        fromUser: action.fromUser,
-        slyDealRequestId: action.id,
-        setId: action.payload.setId,
-        card: action.payload.card
-      }
+    case RESET:
+      return { ...initialState }
 
     default:
       return state

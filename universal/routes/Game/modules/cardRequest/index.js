@@ -7,24 +7,24 @@ import type { SlyDealState } from './slyDeal'
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function subscribeCardRequestEvent (socket: Socket) {
+function subscribeCardRequestEvent (socket: Socket, gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    const gameId = getState().currentGame.game.id
     socket.on(`game-${gameId}-card-request-update`, onCardRequestUpdate.bind(this, dispatch))
   }
 }
 
-function unsubscribeCardRequestEvent (socket: Socket) {
+function unsubscribeCardRequestEvent (socket: Socket, gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    const gameId = getState().currentGame.game.id
     socket.off(`game-${gameId}-card-request-update`)
   }
 }
 
-function onCardRequestUpdate (dispatch: Function, cardRequest: CardRequest) {
+function onCardRequestUpdate (dispatch: Function, change: Object) {
+  const cardRequest = change.new_val || change.old_val
+
   switch (cardRequest.type) {
     case cardRequestTypes.SLY_DEAL:
-      dispatch(slyDealActions.updateSlyDealRequest(cardRequest.info))
+      dispatch(slyDealActions.onSlyDealUpdateEvent(change))
       return
 
     default:
@@ -32,10 +32,16 @@ function onCardRequestUpdate (dispatch: Function, cardRequest: CardRequest) {
   }
 }
 
+function reset () {
+  return (dispatch: Function, getState: Function) => {
+    dispatch(slyDealActions.reset())
+  }
+}
+
 export const actions = {
   subscribeCardRequestEvent,
   unsubscribeCardRequestEvent,
-  onCardRequestUpdate
+  ...slyDealActions
 }
 
 // ------------------------------------
