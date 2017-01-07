@@ -6,6 +6,7 @@ import currentPlayerCardsOnHand from '../routes/Game/modules/currentPlayerCardsO
 import payment from '../routes/Game/modules/payment'
 import gameHistory from '../routes/Game/modules/gameHistory'
 import sayNo from '../routes/Game/modules/sayNo'
+import cardRequest from '../routes/Game/modules/cardRequest'
 
 const rootReducer = combineReducers({
   routing: routerReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   currentPlayerCardsOnHand,
   payment,
   gameHistory,
-  sayNo
+  sayNo,
+  cardRequest
 })
 
 export default rootReducer
