@@ -7,7 +7,7 @@ const CardRequest = thinky.createModel('game_card_requests', {
   id: type.string(),
   gameId: type.string(),
   info: type.object(),
-  type: type.string().enums(Object.keys(cardRequestTypes))
+  type: type.string().enum(Object.keys(cardRequestTypes))
 })
 
 module.exports = CardRequest
