@@ -347,6 +347,12 @@ aws4@^1.2.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.5.0.tgz#0a29ffb79c31c9e712eeb087e8e7a64b4a56d755"
 
+axios:
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.15.3.tgz#2c9d638b2e191a08ea1d6cc988eadd6ba5bdc053"
+  dependencies:
+    follow-redirects "1.0.0"
+
 babel-cli@^6.5.1:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-cli/-/babel-cli-6.18.0.tgz#92117f341add9dead90f6fa7d0a97c0cc08ec186"
@@ -917,6 +923,12 @@ babel-plugin-transform-react-jsx@^6.3.13:
 babel-plugin-transform-regenerator@^6.16.0:
   version "6.20.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-regenerator/-/babel-plugin-transform-regenerator-6.20.0.tgz#a546cd2aa1c9889929d5c427a31303847847ab75"
+  dependencies:
+    regenerator-transform "0.9.8"
+
+babel-plugin-transform-regenerator@^6.21.0:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-regenerator/-/babel-plugin-transform-regenerator-6.21.0.tgz#75d0c7e7f84f379358f508451c68a2c5fa5a9703"
   dependencies:
     regenerator-transform "0.9.8"
 
@@ -2534,6 +2546,12 @@ flatten@^1.0.2:
 flow-bin:
   version "0.37.4"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.37.4.tgz#3d8da2ef746e80e730d166e09040f4198969b76b"
+
+follow-redirects@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.0.0.tgz#8e34298cbd2e176f254effec75a1c78cc849fd37"
+  dependencies:
+    debug "^2.2.0"
 
 for-in@^0.1.5:
   version "0.1.6"
@@ -4736,6 +4754,10 @@ redux-logger@2.6.x:
 redux-mock-store@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.0.4.tgz#b22e27c4194a804246e84073aa8a39b7da6fc02d"
+
+redux-saga:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.14.1.tgz#400e8c1749e557c345f386a388977f757b3a3db3"
 
 redux-thunk@2.1.x:
   version "2.1.0"

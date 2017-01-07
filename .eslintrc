@@ -18,8 +18,6 @@
     "__DEV__": false
   },
   "rules": {
-    "babel/generator-star-spacing": 1,
-    "generator-star-spacing": 0,
     "max-len": [2, 120, 2],
     "object-curly-spacing": [2, "always"],
     "react/prop-types": [2, { ignore: ["children", "className"] }],

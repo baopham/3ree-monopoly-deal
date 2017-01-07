@@ -76,7 +76,8 @@ function playCard (card: CardKey) {
 
     return request
       .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username: currentPlayer.username })
-      .then(handleSuccessRequest, handleErrorRequest)
+      .then(handleSuccessRequest)
+      .catch(handleErrorRequest)
 
     function handleSuccessRequest (res) {
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })

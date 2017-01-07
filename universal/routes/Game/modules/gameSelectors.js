@@ -6,10 +6,10 @@ import type { PaymentState } from './payment'
 import type { CurrentPlayerCardsOnHandState } from './currentPlayerCardsOnHand'
 import type { SayNoState } from './sayNo'
 
-const getCurrentGame = (state) => state.currentGame
-const getPayment = (state) => state.payment
-const getCurrentPlayerCardsOnHand = (state) => state.currentPlayerCardsOnHand
-const getSayNoState = (state) => state.sayNo
+const getPayment = state => state.payment
+const getCurrentPlayerCardsOnHand = state => state.currentPlayerCardsOnHand
+const getSayNoState = state => state.sayNo
+const getCurrentGame = state => state.currentGame
 
 export const getCurrentPlayer = createSelector(
   [getCurrentGame],
@@ -23,6 +23,16 @@ export const getCurrentPlayer = createSelector(
     const membership = currentGame.membership[game.id] || {}
     return game.players.find(player => player.id === membership.id)
   }
+)
+
+export const getCurrentGameId = createSelector(
+  [getCurrentGame],
+  (currentGame: CurrentGameState): ?string => currentGame.game && currentGame.game.id
+)
+
+export const getCurrentPlayerUsername = createSelector(
+  [getCurrentPlayer],
+  (player: Player): ?Username => player && player.username
 )
 
 export const isPlayerTurn = createSelector(

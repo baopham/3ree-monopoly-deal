@@ -1,11 +1,9 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
-import * as request from '../../../request-util'
+import { namespace, deepmerge } from '../../../ducks-utils'
 import { actions as paymentActions } from './payment'
 import { actions as gameHistoryActions } from './gameHistory'
 import { actions as currentPlayerCardsOnHandActions } from './currentPlayerCardsOnHand'
 import { actions as sayNoActions } from './sayNo'
-import { getCurrentPlayer } from './gameSelectors'
 import type { PropertySetId } from '../../../monopoly/PropertySet'
 
 function ns (value) {
@@ -15,116 +13,62 @@ function ns (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
-const gamesUrl = `${apiUrl}/games`
-
-const UPDATE_GAME = ns('UPDATE_GAME')
-const UPDATE_PLAYER = ns('UPDATE_PLAYER')
-const LOAD_REQUEST = ns('LOAD_REQUEST')
-const LOAD_SUCCESS = ns('LOAD_SUCCESS')
-const JOIN_REQUEST = ns('JOIN_REQUEST')
-const JOIN_SUCCESS = ns('JOIN_SUCCESS')
-const JOIN_ERROR = ns('JOIN_ERROR')
-const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
-const END_TURN_REQUEST = ns('END_TURN_REQUEST')
-const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
-const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
-const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
-const FLIP_PLACED_CARD_REQUEST = ns('FLIP_PLACED_CARD_REQUEST')
-const FLIP_PLACED_CARD_SUCCESS = ns('FLIP_PLACED_CARD_SUCCESS')
-const FLIP_PLACED_LEFT_OVER_CARD_REQUEST = ns('FLIP_PLACED_LEFT_OVER_CARD_REQUEST')
-const FLIP_PLACED_LEFT_OVER_CARD_SUCCESS = ns('FLIP_PLACED_LEFT_OVER_CARD_SUCCESS')
-const MOVE_PLACED_CARD_REQUEST = ns('MOVE_PLACED_CARD_REQUEST')
-const MOVE_PLACED_CARD_SUCCESS = ns('MOVE_PLACED_CARD_SUCCESS')
-const MOVE_PLACED_LEFT_OVER_CARD_REQUEST = ns('MOVE_PLACED_LEFT_OVER_CARD_REQUEST')
-const MOVE_PLACED_LEFT_OVER_CARD_SUCCESS = ns('MOVE_PLACED_LEFT_OVER_CARD_SUCCESS')
-const RESET = ns('RESET')
-const ERROR = ns('ERROR')
+export const UPDATE_GAME = ns('UPDATE_GAME')
+export const UPDATE_PLAYER = ns('UPDATE_PLAYER')
+export const LOAD_REQUEST = ns('LOAD_REQUEST')
+export const LOAD_SUCCESS = ns('LOAD_SUCCESS')
+export const JOIN_REQUEST = ns('JOIN_REQUEST')
+export const JOIN_SUCCESS = ns('JOIN_SUCCESS')
+export const JOIN_ERROR = ns('JOIN_ERROR')
+export const LEAVE_SUCCESS = ns('LEAVE_SUCCESS')
+export const END_TURN_REQUEST = ns('END_TURN_REQUEST')
+export const END_TURN_SUCCESS = ns('END_TURN_SUCCESS')
+export const SET_WINNER_REQUEST = ns('SET_WINNER_REQUEST')
+export const SET_WINNER_SUCCESS = ns('SET_WINNER_SUCCESS')
+export const FLIP_PLACED_CARD_REQUEST = ns('FLIP_PLACED_CARD_REQUEST')
+export const FLIP_PLACED_CARD_SUCCESS = ns('FLIP_PLACED_CARD_SUCCESS')
+export const FLIP_PLACED_LEFT_OVER_CARD_REQUEST = ns('FLIP_PLACED_LEFT_OVER_CARD_REQUEST')
+export const FLIP_PLACED_LEFT_OVER_CARD_SUCCESS = ns('FLIP_PLACED_LEFT_OVER_CARD_SUCCESS')
+export const MOVE_PLACED_CARD_REQUEST = ns('MOVE_PLACED_CARD_REQUEST')
+export const MOVE_PLACED_CARD_SUCCESS = ns('MOVE_PLACED_CARD_SUCCESS')
+export const MOVE_PLACED_LEFT_OVER_CARD_REQUEST = ns('MOVE_PLACED_LEFT_OVER_CARD_REQUEST')
+export const MOVE_PLACED_LEFT_OVER_CARD_SUCCESS = ns('MOVE_PLACED_LEFT_OVER_CARD_SUCCESS')
+export const RESET = ns('RESET')
+export const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action Creators
 // ------------------------------------
 function getGame (id: string) {
-  return {
-    types: [LOAD_REQUEST, LOAD_SUCCESS, ERROR],
-    id,
-    promise: () => request.get(`${gamesUrl}/${id}`)
-  }
+  return { type: LOAD_REQUEST, id }
 }
 
 function join (username: Username) {
-  return {
-    types: [JOIN_REQUEST, JOIN_SUCCESS, JOIN_ERROR],
-    username,
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      return request.post(`${gamesUrl}/${id}/join`, { username })
-    }
-  }
+  return { type: JOIN_REQUEST, username }
 }
 
 function endTurn () {
-  return {
-    types: [END_TURN_REQUEST, END_TURN_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${id}/end-turn`)
-    }
-  }
+  return { type: END_TURN_REQUEST }
 }
 
 function flipPlacedCard (card: CardKey, propertySetId: PropertySetId) {
-  return {
-    types: [FLIP_PLACED_CARD_REQUEST, FLIP_PLACED_CARD_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${id}/flip-card`, { card, username, propertySetId })
-    }
-  }
+  return { type: FLIP_PLACED_CARD_REQUEST, card, propertySetId }
 }
 
 function flipPlacedLeftOverCard (card: CardKey) {
-  return {
-    types: [FLIP_PLACED_LEFT_OVER_CARD_REQUEST, FLIP_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${id}/flip-left-over-card`, { card, username })
-    }
-  }
+  return { type: FLIP_PLACED_LEFT_OVER_CARD_REQUEST, card }
 }
 
 function movePlacedCard (card: CardKey, fromSetId: PropertySetId, toSetId: PropertySetId) {
-  return {
-    types: [MOVE_PLACED_CARD_REQUEST, MOVE_PLACED_CARD_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${id}/move-card`, { card, username, fromSetId, toSetId })
-    }
-  }
+  return { type: MOVE_PLACED_CARD_REQUEST, card, fromSetId, toSetId }
 }
 
 function movePlacedLeftOverCard (card: CardKey, toSetId: PropertySetId) {
-  return {
-    types: [MOVE_PLACED_LEFT_OVER_CARD_REQUEST, MOVE_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${id}/move-left-over-card`, { card, username, toSetId })
-    }
-  }
+  return { type: MOVE_PLACED_LEFT_OVER_CARD_REQUEST, card, toSetId }
 }
 
 function setWinner (winner: Username) {
-  return {
-    types: [SET_WINNER_REQUEST, SET_WINNER_SUCCESS, ERROR],
-    winner,
-    promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      return request.put(`${gamesUrl}/${id}/winner`, { winner })
-    }
-  }
+  return { type: SET_WINNER_REQUEST, winner }
 }
 
 function resetCurrentGame (socket: Socket) {

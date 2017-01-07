@@ -1,25 +1,22 @@
 /* @flow */
-import request from 'superagent'
+import request from 'axios'
 
 export function get (url: string, query?: Object): Promise<*> {
   return request
-    .get(url)
-    .query(query)
-    .set('Accept', 'application/json')
+    .get(url, { params: query })
+    .then(returnData)
 }
 
 export function post (url: string, payload?: Object): Promise<*> {
   return request
-    .post(url)
-    .send(payload)
-    .set('Accept', 'application/json')
+    .post(url, payload)
+    .then(returnData)
 }
 
 export function put (url: string, payload?: Object): Promise<*> {
   return request
-    .put(url)
-    .send(payload)
-    .set('Accept', 'application/json')
+    .put(url, payload)
+    .then(returnData)
 }
 
 export function mapToJSON (map: Map<*, *>) {
@@ -28,4 +25,8 @@ export function mapToJSON (map: Map<*, *>) {
 
 export function jsonToMap (json: string): Map<*, *> {
   return new Map(JSON.parse(json))
+}
+
+function returnData (response) {
+  return response.data
 }

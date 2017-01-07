@@ -1,10 +1,12 @@
 /* global __DEV__ */
 
 import { createStore, applyMiddleware, compose } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 import thunkMiddleware from 'redux-thunk'
 import clientMiddleware from './middleware/clientMiddleware'
 import persistState from 'redux-localstorage'
 import rootReducer from './rootReducer'
+import * as sagaWatchers from './sagaWatchers'
 import _ from 'lodash'
 
 // Grab the state from a global injected into server-generated HTML
@@ -28,20 +30,25 @@ const persistStateOptions = {
   }
 }
 
+const sagaMiddleware = createSagaMiddleware()
+
 const store = createStore(
   rootReducer,
   initialState,
   compose(
-    applyMiddleware(clientMiddleware, thunkMiddleware),
+    applyMiddleware(clientMiddleware, sagaMiddleware, thunkMiddleware),
     persistState(['currentGame.membership'], persistStateOptions),
     ...enhancers
   )
 )
 
+_.values(sagaWatchers).forEach(sagaMiddleware.run)
+
 if (__DEV__ && module.hot) {
   module.hot.accept('./rootReducer', () =>
     store.replaceReducer(require('./rootReducer').default)
   )
+  // TODO hmr for sagas
 }
 
 export default store

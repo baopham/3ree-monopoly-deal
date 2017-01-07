@@ -36,7 +36,8 @@ function sayNo (toUser: Username, onSuccess: Function, cause: SayNoCause) {
 
     return request
       .put(`${gamesUrl}/${currentGame.game.id}/say-no/${fromUser}/${toUser}`, { cause, causeInfo })
-      .then(handleSuccessRequest, handleErrorRequest)
+      .then(handleSuccessRequest)
+      .catch(handleErrorRequest)
 
     //////
     function handleSuccessRequest (res) {
