@@ -7,7 +7,6 @@ import {
   PROPERTY_WILDCARD,
   HOUSE,
   HOTEL,
-  SLY_DEAL,
   newDeck
 } from '../../../universal/monopoly/cards'
 import PropertySet from '../../../universal/monopoly/PropertySet'

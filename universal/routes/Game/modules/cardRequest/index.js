@@ -41,6 +41,7 @@ function reset () {
 export const actions = {
   subscribeCardRequestEvent,
   unsubscribeCardRequestEvent,
+  reset,
   ...slyDealActions
 }
 

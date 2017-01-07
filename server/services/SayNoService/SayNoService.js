@@ -108,6 +108,8 @@ export default class SayNoService {
         if (payeeAcceptedSayNo) {
           return this.playerService.removePayer(sayNo.gameId, payer, payee)
         }
+
+        return Promise.resolve()
       }
 
       case sayNoCauses.SLY_DEAL: {
