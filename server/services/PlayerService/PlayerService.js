@@ -34,11 +34,13 @@ export default class PlayerService {
   placeCard (
     gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false, setToPutIn?: SerializedPropertySet
   ): Promise<*> {
+    const logAction = () => this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
+
     return this.playerRepository
       .findByGameIdAndUsername(gameId, username)
       .then(increaseActionCounter)
       .then(putCardInTheRightPlace)
-      .then(logAction.bind(this))
+      .then(logAction)
 
     //////
     function increaseActionCounter (player: Player): Player {
@@ -93,10 +95,6 @@ export default class PlayerService {
       Object.assign(playerSerializedSet, playerUnserializedSet.serialize())
 
       return player.save()
-    }
-
-    function logAction (player: Player): Promise<*> {
-      return this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
     }
   }
 
@@ -239,73 +237,6 @@ export default class PlayerService {
       const allCards = moneyCards.concat(allNonMoneyCards)
 
       return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
-    }
-  }
-
-  slyDeal (
-    gameId: string, username: Username, otherPlayerUsername: Username, fromSetId: PropertySetId, cardToSlyDeal: CardKey
-  ): Promise<*> {
-    const promises = [
-      this.playerRepository.findByGameIdAndUsername(gameId, username),
-      this.playerRepository.findByGameIdAndUsername(gameId, otherPlayerUsername)
-    ]
-    return Promise.all(promises)
-      .then(([thisPlayer: Player, otherPlayer: Player]) => {
-        return Promise.all([
-          updateThisPlayer(thisPlayer),
-          updateOtherPlayer(otherPlayer),
-          logActionAndNotifyOtherPlayer.bind(this)(otherPlayer)
-        ])
-      })
-
-    //////
-    function updateThisPlayer (thisPlayer: Player): Promise<*> {
-      const hasBeenPlaced = monopoly.putInTheFirstNonFullSet(
-        cardToSlyDeal,
-        thisPlayer.placedCards.serializedPropertySets
-      )
-
-      if (!hasBeenPlaced && monopoly.canBePutIntoANewSet(cardToSlyDeal)) {
-        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(cardToSlyDeal), [cardToSlyDeal])
-        thisPlayer.placedCards.serializedPropertySets.push(newSet.serialize())
-      }
-
-      if (!hasBeenPlaced && !monopoly.canBePutIntoANewSet(cardToSlyDeal)) {
-        thisPlayer.placedCards.leftOverCards.push(cardToSlyDeal)
-      }
-
-      thisPlayer.game.lastCardPlayedBy = thisPlayer.username
-      thisPlayer.game.discardedCards.push(SLY_DEAL)
-      thisPlayer.actionCounter += 1
-
-      return thisPlayer.saveAll()
-    }
-
-    function updateOtherPlayer (otherPlayer: Player): Promise<*> {
-      const setToUpdateIndex = otherPlayer.placedCards.serializedPropertySets
-        .findIndex(s => monopoly.unserializePropertySet(s).getId() === fromSetId)
-
-      if (setToUpdateIndex === -1) {
-        return Promise.reject(`Cannot find set ${fromSetId}`)
-      }
-
-      const setToUpdate = otherPlayer.placedCards.serializedPropertySets[setToUpdateIndex]
-      const cardIndexToRemove = setToUpdate.cards.findIndex(c => c === cardToSlyDeal)
-      setToUpdate.cards.splice(cardIndexToRemove, 1)
-
-      if (!setToUpdate.cards.length) {
-        otherPlayer.placedCards.serializedPropertySets.splice(setToUpdateIndex, 1)
-      }
-
-      return otherPlayer.save()
-    }
-
-    function logActionAndNotifyOtherPlayer (otherPlayer): Promise<*> {
-      return this.gameHistoryService.record(
-        gameId,
-        `${username} sly dealt ${cardToSlyDeal} from ${otherPlayer.username}`,
-        [otherPlayer.username]
-      )
     }
   }
 }
