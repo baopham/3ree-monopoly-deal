@@ -8,6 +8,7 @@ import { MAX_CARDS_IN_HAND, SLY_DEAL } from '../../../../monopoly/cards'
 import PropertySetType from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
 import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
+import { actions as cardRequestActions } from '../../modules/cardRequest'
 
 type Props = {
   otherPlayers: Player[],
@@ -16,7 +17,7 @@ type Props = {
   isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
-  slyDeal: (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
+  askToSlyDeal: (otherPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void
 }
@@ -80,11 +81,12 @@ export class CardsOnHand extends React.Component {
   }
 
   onSlyDeal = (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => {
-    this.props.slyDeal(fromPlayer, fromSet, selectedCard)
-    this.onCancelSlyDealing()
+    this.props.askToSlyDeal(fromPlayer, fromSet, selectedCard)
+    this.props.discardCard(SLY_DEAL)
+    this.onCancelSlyDealRequest()
   }
 
-  onCancelSlyDealing = () => {
+  onCancelSlyDealRequest = () => {
     this.setState({ slyDealing: false })
   }
 
@@ -99,7 +101,7 @@ export class CardsOnHand extends React.Component {
         players={otherPlayers}
         playerPropertySetFilter={propertySetFilter}
         onSelect={this.onSlyDeal}
-        onCancel={this.onCancelSlyDealing}
+        onCancel={this.onCancelSlyDealRequest}
       />
     )
   }
@@ -133,8 +135,8 @@ export class CardsOnHand extends React.Component {
 
     return (
       <Panel
-        header={this.renderHeader()}
         collapsible
+        header={this.renderHeader()}
         expanded={this.state.open}
       >
         <div>
@@ -170,5 +172,5 @@ export class CardsOnHand extends React.Component {
 
 export default connect(
   mapStateToProps,
-  cardsOnHandActions
+  { ...cardsOnHandActions, ...cardRequestActions }
 )(CardsOnHand)
