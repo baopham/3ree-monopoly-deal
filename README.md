@@ -77,6 +77,7 @@ TODOs
 - [ ] Draw 5 cards when hand is empty
 - [ ] Fix HMR errors
 - [ ] Improve notification... possibly debounce?
+- [ ] Hydrate store from server
 
 
 License
