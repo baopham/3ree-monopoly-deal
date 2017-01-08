@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { actions } from '../../modules/cardRequest'
-import { getCurrentPlayer } from '../../modules/gameSelectors'
+import { getCurrentPlayer, canSayNo } from '../../modules/gameSelectors'
 import SayNoButton from '../SayNoButton'
 import SlyDealNotification from '../../components/SlyDealNotification'
 import sayNoCauses from '../../../../monopoly/sayNoCauses'
@@ -11,19 +11,25 @@ import type { SlyDealState } from '../../modules/cardRequest/slyDeal'
 type Props = {
   slyDeal: SlyDealState,
   currentPlayer: Player,
+  canSayNo: boolean,
   acceptSlyDeal: (requestId: string) => void
 }
 
 const mapStateToProps = (state) => ({
   slyDeal: state.cardRequest.slyDeal,
-  currentPlayer: getCurrentPlayer(state)
+  currentPlayer: getCurrentPlayer(state),
+  canSayNo: canSayNo(state)
 })
 
 export class CardRequest extends React.Component {
   props: Props
 
   renderSayNoButtonForSlyDeal = () => {
-    const { slyDeal } = this.props
+    const { slyDeal, canSayNo } = this.props
+
+    if (!canSayNo) {
+      return null
+    }
 
     return (
       <SayNoButton
