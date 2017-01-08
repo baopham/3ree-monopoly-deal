@@ -53,8 +53,8 @@ export default class CardRequestService {
 
     return this.cardRequestRepository
       .find(slyDealRequestId)
-      .theh(cacheCardRequest)
-      .then(this.findPlayers)
+      .then(cacheCardRequest)
+      .then(this.findPlayers.bind(this))
       .then(updatePlayersAndGameHistory.bind(this))
       .then(deleteRequest.bind(this))
 
@@ -152,7 +152,7 @@ export default class CardRequestService {
     return this.cardRequestRepository
       .find(forcedDealRequestId)
       .then(cacheCardRequest)
-      .then(this.findPlayers)
+      .then(this.findPlayers.bind(this))
       .then(updatePlayersAndGameHistory.bind(this))
       .then(deleteRequest.bind(this))
 
