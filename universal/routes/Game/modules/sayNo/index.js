@@ -155,7 +155,7 @@ export default function reducer (state: SayNoState = initialState, action: Redux
       }
 
     case ACCEPT_SUCCESS:
-      return initialState
+      return { ...initialState }
 
     case SAY_NO_UPDATE:
       return {
@@ -174,7 +174,7 @@ export default function reducer (state: SayNoState = initialState, action: Redux
       }
 
     case RESET:
-      return initialState
+      return { ...initialState }
 
     default:
       return state

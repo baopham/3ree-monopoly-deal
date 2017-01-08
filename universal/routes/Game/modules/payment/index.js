@@ -101,7 +101,7 @@ export default function reducer (state: PaymentState = initialState, action: Red
       const { payer } = action
 
       if (!state.payers || state.payers.length <= 1) {
-        return initialState
+        return { ...initialState }
       }
 
       return {
@@ -112,7 +112,7 @@ export default function reducer (state: PaymentState = initialState, action: Red
 
     case PAYMENT_UPDATE:
       if (!action.payers || !action.payers.length) {
-        return initialState
+        return { ...initialState }
       }
 
       return {
@@ -123,7 +123,7 @@ export default function reducer (state: PaymentState = initialState, action: Red
       }
 
     case RESET:
-      return initialState
+      return { ...initialState }
 
     case ERROR:
       return deepmerge({}, state, { error: action.message })

@@ -170,7 +170,7 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
     }
 
     case RESET:
-      return initialState
+      return { ...initialState }
 
     default:
       return state
