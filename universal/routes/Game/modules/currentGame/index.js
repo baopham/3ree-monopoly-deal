@@ -1,12 +1,13 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
-import * as request from '../../../request-util'
-import { actions as paymentActions } from './payment'
-import { actions as gameHistoryActions } from './gameHistory'
-import { actions as currentPlayerCardsOnHandActions } from './currentPlayerCardsOnHand'
-import { actions as sayNoActions } from './sayNo'
-import { getCurrentPlayer } from './gameSelectors'
-import type { PropertySetId } from '../../../monopoly/PropertySet'
+import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
+import * as request from '../../../../request-util'
+import { actions as paymentActions } from '../payment'
+import { actions as gameHistoryActions } from '../gameHistory'
+import { actions as currentPlayerCardsOnHandActions } from '../currentPlayerCardsOnHand'
+import { actions as sayNoActions } from '../sayNo'
+import { actions as cardRequestActions } from '../cardRequest'
+import { getCurrentPlayer } from '../gameSelectors'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('GAME', value)
@@ -135,6 +136,7 @@ function resetCurrentGame (socket: Socket) {
 
     dispatch(gameHistoryActions.unsubscribeGameHistoryEvent(socket, gameId))
     dispatch(sayNoActions.unsubscribeSayNoEvent(socket, gameId))
+    dispatch(cardRequestActions.unsubscribeCardRequestEvent(socket, gameId))
     dispatch({ type: RESET })
     dispatch(paymentActions.reset())
     dispatch(gameHistoryActions.reset())
@@ -149,6 +151,7 @@ function subscribeGameEvents (socket: Socket, gameId: string) {
     socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
     dispatch(gameHistoryActions.subscribeGameHistoryEvent(socket, gameId))
     dispatch(sayNoActions.subscribeSayNoEvent(socket, gameId))
+    dispatch(cardRequestActions.subscribeCardRequestEvent(socket, gameId))
   }
 }
 

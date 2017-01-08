@@ -22,8 +22,9 @@ router.put('/api/v1/games/:id/flip-card', game.flipPlacedCard)
 router.put('/api/v1/games/:id/move-card', game.movePlacedCard)
 router.put('/api/v1/games/:id/flip-left-over-card', game.flipPlacedLeftOverCard)
 router.put('/api/v1/games/:id/move-left-over-card', game.movePlacedLeftOverCard)
-router.put('/api/v1/games/:id/sly-deal', game.slyDeal)
 router.put('/api/v1/games/:id/say-no/:fromUser/:toUser', game.sayNoToUser)
 router.put('/api/v1/games/:id/accept-say-no/:fromUser/:toUser', game.acceptSayNo)
+router.put('/api/v1/games/:id/card-request/sly-deal', game.requestToSlyDeal)
+router.put('/api/v1/games/:id/card-request-accept/sly-deal/:requestId', game.acceptSlyDeal)
 
 module.exports = router

@@ -1,7 +1,7 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
-import * as request from '../../../request-util'
-import type { PropertySetId } from '../../../monopoly/PropertySet'
+import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
+import * as request from '../../../../request-util'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 function ns (value) {
   return namespace('PAYMENT', value)

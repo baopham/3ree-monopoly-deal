@@ -7,7 +7,7 @@ type Props = {
   faceUp?: boolean,
   highlighted?: boolean,
   onClick: (card: CardKey) => void,
-  size: 'large' | 'small'
+  size: 'large' | 'small' | 'xsmall'
 }
 
 function getStyles (props: Props) {
@@ -19,6 +19,10 @@ function getStyles (props: Props) {
     small: {
       width: 90,
       height: 140
+    },
+    xsmall: {
+      width: 30,
+      height: 50
     },
     withBorder: {
       border: '1px solid black'

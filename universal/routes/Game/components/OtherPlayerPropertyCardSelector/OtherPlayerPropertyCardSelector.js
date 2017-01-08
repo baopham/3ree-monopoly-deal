@@ -69,17 +69,18 @@ export default class OtherPlayerCardSelector extends React.Component {
     const { playerPropertySetFilter } = this.props
     const propertySets = player.placedCards.serializedPropertySets
       .map(unserializePropertySet)
-      .filter(playerPropertySetFilter)
 
     return (
       <ul className='list-inline'>
         {propertySets.map((set, setIndex) =>
           <li key={`${player.id}-${setIndex}`}>
-            <PropertySet
-              propertySet={set}
-              onCardClick={(card, cardIndex) => this.onCardClick(player, setIndex, cardIndex)}
-              isCardHighlighted={(card, cardIndex) => this.isCardHighlighted(player, setIndex, cardIndex)}
-            />
+            {playerPropertySetFilter(set) &&
+              <PropertySet
+                propertySet={set}
+                onCardClick={(card, cardIndex) => this.onCardClick(player, setIndex, cardIndex)}
+                isCardHighlighted={(card, cardIndex) => this.isCardHighlighted(player, setIndex, cardIndex)}
+              />
+            }
           </li>
         )}
       </ul>

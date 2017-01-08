@@ -3,12 +3,14 @@ import GameService from '../services/GameService'
 import PlayerService from '../services/PlayerService'
 import PlayerPlacedCardService from '../services/PlayerPlacedCardService'
 import SayNoService from '../services/SayNoService'
+import CardRequestService from '../services/CardRequestService'
 import * as request from '../../universal/request-util'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
 const playerPlacedCardService = new PlayerPlacedCardService()
 const sayNoService = new SayNoService()
+const cardRequestService = new CardRequestService()
 
 declare class AppRequest extends express$Request {
   body: any
@@ -142,14 +144,16 @@ export function movePlacedLeftOverCard (req: AppRequest, res: express$Response) 
     .catch(err => handleError(err, res))
 }
 
-export function slyDeal (req: AppRequest, res: express$Response) {
-  const promise = playerService.slyDeal(
-    req.params.id,
-    req.body.username,
-    req.body.otherPlayerUsername,
-    req.body.fromSetId,
-    req.body.cardToSlyDeal
-  )
+export function requestToSlyDeal (req: AppRequest, res: express$Response) {
+  const promise = cardRequestService.requestToSlyDeal(req.params.id, req.body)
+
+  promise
+    .then(([cardRequest]) => res.json({ cardRequest }))
+    .catch(err => handleError(err, res))
+}
+
+export function acceptSlyDeal (req: AppRequest, res: express$Response) {
+  const promise = cardRequestService.acceptSlyDeal(req.params.requestId)
 
   promise
     .then(() => res.json('success'))

@@ -1,10 +1,10 @@
 /* @flow */
-import { SAY_NO } from '../../../monopoly/cards'
+import { SAY_NO } from '../../../../monopoly/cards'
 import { createSelector } from 'reselect'
-import type { CurrentGameState } from './currentGame'
-import type { PaymentState } from './payment'
-import type { CurrentPlayerCardsOnHandState } from './currentPlayerCardsOnHand'
-import type { SayNoState } from './sayNo'
+import type { CurrentGameState } from '../currentGame'
+import type { PaymentState } from '../payment'
+import type { CurrentPlayerCardsOnHandState } from '../currentPlayerCardsOnHand'
+import type { SayNoState } from '../sayNo'
 
 const getCurrentGame = (state) => state.currentGame
 const getPayment = (state) => state.payment

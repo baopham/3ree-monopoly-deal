@@ -38,7 +38,8 @@
     "import/ignore": [
       "server/models/Game",
       "server/models/Player",
-      "server/models/SayNo"
+      "server/models/SayNo",
+      "server/models/CardRequest"
     ]
   }
 }
