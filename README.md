@@ -38,7 +38,7 @@ TODOs
 -----
 
 - [ ] Say no to
-  - [ ] sly deal
+  - [x] sly deal
   - [ ] forced deal
   - [ ] deal breaker
   - [x] payment (birthday, debt collector, rent)
