@@ -8,15 +8,19 @@ const causes = {
 
 export type SayNoCause = $Keys<typeof causes>
 
-export type SayNoCauseInfo = SayNoToPaymentRequest | SayNoToSlyDeal | null
-
 export type SayNoToSlyDeal = {
   slyDealRequestId: string
+}
+
+export type SayNoToForcedDeal = {
+  forcedDealRequestId: string
 }
 
 export type SayNoToPaymentRequest = {
   payer: Username,
   payee: Username
 }
+
+export type SayNoCauseInfo = SayNoToPaymentRequest | SayNoToSlyDeal | SayNoToForcedDeal | null
 
 export { causes as default }

@@ -16,6 +16,15 @@ export type SlyDealInfo = {
   card: CardKey
 }
 
-export type CardRequestInfo = SlyDealInfo | null
+export type ForcedDealInfo = {
+  fromUser: Username,
+  toUser: Username,
+  fromUserSetId: PropertySetId,
+  toUserSetId: PropertySetId,
+  fromUserCard: CardKey,
+  toUserCard: CardKey
+}
+
+export type CardRequestInfo = SlyDealInfo | ForcedDealInfo | null
 
 export { types as default }

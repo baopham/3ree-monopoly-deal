@@ -5,8 +5,9 @@ import GameHistoryService from '../GameHistoryService'
 import cardRequestTypes from '../../../universal/monopoly/cardRequestTypes'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
-import { SLY_DEAL } from '../../../universal/monopoly/cards'
-import type { SlyDealInfo } from '../../../universal/monopoly/cardRequestTypes'
+import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
+import * as sideEffectUtils from '../../side-effect-utils'
+import type { SlyDealInfo, ForcedDealInfo } from '../../../universal/monopoly/cardRequestTypes'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
 export default class CardRequestService {
@@ -52,20 +53,15 @@ export default class CardRequestService {
 
     return this.cardRequestRepository
       .find(slyDealRequestId)
-      .then(findPlayers.bind(this))
+      .theh(cacheCardRequest)
+      .then(this.findPlayers)
       .then(updatePlayersAndGameHistory.bind(this))
       .then(deleteRequest.bind(this))
 
     //////
-    function findPlayers (cardRequest: CardRequest): Promise<[Player, Player]> {
-      const { info }: { info: SlyDealInfo } = cardRequest
-
+    function cacheCardRequest (cardRequest: CardRequest): CardRequest {
       promiseContext.cardRequest = cardRequest
-
-      return Promise.all([
-        this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.fromUser),
-        this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.toUser)
-      ])
+      return cardRequest
     }
 
     function updatePlayersAndGameHistory ([fromPlayer: Player, toPlayer: Player]): Promise<*> {
@@ -126,8 +122,7 @@ export default class CardRequestService {
       }
 
       const setToUpdate = otherPlayer.placedCards.serializedPropertySets[setToUpdateIndex]
-      const cardIndexToRemove = setToUpdate.cards.findIndex(c => c === cardToSlyDeal)
-      setToUpdate.cards.splice(cardIndexToRemove, 1)
+      sideEffectUtils.removeCardFromSet(cardToSlyDeal, setToUpdate)
 
       if (!setToUpdate.cards.length) {
         otherPlayer.placedCards.serializedPropertySets.splice(setToUpdateIndex, 1)
@@ -135,5 +130,124 @@ export default class CardRequestService {
 
       return otherPlayer.save()
     }
+  }
+
+  requestToForceDeal (gameId: string, cardRequestInfo: ForcedDealInfo): Promise<[CardRequest, GameHistoryRecord]> {
+    const { fromUser, toUser, fromUserCard, toUserCard } = cardRequestInfo
+
+    return Promise.all([
+      this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.FORCED_DEAL, info: cardRequestInfo }),
+      this.gameHistoryService.record(
+        gameId,
+        `${fromUser} wants to swap ${fromUserCard} with ${toUserCard} from ${toUser}`
+      )
+    ])
+  }
+
+  acceptForcedDeal (forcedDealRequestId: string): Promise<*> {
+    const promiseContext: { cardRequest: ?CardRequest } = {
+      cardRequest: null
+    }
+
+    return this.cardRequestRepository
+      .find(forcedDealRequestId)
+      .then(cacheCardRequest)
+      .then(this.findPlayers)
+      .then(updatePlayersAndGameHistory.bind(this))
+      .then(deleteRequest.bind(this))
+
+    //////
+    function cacheCardRequest (cardRequest: CardRequest): CardRequest {
+      promiseContext.cardRequest = cardRequest
+      return cardRequest
+    }
+
+    function updatePlayersAndGameHistory ([fromPlayer: Player, toPlayer: Player]): Promise<*> {
+      const { cardRequest } = promiseContext
+
+      if (!cardRequest) {
+        return Promise.reject('Card request record could not be found')
+      }
+
+      const logActionAndNotifyPlayer = () => {
+        const { gameId, info: { fromUser, toUser, fromUserCard, toUserCard } } = cardRequest
+        return this.gameHistoryService.record(
+          gameId,
+          `${fromUser} swapped ${fromUserCard} with ${toUserCard} from ${toUser}`,
+          [toUser]
+        )
+      }
+
+      return Promise.all([
+        updateThisPlayer(fromPlayer, cardRequest.info),
+        updateOtherPlayer(toPlayer, cardRequest.info),
+        logActionAndNotifyPlayer()
+      ])
+    }
+
+    function deleteRequest () {
+      promiseContext.cardRequest && promiseContext.cardRequest.delete()
+    }
+
+    function updateThisPlayer (thisPlayer: Player, info: ForcedDealInfo): Promise<*> {
+      const { fromUserCard, fromUserSetId, toUserCard: forcedDealCard } = info
+
+      sideEffectUtils.removeCardFromSetBySetId(
+        fromUserCard,
+        fromUserSetId,
+        thisPlayer.placedCards.serializedPropertySets
+      )
+
+      const hasBeenPlaced = monopoly.putInTheFirstNonFullSet(
+        forcedDealCard,
+        thisPlayer.placedCards.serializedPropertySets
+      )
+
+      if (!hasBeenPlaced && monopoly.canBePutIntoANewSet(forcedDealCard)) {
+        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(forcedDealCard), [forcedDealCard])
+        thisPlayer.placedCards.serializedPropertySets.push(newSet.serialize())
+      }
+
+      if (!hasBeenPlaced && !monopoly.canBePutIntoANewSet(forcedDealCard)) {
+        thisPlayer.placedCards.leftOverCards.push(forcedDealCard)
+      }
+
+      thisPlayer.game.lastCardPlayedBy = thisPlayer.username
+      thisPlayer.game.discardedCards.push(FORCED_DEAL)
+      thisPlayer.actionCounter += 1
+
+      return thisPlayer.saveAll()
+    }
+
+    function updateOtherPlayer (otherPlayer: Player, info: ForcedDealInfo): Promise<*> {
+      const { fromUserCard, toUserSetId, toUserCard } = info
+
+      sideEffectUtils.removeCardFromSetBySetId(toUserCard, toUserSetId, otherPlayer.placedCards.serializedPropertySets)
+
+      const hasBeenPlaced = monopoly.putInTheFirstNonFullSet(
+        fromUserCard,
+        otherPlayer.placedCards.serializedPropertySets
+      )
+
+      if (!hasBeenPlaced && monopoly.canBePutIntoANewSet(fromUserCard)) {
+        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(fromUserCard), [fromUserCard])
+        otherPlayer.placedCards.serializedPropertySets.push(newSet.serialize())
+      }
+
+      if (!hasBeenPlaced && !monopoly.canBePutIntoANewSet(fromUserCard)) {
+        otherPlayer.placedCards.leftOverCards.push(fromUserCard)
+      }
+
+      return otherPlayer.save()
+    }
+  }
+
+  findPlayers (cardRequest: CardRequest): Promise<[Player, Player]> {
+    const { info }: { info: ForcedDealInfo } = cardRequest
+
+    return Promise.all([
+      this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.fromUser),
+      this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.toUser)
+    ])
   }
 }
