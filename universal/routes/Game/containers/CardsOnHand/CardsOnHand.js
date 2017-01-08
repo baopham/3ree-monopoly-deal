@@ -5,7 +5,7 @@ import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
 import OtherPlayerPropertyCardSelector from '../../components/OtherPlayerPropertyCardSelector'
 import { MAX_CARDS_IN_HAND, SLY_DEAL } from '../../../../monopoly/cards'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
 import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
 import { actions as cardRequestActions } from '../../modules/cardRequest'
@@ -17,7 +17,7 @@ type Props = {
   isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
-  askToSlyDeal: (otherPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => void,
+  askToSlyDeal: (otherPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void
 }
@@ -80,7 +80,7 @@ export class CardsOnHand extends React.Component {
     this.props.playCard(card)
   }
 
-  onSlyDeal = (fromPlayer: Player, fromSet: PropertySetType, selectedCard: CardKey) => {
+  onSlyDeal = (fromPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
     this.props.askToSlyDeal(fromPlayer, fromSet, selectedCard)
     this.props.discardCard(SLY_DEAL)
     this.onCancelSlyDealRequest()
@@ -92,7 +92,7 @@ export class CardsOnHand extends React.Component {
 
   renderOtherPlayerCardSelectorForSlyDealing = () => {
     const { otherPlayers } = this.props
-    const propertySetFilter = (set: PropertySetType) => !set.isFullSet()
+    const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
 
     return (
       <OtherPlayerPropertyCardSelector

@@ -1,5 +1,6 @@
 /* @flow */
 import * as monopoly from '../../../universal/monopoly/monopoly'
+import * as sideEffectUtils from '../../side-effect-utils'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
@@ -60,19 +61,17 @@ export function updatePayer (
     return payerPlayer.save()
   }
 
-  placedCards.serializedPropertySets.forEach((item, index) => {
-    const thisPropertySet = monopoly.unserializePropertySet(item)
+  placedCards.serializedPropertySets.forEach((set, index) => {
+    const thisPropertySet = PropertySet.unserialize(set)
     const cardsToPay = mapOfNonMoneyCards.get(thisPropertySet.getId())
 
     if (!cardsToPay) {
       return
     }
 
-    // Update in place
-    const itemIndexesToRemove = cardsToPay.map(card => item.cards.findIndex(c => c === card))
-    item.cards = item.cards.filter((card, index) => !itemIndexesToRemove.includes(index))
+    cardsToPay.forEach(cardToRemove => sideEffectUtils.removeFirstInstanceFromArray(cardToRemove, set.cards))
 
-    if (!item.cards.length) {
+    if (!set.cards.length) {
       placedCards.serializedPropertySets.splice(index, 1)
     }
   })

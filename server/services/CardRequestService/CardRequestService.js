@@ -115,7 +115,7 @@ export default class CardRequestService {
 
     function updateOtherPlayer (otherPlayer: Player, cardToSlyDeal: CardKey, fromSetId: PropertySetId): Promise<*> {
       const setToUpdateIndex = otherPlayer.placedCards.serializedPropertySets
-        .findIndex(s => monopoly.unserializePropertySet(s).getId() === fromSetId)
+        .findIndex(s => PropertySet.unserialize(s).getId() === fromSetId)
 
       if (setToUpdateIndex === -1) {
         return Promise.reject(`Cannot find set ${fromSetId}`)

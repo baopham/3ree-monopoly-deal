@@ -2,14 +2,14 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 
 type Props = {
   header: string,
   subheader: string,
-  propertySets: PropertySetType[],
-  onSelect: (selectedSet: PropertySetType) => void,
+  propertySets: PropertySetClass[],
+  onSelect: (selectedSet: PropertySetClass) => void,
   onCancel: () => void
 }
 

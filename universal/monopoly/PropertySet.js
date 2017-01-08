@@ -20,6 +20,10 @@ export default class PropertySet {
     this.cards = cards
   }
 
+  static unserialize (serializedSet: SerializedPropertySet): PropertySet {
+    return new PropertySet(serializedSet.identifier, serializedSet.cards)
+  }
+
   addCard (card: CardKey): boolean {
     if (!this.canAddCard(card)) {
       return false

@@ -1,6 +1,6 @@
 /* @flow */
+import PropertySet from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
-import * as monopoly from '../../../../monopoly/monopoly'
 
 export type CardIndex = number
 export type SerializedPropertySetIndex = number
@@ -14,7 +14,7 @@ export function getMapOfNonMoneyCards (
   const map: Map<PropertySetId, CardKey[]> = new Map()
 
   tuples.forEach(([card, cardIndex, setIndex]) => {
-    const originalSet = monopoly.unserializePropertySet(serializedPropertySets[setIndex])
+    const originalSet = PropertySet.unserialize(serializedPropertySets[setIndex])
     const setId = originalSet.getId()
     const cards = map.get(setId) || []
     cards.push(card)

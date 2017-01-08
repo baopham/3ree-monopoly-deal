@@ -1,11 +1,11 @@
 /* @flow */
 import React from 'react'
 import Card from '../Card'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import { Panel } from 'react-bootstrap'
 
 type Props = {
-  propertySet: PropertySetType,
+  propertySet: PropertySetClass,
   renderCardFooter: (card: CardKey) => React$Element<*>,
   onCardClick: (card: CardKey, index: number) => void,
   isCardHighlighted: (card: CardKey, index: number) => boolean

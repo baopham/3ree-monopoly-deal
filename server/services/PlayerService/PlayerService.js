@@ -75,16 +75,16 @@ export default class PlayerService {
         return Promise.reject(`Need to provide what set to put ${cardKey} in`)
       }
 
-      const propertySetToPutIn = monopoly.unserializePropertySet(setToPutIn)
+      const propertySetToPutIn = PropertySet.unserialize(setToPutIn)
 
       const playerSerializedSet = player.placedCards.serializedPropertySets
-        .find(s => monopoly.unserializePropertySet(s).equals(propertySetToPutIn))
+        .find(s => PropertySet.unserialize(s).equals(propertySetToPutIn))
 
       if (!playerSerializedSet) {
         return Promise.reject('Cannot place card in the set. Player has no such set')
       }
 
-      const playerUnserializedSet = monopoly.unserializePropertySet(playerSerializedSet)
+      const playerUnserializedSet = PropertySet.unserialize(playerSerializedSet)
 
       if (!playerUnserializedSet.addCard(cardKey)) {
         return Promise.reject(`Cannot place ${cardKey}. Invalid property set`)

@@ -2,7 +2,8 @@
 import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { Alert, Modal, Button } from 'react-bootstrap'
-import { getTotalMoneyFromPlacedCards, unserializePropertySet } from '../../../../monopoly/monopoly'
+import { getTotalMoneyFromPlacedCards } from '../../../../monopoly/monopoly'
+import PropertySet from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
@@ -62,7 +63,7 @@ export default class AutoPaymentAlert extends React.Component {
     const mapOfNonMoneyCards: Map<PropertySetId, CardKey[]> = new Map()
 
     cards.serializedPropertySets.forEach(item => {
-      const set = unserializePropertySet(item)
+      const set = PropertySet.unserialize(item)
       mapOfNonMoneyCards.set(set.getId(), set.getCards())
     })
 

@@ -13,10 +13,9 @@ import {
   isRentCard,
   canPlayCard,
   canFlipCard,
-  cardCanBeMoney,
-  unserializePropertySet
+  cardCanBeMoney
 } from '../../../../monopoly/monopoly'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import { HOUSE, HOTEL, PROPERTY_WILDCARD } from '../../../../monopoly/cards'
 
 type Props = {
@@ -78,7 +77,7 @@ export default class CardOnHand extends React.Component {
     this.setState({ selectingPropertySet: false })
   }
 
-  onSelectPropertySet = (setToPutIn: PropertySetType) => {
+  onSelectPropertySet = (setToPutIn: PropertySetClass) => {
     const { card } = this.props
     const asMoney = false
     this.props.onPlaceCard(card, asMoney, setToPutIn.serialize())
@@ -92,8 +91,8 @@ export default class CardOnHand extends React.Component {
   renderPropertySetSelector () {
     const { placedCards, card } = this.props
 
-    let propertySetsToSelect: PropertySetType[] = placedCards.serializedPropertySets
-      .map(unserializePropertySet)
+    let propertySetsToSelect: PropertySetClass[] = placedCards.serializedPropertySets
+      .map(PropertySetClass.unserialize)
       .filter(s => s.canAddCard(card))
 
     return (

@@ -5,11 +5,11 @@ import FlipCardButton from '../FlipCardButton'
 import MoveCardButton from '../MoveCardButton'
 import PropertySetSelector from '../PropertySetSelector'
 import * as monopoly from '../../../../monopoly/monopoly'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
-  propertySets: PropertySetType[],
+  propertySets: PropertySetClass[],
   leftOverCards: CardKey[],
   immutable: boolean,
   onFlipCard: (card: CardKey) => void,
@@ -19,7 +19,7 @@ type Props = {
 type State = {
   cardToMove: CardKey,
   movingToASet: boolean,
-  setsForMovingCardTo: PropertySetType[]
+  setsForMovingCardTo: PropertySetClass[]
 }
 
 export default class PlacedLeftOverCards extends React.Component {
@@ -68,7 +68,7 @@ export default class PlacedLeftOverCards extends React.Component {
     })
   }
 
-  onSelectASetForMovingCardTo = (selectedSet: PropertySetType) => {
+  onSelectASetForMovingCardTo = (selectedSet: PropertySetClass) => {
     const { onMoveCard } = this.props
     const { cardToMove } = this.state
 

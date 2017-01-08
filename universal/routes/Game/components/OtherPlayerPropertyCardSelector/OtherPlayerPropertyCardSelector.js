@@ -3,16 +3,15 @@ import React from 'react'
 import { Modal, Button, Panel } from 'react-bootstrap'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import PropertySet from '../PropertySet'
-import { unserializePropertySet } from '../../../../monopoly/monopoly'
-import PropertySetType from '../../../../monopoly/PropertySet'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 
 type Props = {
   header: string,
   subheader: string,
   players: Player[],
-  onSelect: (player: Player, set: PropertySetType, card: CardKey) => void,
+  onSelect: (player: Player, set: PropertySetClass, card: CardKey) => void,
   onCancel: () => void,
-  playerPropertySetFilter: (propertySet: PropertySetType) => boolean
+  playerPropertySetFilter: (propertySet: PropertySetClass) => boolean
 }
 
 type State = {
@@ -62,13 +61,13 @@ export default class OtherPlayerCardSelector extends React.Component {
       return
     }
     const set = player.placedCards.serializedPropertySets[setIndex]
-    this.props.onSelect(player, unserializePropertySet(set), set.cards[selectedCardIndex])
+    this.props.onSelect(player, PropertySetClass.unserialize(set), set.cards[selectedCardIndex])
   }
 
   renderPlayerPropertySets = (player: Player) => {
     const { playerPropertySetFilter } = this.props
     const propertySets = player.placedCards.serializedPropertySets
-      .map(unserializePropertySet)
+      .map(PropertySetClass.unserialize)
 
     return (
       <ul className='list-inline'>

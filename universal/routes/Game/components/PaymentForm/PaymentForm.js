@@ -10,6 +10,7 @@ import Card from '../Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import * as monopoly from '../../../../monopoly/monopoly'
 import * as helper from './helper'
+import PropertySetClass from '../../../../monopoly/PropertySet'
 import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
@@ -145,7 +146,7 @@ export default class PaymentForm extends React.Component {
       sayNoButton
     } = this.props
 
-    const propertySets = cards.serializedPropertySets.map(monopoly.unserializePropertySet)
+    const propertySets = cards.serializedPropertySets.map(PropertySetClass.unserialize)
 
     return (
       <ScrollableBackgroundModal show>

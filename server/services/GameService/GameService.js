@@ -4,6 +4,7 @@ import PlayerRepository from '../../repositories/PlayerRepository'
 import GameHistoryService from '../GameHistoryService'
 import { newDeck } from '../../../universal/monopoly/cards'
 import * as monopoly from '../../../universal/monopoly/monopoly'
+import PropertySet from '../../../universal/monopoly/PropertySet'
 
 export default class GameService {
   gameRepository: GameRepository
@@ -85,7 +86,7 @@ export default class GameService {
     return this.playerRepository
       .findByGameIdAndUsername(gameId, winner)
       .then((player: Player) => {
-        const propertySets = player.placedCards.serializedPropertySets.map(monopoly.unserializePropertySet)
+        const propertySets = player.placedCards.serializedPropertySets.map(PropertySet.unserialize)
 
         if (!monopoly.hasEnoughFullSetsToWin(propertySets)) {
           return Promise.reject(`${winner} does not have enough full sets to win!`)

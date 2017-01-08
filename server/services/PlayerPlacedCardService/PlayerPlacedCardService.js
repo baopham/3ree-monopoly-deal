@@ -3,6 +3,7 @@ import PlayerRepository from '../../repositories/PlayerRepository'
 import GameService from '../GameService'
 import GameHistoryService from '../GameHistoryService'
 import * as monopoly from '../../../universal/monopoly/monopoly'
+import * as sideEffectUtils from '../../side-effect-utils'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
@@ -29,22 +30,20 @@ export default class PlayerPlacedCardService {
     return this.playerRepository.findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
         const setToUpdateIndex = player.placedCards.serializedPropertySets
-          .findIndex(set => monopoly.unserializePropertySet(set).getId() === propertySetId)
+          .findIndex(set => PropertySet.unserialize(set).getId() === propertySetId)
 
         if (setToUpdateIndex === -1) {
           return Promise.reject(`Cannot find the set with id ${propertySetId}`)
         }
 
         const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
-        const cardIndex = setToUpdate.cards.findIndex(c => c === cardKey)
 
-        // Update in place
-        setToUpdate.cards.splice(cardIndex, 1)
+        sideEffectUtils.removeFirstInstanceFromArray(cardKey, setToUpdate.cards)
         const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
-        player.placedCards.serializedPropertySets.push(newSet.serialize())
+        sideEffectUtils.addSetToPlacedCards(newSet.serialize(), player.placedCards)
 
         if (!setToUpdate.cards.length) {
-          player.placedCards.serializedPropertySets.splice(setToUpdateIndex, 1)
+          sideEffectUtils.removeSetFromPlacedCardsBySetIndex(setToUpdateIndex, player.placedCards)
         }
 
         player.actionCounter += 1
@@ -74,8 +73,7 @@ export default class PlayerPlacedCardService {
           return Promise.reject(`Cannot find the card ${cardKey} in the left over list`)
         }
 
-        // Update in place
-        player.placedCards.leftOverCards[cardIndex] = flippedCardKey
+        sideEffectUtils.replaceItemInArray(player.placedCards.leftOverCards, cardIndex, flippedCardKey)
         player.actionCounter += 1
 
         return Promise.all([
@@ -94,7 +92,7 @@ export default class PlayerPlacedCardService {
         const mapOfSetIndexes: Map<PropertySetId, number> = new Map()
 
         player.placedCards.serializedPropertySets.forEach((set, index) => {
-          mapOfSetIndexes.set(monopoly.unserializePropertySet(set).getId(), index)
+          mapOfSetIndexes.set(PropertySet.unserialize(set).getId(), index)
         })
 
         const fromSetIndex = mapOfSetIndexes.get(fromSetId)
@@ -108,18 +106,16 @@ export default class PlayerPlacedCardService {
         const toSet = player.placedCards.serializedPropertySets[toSetIndex]
 
         // Validate the move
-        if (!monopoly.unserializePropertySet(toSet).canAddCard(cardKey)) {
+        if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
           return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
         }
 
-        // Update in place
-        const indexToRemove = fromSet.cards.findIndex(c => c === cardKey)
-        fromSet.cards.splice(indexToRemove, 1)
-        toSet.cards.push(cardKey)
+        sideEffectUtils.removeFirstInstanceFromArray(cardKey, fromSet.cards)
+        sideEffectUtils.addItemToArray(cardKey, toSet.cards)
 
         // After moving, if the set is empty, remove it completely
         if (!fromSet.cards.length) {
-          player.placedCards.serializedPropertySets.splice(fromSetIndex, 1)
+          sideEffectUtils.removeSetFromPlacedCardsBySetIndex(fromSetIndex, player.placedCards)
         }
 
         player.actionCounter += 1
@@ -137,7 +133,7 @@ export default class PlayerPlacedCardService {
     return this.playerRepository.findByGameIdAndUsername(gameId, username)
       .then((player: Player) => {
         const toSet = player.placedCards.serializedPropertySets.find(
-          set => monopoly.unserializePropertySet(set).getId() === toSetId
+          set => PropertySet.unserialize(set).getId() === toSetId
         )
 
         if (!toSet) {
@@ -145,14 +141,13 @@ export default class PlayerPlacedCardService {
         }
 
         // Validate the move
-        if (!monopoly.unserializePropertySet(toSet).canAddCard(cardKey)) {
+        if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
           return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
         }
 
-        // Update in place
-        const indexToRemoveFromLeftOver = player.placedCards.leftOverCards.findIndex(c => c === cardKey)
-        player.placedCards.leftOverCards.splice(indexToRemoveFromLeftOver, 1)
-        toSet.cards.push(cardKey)
+        sideEffectUtils.removeFirstInstanceFromArray(cardKey, player.placedCards.leftOverCards)
+        sideEffectUtils.addItemToArray(cardKey, toSet.cards)
+
         player.actionCounter += 1
 
         return Promise.all([
@@ -161,5 +156,4 @@ export default class PlayerPlacedCardService {
         ])
       })
   }
-
 }

@@ -79,7 +79,7 @@ export function canPlayCard (cardKeyOrCard: CardKeyOrCard, placedCards: PlacedCa
     }
 
     const properties = placedCards.serializedPropertySets
-      .map(unserializePropertySet)
+      .map(PropertySet.unserialize)
       .reduce((acc, set: PropertySet) => acc.concat(set.getProperties()), [])
 
     return properties.some((c: CardKey): boolean => {
@@ -131,7 +131,7 @@ export function getCardPaymentAmount (cardKey: CardKey, serializedPropertySets: 
   }
 
   const maxRentableAmount = serializedPropertySets.reduce((acc, item) => {
-    const set = unserializePropertySet(item)
+    const set = PropertySet.unserialize(item)
 
     if (set.isRentable(card)) {
       const rentAmount = set.getRentAmount()
@@ -165,10 +165,6 @@ export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number 
     getTotalMoneyFromCards(flattenSerializedPropertySetCards(placedCards.serializedPropertySets))
 }
 
-export function unserializePropertySet (serializedItem: SerializedPropertySet): PropertySet {
-  return new PropertySet(serializedItem.identifier, serializedItem.cards)
-}
-
 /**
  * Side effect on serializedPropertySets
  * Return boolean: if false, no set to put in, if true, the card has been put in a set
@@ -178,7 +174,7 @@ export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySet
 
   const hasBeenPlaced = serializedPropertySets
     .some((set, index) => {
-      if (set.identifier.key !== card.treatAs || unserializePropertySet(set).isFullSet()) {
+      if (set.identifier.key !== card.treatAs || PropertySet.unserialize(set).isFullSet()) {
         return false
       }
 
@@ -204,7 +200,7 @@ export function mergeSerializedPropertySets (
   const nonFullSerializedSets: Map<CardKey, SerializedPropertySet> = new Map()
 
   mine.forEach((item) => {
-    if (unserializePropertySet(item).isFullSet()) {
+    if (PropertySet.unserialize(item).isFullSet()) {
       return
     }
 
@@ -220,7 +216,7 @@ export function mergeSerializedPropertySets (
 
   //////
   function merge (other: SerializedPropertySet) {
-    const otherPropertySet = unserializePropertySet(other)
+    const otherPropertySet = PropertySet.unserialize(other)
 
     if (otherPropertySet.isFullSet()) {
       mine.push(otherPropertySet.serialize())
@@ -234,7 +230,7 @@ export function mergeSerializedPropertySets (
       serializedSetToMerge = { identifier: other.identifier, cards: [] }
     }
 
-    const setToMerge = unserializePropertySet(serializedSetToMerge)
+    const setToMerge = PropertySet.unserialize(serializedSetToMerge)
 
     const leftOverCards = setToMerge.mergeWith(otherPropertySet)
 
