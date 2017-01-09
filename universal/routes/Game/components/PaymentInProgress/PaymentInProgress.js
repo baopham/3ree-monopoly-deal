@@ -14,9 +14,7 @@ export default class PaymentInProgress extends React.Component {
     const { amount } = this.props
 
     return (
-      <ScrollableBackgroundModal
-        show
-      >
+      <ScrollableBackgroundModal show>
         <Modal.Header>
           <Modal.Title>
             Payment In Progress
