@@ -164,7 +164,7 @@ function onGamePlayerChange (dispatch: Function, getState: Function, change: Soc
     dispatch({ type: UPDATE_PLAYER, payload: { player: change.new_val } })
   }
 
-  if (change.payeeInfoUpdated) {
+  if (change.payeeInfoUpdated && change.new_val) {
     const player = change.new_val
 
     dispatch(paymentActions.updatePayment(
