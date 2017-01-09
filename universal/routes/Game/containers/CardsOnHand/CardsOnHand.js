@@ -3,8 +3,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
-import OtherPlayerPropertyCardSelector from '../../components/OtherPlayerPropertyCardSelector'
 import { MAX_CARDS_IN_HAND, SLY_DEAL } from '../../../../monopoly/cards'
+import MultiplePlayerPropertyCardSelectorForm from '../../components/MultiplePlayerPropertyCardSelectorForm'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
 import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
@@ -80,8 +80,8 @@ export class CardsOnHand extends React.Component {
     this.props.playCard(card)
   }
 
-  onSlyDeal = (fromPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
-    this.props.askToSlyDeal(fromPlayer, fromSet, selectedCard)
+  onSlyDeal = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
+    this.props.askToSlyDeal(playerToSlyDealFrom, fromSet, selectedCard)
     this.props.discardCard(SLY_DEAL)
     this.onCancelSlyDealRequest()
   }
@@ -91,11 +91,12 @@ export class CardsOnHand extends React.Component {
   }
 
   renderOtherPlayerCardSelectorForSlyDealing = () => {
+  renderSlyDealForm = () => {
     const { otherPlayers } = this.props
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
 
     return (
-      <OtherPlayerPropertyCardSelector
+      <MultiplePlayerPropertyCardSelectorForm
         header='Select a card'
         subheader='Click to select a card to sly deal'
         players={otherPlayers}
@@ -146,7 +147,7 @@ export class CardsOnHand extends React.Component {
             </Alert>
           }
           {slyDealing &&
-            this.renderOtherPlayerCardSelectorForSlyDealing()
+            this.renderSlyDealForm()
           }
           <ul className='list-inline' style={styles.cardsOnHand}>
             {cardsOnHand.map((card, i) =>

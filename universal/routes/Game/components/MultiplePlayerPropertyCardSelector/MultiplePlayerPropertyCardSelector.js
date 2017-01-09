@@ -1,16 +1,13 @@
 /* @flow */
 import React from 'react'
-import { Modal, Button, Panel } from 'react-bootstrap'
-import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
+import { Panel } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 
 type Props = {
-  header: string,
-  subheader: string,
   players: Player[],
-  onSelect: (player: Player, set: PropertySetClass, card: CardKey) => void,
-  onCancel: () => void,
+  onCardSelect: (player: Player, setIndex: number, cardIndex: number) => void,
+  onCardUnselect: () => void,
   playerPropertySetFilter: (propertySet: PropertySetClass) => boolean
 }
 
@@ -20,7 +17,7 @@ type State = {
   selectedCardIndex: number
 }
 
-export default class OtherPlayerCardSelector extends React.Component {
+export default class MultiplePlayerPropertyCardSelector extends React.Component {
   props: Props
 
   state: State
@@ -38,6 +35,7 @@ export default class OtherPlayerCardSelector extends React.Component {
         setIndex: undefined,
         selectedCardIndex: undefined
       })
+      this.props.onCardUnselect()
       return
     }
 
@@ -46,6 +44,8 @@ export default class OtherPlayerCardSelector extends React.Component {
       setIndex,
       selectedCardIndex
     })
+
+    this.props.onCardSelect(player, setIndex, selectedCardIndex)
   }
 
   isCardHighlighted = (player: Player, setIndex: number, selectedCardIndex: number): boolean => {
@@ -53,15 +53,6 @@ export default class OtherPlayerCardSelector extends React.Component {
     this.state.player.id === player.id &&
     this.state.setIndex === setIndex &&
     this.state.selectedCardIndex === selectedCardIndex
-  }
-
-  select = () => {
-    const { player, setIndex, selectedCardIndex } = this.state
-    if (player === undefined || setIndex === undefined || selectedCardIndex === undefined) {
-      return
-    }
-    const set = player.placedCards.serializedPropertySets[setIndex]
-    this.props.onSelect(player, PropertySetClass.unserialize(set), set.cards[selectedCardIndex])
   }
 
   renderPlayerPropertySets = (player: Player) => {
@@ -87,43 +78,16 @@ export default class OtherPlayerCardSelector extends React.Component {
   }
 
   render () {
-    const { header, subheader, players, onCancel } = this.props
-    const { selectedCardIndex } = this.state
+    const { players } = this.props
 
     return (
-      <ScrollableBackgroundModal show>
-        <Modal.Header>
-          <Modal.Title>
-            {header}
-          </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <h5>{subheader}</h5>
-          {players.map(player =>
-            <Panel key={player.id} header={<div>Player: {player.username}</div>}>
-              {this.renderPlayerPropertySets(player)}
-            </Panel>
-          )}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button
-            bsStyle='primary'
-            disabled={selectedCardIndex === undefined}
-            onClick={this.select}
-          >
-            Select
-          </Button>
-
-          <Button
-            className='pull-left'
-            onClick={onCancel}
-          >
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </ScrollableBackgroundModal>
+      <div>
+        {players.map(player =>
+          <Panel key={player.id} header={<div>Player: {player.username}</div>}>
+            {this.renderPlayerPropertySets(player)}
+          </Panel>
+        )}
+      </div>
     )
   }
 }
