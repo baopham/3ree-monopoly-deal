@@ -3,8 +3,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
-import { MAX_CARDS_IN_HAND, SLY_DEAL } from '../../../../monopoly/cards'
 import MultiplePlayerPropertyCardSelectorForm from '../../components/MultiplePlayerPropertyCardSelectorForm'
+import { MAX_CARDS_IN_HAND, SLY_DEAL, FORCED_DEAL } from '../../../../monopoly/cards'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
 import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
@@ -25,7 +25,8 @@ type Props = {
 type State = {
   open: boolean,
   needsToDiscard: boolean,
-  slyDealing: boolean
+  slyDealing: boolean,
+  forceDealing: boolean
 }
 
 const styles = {
@@ -55,7 +56,8 @@ export class CardsOnHand extends React.Component {
     this.state = {
       open: true,
       needsToDiscard: this.props.cardsOnHand.length > MAX_CARDS_IN_HAND,
-      slyDealing: false
+      slyDealing: false,
+      forceDealing: false
     }
   }
 
@@ -77,6 +79,11 @@ export class CardsOnHand extends React.Component {
       return
     }
 
+    if (card === FORCED_DEAL) {
+      this.setState({ forceDealing: true })
+      return
+    }
+
     this.props.playCard(card)
   }
 
@@ -90,7 +97,14 @@ export class CardsOnHand extends React.Component {
     this.setState({ slyDealing: false })
   }
 
-  renderOtherPlayerCardSelectorForSlyDealing = () => {
+  onForceDeal = (playerToForceDealFrom: Player) => {
+    // TODO
+  }
+
+  onCancelForceDealRequest= () => {
+    this.setState({ forceDealing: false })
+  }
+
   renderSlyDealForm = () => {
     const { otherPlayers } = this.props
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
