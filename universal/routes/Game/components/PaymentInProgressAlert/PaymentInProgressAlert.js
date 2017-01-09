@@ -7,7 +7,7 @@ type Props = {
   amount: number
 }
 
-export default class PaymentInProgress extends React.Component {
+export default class PaymentInProgressAlert extends React.Component {
   props: Props
 
   render () {
