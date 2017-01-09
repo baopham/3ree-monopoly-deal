@@ -34,14 +34,14 @@ function onSlyDealUpdateEvent (change: Object) {
   return { type: UPDATE, payload: { cardRequest: change.new_val } }
 }
 
-function askToSlyDeal (otherPlayer: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
+function askToSlyDeal (playerToSlyDealFrom: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
   return {
     types: [ASK_REQUEST, ASK_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const currentPlayer = getCurrentPlayer(getState())
       const payload: SlyDealInfo = {
-        toUser: otherPlayer.username,
+        toUser: playerToSlyDealFrom.username,
         fromUser: currentPlayer.username,
         setId: fromSet.getId(),
         card: cardToSlyDeal
