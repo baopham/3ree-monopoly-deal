@@ -26,7 +26,7 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function onSlyDealUpdateEvent (change: Object) {
+function onSlyDealUpdateEvent (change: SocketCardRequestChangeEvent) {
   if (change.deleted) {
     return reset()
   }
