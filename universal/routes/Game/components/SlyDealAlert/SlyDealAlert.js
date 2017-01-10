@@ -13,7 +13,7 @@ type Props = {
   sayNoButton: ?Node
 }
 
-export default class SlyDealNotification extends React.Component {
+export default class SlyDealAlert extends React.Component {
   props: Props
 
   render () {
@@ -29,7 +29,7 @@ export default class SlyDealNotification extends React.Component {
     return (
       <ScrollableBackgroundModal show>
         <Modal.Header>
-          <Modal.Title>Sly Deal Notification</Modal.Title>
+          <Modal.Title>Sly Deal Alert</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

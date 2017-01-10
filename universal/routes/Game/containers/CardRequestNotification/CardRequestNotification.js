@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { actions } from '../../modules/cardRequest'
 import { getCurrentPlayer, canSayNo } from '../../modules/gameSelectors'
 import SayNoButton from '../SayNoButton'
-import SlyDealNotification from '../../components/SlyDealNotification'
+import SlyDealAlert from '../../components/SlyDealAlert'
 import sayNoCauses from '../../../../monopoly/sayNoCauses'
 import type { SlyDealState } from '../../modules/cardRequest/slyDeal'
 
@@ -48,7 +48,7 @@ export class CardRequest extends React.Component {
     return (
       <div>
         {!!slyDeal.slyDealRequestId &&
-          <SlyDealNotification
+          <SlyDealAlert
             fromUser={slyDeal.fromUser}
             toUser={slyDeal.toUser}
             currentPlayerIsRequester={currentPlayer.username === slyDeal.fromUser}
