@@ -7,6 +7,7 @@ import * as monopoly from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
+import * as propertySetUtils from '../../property-set-utils'
 import type { SlyDealInfo, ForcedDealInfo } from '../../../universal/monopoly/cardRequestTypes'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
@@ -212,6 +213,7 @@ export default class CardRequestService {
         thisPlayer.placedCards.leftOverCards.push(forcedDealCard)
       }
 
+      thisPlayer.placedCards = propertySetUtils.cleanUpPlacedCards(thisPlayer.placedCards)
       thisPlayer.game.lastCardPlayedBy = thisPlayer.username
       thisPlayer.game.discardedCards.push(FORCED_DEAL)
       thisPlayer.actionCounter += 1
@@ -237,6 +239,8 @@ export default class CardRequestService {
       if (!hasBeenPlaced && !monopoly.canBePutIntoANewSet(fromUserCard)) {
         otherPlayer.placedCards.leftOverCards.push(fromUserCard)
       }
+
+      otherPlayer.placedCards = propertySetUtils.cleanUpPlacedCards(otherPlayer.placedCards)
 
       return otherPlayer.save()
     }

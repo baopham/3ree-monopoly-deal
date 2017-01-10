@@ -33,11 +33,11 @@ export default class PropertySet {
     return true
   }
 
-  getProperties () {
+  getProperties (): CardKey[] {
     return this.cards.filter(c => c !== HOUSE && c !== HOTEL)
   }
 
-  getCards () {
+  getCards (): CardKey[] {
     return this.cards
   }
 
@@ -66,10 +66,10 @@ export default class PropertySet {
   }
 
   isFullSet (): boolean {
-    return this.getProperties().length === this.identifier.needs
+    return this.hasMoreThanJustWildcardProperties() && this.getProperties().length === this.identifier.needs
   }
 
-  getRentAmount () {
+  getRentAmount (): number {
     const numberOfProperties = this.getProperties().length
     let rent = this.identifier.rent[numberOfProperties - 1]
 
@@ -84,8 +84,45 @@ export default class PropertySet {
     return rent
   }
 
-  isRentable (rentCard: Card) {
+  isRentable (rentCard: Card): boolean {
     return rentCard.key === RENT_ALL_COLOUR || rentCard.forCards.includes(this.identifier.key)
+  }
+
+  isEmpty (): boolean {
+    return !this.cards.length
+  }
+
+  hasMoreThanJustWildcardProperties (): boolean {
+    return this.getProperties().filter(card => card !== PROPERTY_WILDCARD).length > 0
+  }
+
+  removeInvalidCards (): CardKey[] {
+    let copyOfCards = [...this.cards]
+    let allInvalidCards = []
+
+    if (!this.hasMoreThanJustWildcardProperties()) {
+      allInvalidCards.push(...copyOfCards.filter(card => card === PROPERTY_WILDCARD))
+      copyOfCards = copyOfCards.filter(card => card !== PROPERTY_WILDCARD)
+    }
+
+    const isNotFullSetYetHasHouseOrHotel = !this.isFullSet() &&
+      (this.cards.includes(HOUSE) || this.cards.includes(HOTEL))
+
+    if (isNotFullSetYetHasHouseOrHotel) {
+      allInvalidCards.push(...copyOfCards.filter(card => card === HOUSE || card === HOTEL))
+      copyOfCards = copyOfCards.filter(card => card !== HOUSE && card !== HOTEL)
+    }
+
+    const hasHotelYetNoHouse = this.cards.includes(HOTEL) && !this.cards.includes(HOUSE)
+
+    if (hasHotelYetNoHouse) {
+      allInvalidCards.push(...copyOfCards.filter(card => card === HOTEL))
+      copyOfCards = copyOfCards.filter(card => card !== HOTEL)
+    }
+
+    this.cards = copyOfCards
+
+    return allInvalidCards
   }
 
   toArray (): CardKey[] {

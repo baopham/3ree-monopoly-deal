@@ -165,4 +165,80 @@ describe('PropertySet', function () {
       expect(thisPropertySet.equals(thatPropertySet)).to.be.false
     })
   })
+
+  describe('#removeInvalidCards', function () {
+    describe('Given the set has only wildcard (for all colour)', function () {
+      it('should remove all the wildcards and return them as an array', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_WILDCARD])
+        const invalidCards = propertySet.removeInvalidCards()
+
+        expect(propertySet.getCards()).to.be.empty
+        expect(invalidCards).to.eql([PROPERTY_WILDCARD, PROPERTY_WILDCARD])
+      })
+    })
+
+    describe('Given the set has house and hotel yet it is not a full set', function () {
+      it('should remove all the house and hotel cards and return them as an array', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, HOUSE, HOTEL])
+        const invalidCards = propertySet.removeInvalidCards()
+
+        expect(propertySet.getCards()).to.eql([PROPERTY_BLUE])
+        expect(invalidCards).to.eql([HOUSE, HOTEL])
+      })
+    })
+
+    describe('Given the set has a hotel yet has no house', function () {
+      it('should remove all the hotel cards and return them as an array', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, HOTEL])
+        const invalidCards = propertySet.removeInvalidCards()
+
+        expect(propertySet.getCards()).to.eql([PROPERTY_BLUE])
+        expect(invalidCards).to.eql([HOTEL])
+      })
+    })
+
+    describe('Given the set only has wildcard, house and hotel', function () {
+      it('should remove all the wildcard, house and hotel and return them as an array', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, HOUSE, HOTEL])
+        const invalidCards = propertySet.removeInvalidCards()
+
+        expect(propertySet.getCards()).to.be.empty
+        expect(invalidCards).to.eql([PROPERTY_WILDCARD, HOUSE, HOTEL])
+      })
+    })
+
+    describe('Given the set has a normal property card, wildcard, house and hotel but is not a full set', function () {
+      it('should remove the house and hotel and return them as an array', function () {
+        const propertySet = new PropertySet(getCardObject(PROPERTY_BLACK), [
+          PROPERTY_BLACK,
+          PROPERTY_WILDCARD,
+          HOUSE,
+          HOTEL
+        ])
+
+        const invalidCards = propertySet.removeInvalidCards()
+
+        expect(propertySet.getCards()).to.eql([PROPERTY_BLACK, PROPERTY_WILDCARD])
+        expect(invalidCards).to.eql([HOUSE, HOTEL])
+      })
+    })
+  })
+
+  describe('#isFullSet', function () {
+    describe('Given the set has enough cards to form a full set but they are all wildcards', function () {
+      it('should return false', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_WILDCARD])
+
+        expect(propertySet.isFullSet()).to.be.false
+      })
+    })
+
+    describe('Given the set has enough cards to form a full set', function () {
+      it('should return false', function () {
+        const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_BLUE])
+
+        expect(propertySet.isFullSet()).to.be.true
+      })
+    })
+  })
 })
