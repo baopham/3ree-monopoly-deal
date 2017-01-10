@@ -234,7 +234,7 @@ describe('PropertySet', function () {
     })
 
     describe('Given the set has enough cards to form a full set', function () {
-      it('should return false', function () {
+      it('should return true', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_BLUE])
 
         expect(propertySet.isFullSet()).to.be.true
