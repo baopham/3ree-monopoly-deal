@@ -60,27 +60,16 @@ export default class ForcedDealForm extends React.Component {
     return cardUsedToSwapSetIndex === setIndex && cardUsedToSwapIndex === cardIndex
   }
 
-  onToggleCardToForceDeal = (player: Player, setIndex: number, cardIndex: number) => {
-    if (this.cardSelectedToForceDeal(player, setIndex, cardIndex)) {
-      this.setState({
-        playerToForceDeal: undefined,
-        cardToForceDealSetIndex: undefined,
-        cardToForceDealIndex: undefined
-      })
-      return
-    }
-
+  onSelectCardToForceDeal = (player: Player, setIndex: number, cardIndex: number) => {
     this.setState({ playerToForceDeal: player, cardToForceDealSetIndex: setIndex, cardToForceDealIndex: cardIndex })
   }
 
-  cardSelectedToForceDeal = (player: Player, setIndex: number, cardIndex: number): boolean => {
-    const { playerToForceDeal, cardToForceDealSetIndex, cardToForceDealIndex } = this.state
-
-    return !!playerToForceDeal &&
-      player &&
-      playerToForceDeal.id === player.id &&
-      cardToForceDealSetIndex === setIndex &&
-      cardToForceDealIndex === cardIndex
+  onUnselectCardToForceDeal = () => {
+    this.setState({
+      playerToForceDeal: undefined,
+      cardToForceDealSetIndex: undefined,
+      cardToForceDealIndex: undefined
+    })
   }
 
   renderThisPlayerPropertyCards = () => {
@@ -110,8 +99,8 @@ export default class ForcedDealForm extends React.Component {
     return (
       <MultiplePlayerPropertyCardSelector
         players={otherPlayers}
-        onCardSelect={this.onToggleCardToForceDeal}
-        onCardUnselect={this.onToggleCardToForceDeal}
+        onCardSelect={this.onSelectCardToForceDeal}
+        onCardUnselect={this.onUnselectCardToForceDeal}
         playerPropertySetFilter={set => !set.isFullSet()}
       />
     )
