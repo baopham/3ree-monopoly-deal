@@ -3,6 +3,7 @@ import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { Modal, Button, Panel } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
+import MultiplePlayerPropertyCardSelector from '../MultiplePlayerPropertyCardSelector'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 
@@ -22,9 +23,9 @@ type Props = {
 type State = {
   playerToForceDeal: Player,
   cardUsedToSwapSetIndex: number,
-  cardUsedToSwap: CardKey,
+  cardUsedToSwapIndex: CardKey,
   cardToForceDealSetIndex: number,
-  cardToForceDeal: CardKey
+  cardToForceDealIndex: CardKey
 }
 
 export default class ForcedDealForm extends React.Component {
@@ -35,45 +36,126 @@ export default class ForcedDealForm extends React.Component {
   state = {
     playerToForceDeal: undefined,
     cardUsedToSwapSetIndex: undefined,
-    cardUsedToSwap: undefined,
+    cardUsedToSwapIndex: undefined,
     cardToForceDealSetIndex: undefined,
-    cardToForceDeal: undefined
+    cardToForceDealIndex: undefined
   }
 
-  onSelectCardUsedToSwap (cardUsedToSwapSetIndex: number, cardUsedToSwap: CardKey) {
-    this.setState({ cardUsedToSwapSetIndex, cardUsedToSwap })
+  onToggleCardUsedToSwap = (cardUsedToSwapSetIndex: number, cardUsedToSwapIndex: number) => {
+    if (this.isCardUsedToSwap(cardUsedToSwapSetIndex, cardUsedToSwapIndex)) {
+      this.setState({ cardUsedToSwapSetIndex: undefined, cardUsedToSwapIndex: undefined })
+      return
+    }
+
+    this.setState({ cardUsedToSwapSetIndex, cardUsedToSwapIndex })
   }
 
-  isCardUsedToSwap (setIndex: number, card: CardKey): boolean {
-    const { cardUsedToSwapSetIndex, cardUsedToSwap } = this.state
+  isCardUsedToSwap = (setIndex: number, cardIndex: number): boolean => {
+    const { cardUsedToSwapSetIndex, cardUsedToSwapIndex } = this.state
 
-    if (cardUsedToSwapSetIndex === undefined || cardUsedToSwap === undefined) {
+    if (cardUsedToSwapSetIndex === undefined || cardUsedToSwapIndex === undefined) {
       return false
     }
 
-    return cardUsedToSwapSetIndex === setIndex && cardUsedToSwap === card
+    return cardUsedToSwapSetIndex === setIndex && cardUsedToSwapIndex === cardIndex
   }
 
-  renderThisPlayerPropertyCards () {
+  onToggleCardToForceDeal = (player: Player, setIndex: number, cardIndex: number) => {
+    if (this.cardSelectedToForceDeal(player, setIndex, cardIndex)) {
+      this.setState({
+        playerToForceDeal: undefined,
+        cardToForceDealSetIndex: undefined,
+        cardToForceDealIndex: undefined
+      })
+      return
+    }
+
+    this.setState({ playerToForceDeal: player, cardToForceDealSetIndex: setIndex, cardToForceDealIndex: cardIndex })
+  }
+
+  cardSelectedToForceDeal = (player: Player, setIndex: number, cardIndex: number): boolean => {
+    const { playerToForceDeal, cardToForceDealSetIndex, cardToForceDealIndex } = this.state
+
+    return !!playerToForceDeal &&
+      player &&
+      playerToForceDeal.id === player.id &&
+      cardToForceDealSetIndex === setIndex &&
+      cardToForceDealIndex === cardIndex
+  }
+
+  renderThisPlayerPropertyCards = () => {
     const { thisPlayer } = this.props
     const propertySets = thisPlayer.placedCards.serializedPropertySets.map(PropertySetClass.unserialize)
 
     return (
       <Panel>
-        {propertySets.map((set, setIndex) =>
-          <PropertySet
-            key={set.getId()}
-            propertySet={set}
-            onCardClick={(card, cardIndex) => this.onSelectCardUsedToSwap(setIndex, card)}
-            isCardHighlighted={(card, cardIndex) => this.isCardUsedToSwap(setIndex, card)}
-          />
-        )}
+        <ul className='list-inline'>
+          {propertySets.map((set, setIndex) =>
+            <li key={setIndex}>
+              <PropertySet
+                propertySet={set}
+                onCardClick={(card, cardIndex) => this.onToggleCardUsedToSwap(setIndex, cardIndex)}
+                isCardHighlighted={(card, cardIndex) => this.isCardUsedToSwap(setIndex, cardIndex)}
+              />
+            </li>
+          )}
+        </ul>
       </Panel>
     )
   }
 
+  renderOtherPlayerPropertyCards = () => {
+    const { otherPlayers } = this.props
+
+    return (
+      <MultiplePlayerPropertyCardSelector
+        players={otherPlayers}
+        onCardSelect={this.onToggleCardToForceDeal}
+        onCardUnselect={this.onToggleCardToForceDeal}
+        playerPropertySetFilter={set => !set.isFullSet()}
+      />
+    )
+  }
+
+  submit = () => {
+    const {
+      playerToForceDeal,
+      cardUsedToSwapSetIndex,
+      cardUsedToSwapIndex,
+      cardToForceDealSetIndex,
+      cardToForceDealIndex
+    } = this.state
+
+    if (
+      playerToForceDeal === undefined ||
+      cardUsedToSwapSetIndex === undefined ||
+      cardUsedToSwapIndex === undefined ||
+      cardToForceDealSetIndex === undefined ||
+      cardToForceDealIndex === undefined
+    ) {
+      return
+    }
+
+    const { thisPlayer, onSubmit } = this.props
+    const unserialize = PropertySetClass.unserialize
+
+    const cardUsedToSwapSet = unserialize(thisPlayer.placedCards.serializedPropertySets[cardUsedToSwapSetIndex])
+    const cardToForceDealSet = unserialize(
+      playerToForceDeal.placedCards.serializedPropertySets[cardToForceDealSetIndex]
+    )
+
+    onSubmit(
+      playerToForceDeal,
+      cardToForceDealSet.getId(),
+      cardToForceDealSet.cards[cardToForceDealIndex],
+      cardUsedToSwapSet.getId(),
+      cardUsedToSwapSet.cards[cardUsedToSwapIndex]
+    )
+  }
+
   render () {
-    const { cardUsedToSwap } = this.state
+    const { cardUsedToSwapIndex, cardToForceDealIndex } = this.state
+    const { onCancel } = this.props
 
     return (
       <ScrollableBackgroundModal show>
@@ -82,22 +164,23 @@ export default class ForcedDealForm extends React.Component {
         </Modal.Header>
 
         <Modal.Body>
-          <h3>1. Select the card you want to use to force deal</h3>
+          <h3>1. Select the card you want to use to swap</h3>
           {this.renderThisPlayerPropertyCards()}
 
-          {cardUsedToSwap &&
+          {cardUsedToSwapIndex !== undefined &&
             <div>
               <h3>2. Select the card you want to force deal</h3>
+              {this.renderOtherPlayerPropertyCards()}
             </div>
           }
         </Modal.Body>
 
         <Modal.Footer>
-          <Button className='pull-left'>
+          <Button className='pull-left' onClick={onCancel}>
             Cancel
           </Button>
 
-          <Button bsStyle='primary'>
+          <Button bsStyle='primary' onClick={this.submit} disabled={cardToForceDealIndex === undefined}>
             Force Deal
           </Button>
         </Modal.Footer>

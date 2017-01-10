@@ -4,20 +4,29 @@ import { connect } from 'react-redux'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
 import MultiplePlayerPropertyCardSelectorForm from '../../components/MultiplePlayerPropertyCardSelectorForm'
+import ForcedDealForm from '../../components/ForcedDealForm'
 import { MAX_CARDS_IN_HAND, SLY_DEAL, FORCED_DEAL } from '../../../../monopoly/cards'
 import PropertySetClass from '../../../../monopoly/PropertySet'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
 import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsOnHand'
 import { actions as cardRequestActions } from '../../modules/cardRequest'
 
 type Props = {
+  currentPlayer: Player,
   otherPlayers: Player[],
   cardsOnHand: CardKey[],
-  placedCards: PlacedCards,
   isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
   askToSlyDeal: (otherPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => void,
+  askToForceDeal: (
+    toPlayer: Player,
+    toPlayerSetId: PropertySetId,
+    toPlayerCard: CardKey,
+    fromPlayerSetId: PropertySetId,
+    fromPlayerCard: CardKey
+  ) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void
 }
@@ -39,9 +48,9 @@ const styles = {
 }
 
 const mapStateToProps = (state) => ({
+  currentPlayer: getCurrentPlayer(state),
   otherPlayers: getOtherPlayers(state),
   cardsOnHand: state.currentPlayerCardsOnHand.cardsOnHand,
-  placedCards: getCurrentPlayer(state).placedCards,
   isPlayerTurn: isPlayerTurn(state)
 })
 
@@ -97,11 +106,25 @@ export class CardsOnHand extends React.Component {
     this.setState({ slyDealing: false })
   }
 
-  onForceDeal = (playerToForceDealFrom: Player) => {
-    // TODO
+  onForceDeal = (
+    toPlayer: Player,
+    toPlayerSetId: PropertySetId,
+    toPlayerCard: CardKey,
+    fromPlayerSetId: PropertySetId,
+    fromPlayerCard: CardKey
+  ) => {
+    this.props.askToForceDeal(
+      toPlayer,
+      toPlayerSetId,
+      toPlayerCard,
+      fromPlayerSetId,
+      fromPlayerCard
+    )
+    this.props.discardCard(FORCED_DEAL)
+    this.onCancelForcedDealRequest()
   }
 
-  onCancelForceDealRequest= () => {
+  onCancelForcedDealRequest = () => {
     this.setState({ forceDealing: false })
   }
 
@@ -117,6 +140,21 @@ export class CardsOnHand extends React.Component {
         playerPropertySetFilter={propertySetFilter}
         onSelect={this.onSlyDeal}
         onCancel={this.onCancelSlyDealRequest}
+      />
+    )
+  }
+
+  renderForcedDealForm = () => {
+    const { currentPlayer, otherPlayers } = this.props
+    const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
+
+    return (
+      <ForcedDealForm
+        thisPlayer={currentPlayer}
+        otherPlayers={otherPlayers}
+        playerPropertySetFilter={propertySetFilter}
+        onSubmit={this.onForceDeal}
+        onCancel={this.onCancelForcedDealRequest}
       />
     )
   }
@@ -139,14 +177,14 @@ export class CardsOnHand extends React.Component {
   render () {
     const {
       cardsOnHand,
-      placedCards,
+      currentPlayer,
       placeCard,
       discardCard,
       flipCardOnHand,
       isPlayerTurn
     } = this.props
 
-    const { needsToDiscard, slyDealing } = this.state
+    const { needsToDiscard, slyDealing, forceDealing } = this.state
 
     return (
       <Panel
@@ -163,11 +201,14 @@ export class CardsOnHand extends React.Component {
           {slyDealing &&
             this.renderSlyDealForm()
           }
+          {forceDealing &&
+            this.renderForcedDealForm()
+          }
           <ul className='list-inline' style={styles.cardsOnHand}>
             {cardsOnHand.map((card, i) =>
               <li key={i} style={styles.card}>
                 <CardOnHand
-                  placedCards={placedCards}
+                  placedCards={currentPlayer.placedCards}
                   card={card}
                   needsToDiscard={this.state.needsToDiscard}
                   isPlayerTurn={isPlayerTurn}

@@ -2,7 +2,6 @@
 import { namespace, apiUrl } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { getCurrentPlayer } from '../gameSelectors'
-import PropertySet from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { ForcedDealInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -36,9 +35,9 @@ function onForcedDealUpdateEvent (change: SocketCardRequestChangeEvent) {
 
 function askToForceDeal (
   toPlayer: Player,
-  toPlayerSet: PropertySet,
+  toPlayerSetId: PropertySetId,
   toPlayerCard: CardKey,
-  fromPlayerSet: PropertySet,
+  fromPlayerSetId: PropertySetId,
   fromPlayerCard: CardKey
 ) {
   return {
@@ -49,8 +48,8 @@ function askToForceDeal (
       const payload: ForcedDealInfo = {
         toUser: toPlayer.username,
         fromUser: currentPlayer.username,
-        toUserSetId: toPlayerSet.getId(),
-        fromUserSetId: fromPlayerSet.getId(),
+        toUserSetId: toPlayerSetId,
+        fromUserSetId: fromPlayerSetId,
         toUserCard: toPlayerCard,
         fromUserCard: fromPlayerCard
       }
