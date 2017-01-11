@@ -40,7 +40,7 @@ TODOs
 
 - [ ] Say no to
   - [x] sly deal
-  - [ ] forced deal
+  - [x] forced deal
   - [ ] deal breaker
   - [x] payment (birthday, debt collector, rent)
   - [x] say no
@@ -71,7 +71,7 @@ TODOs
   - [ ] Debt collector
 - [ ] Deal breaker
 - [x] Sly deal
-- [ ] Forced deal
+- [x] Forced deal
 - [ ] Double rent
 - [x] House
 - [x] Hotel
