@@ -11,6 +11,7 @@ import {
 } from '../../../universal/monopoly/cards'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import * as paymentHelper from './paymentHelper'
+import * as sideEffectUtils from '../../side-effect-utils'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
 export default class PlayerService {
@@ -64,7 +65,7 @@ export default class PlayerService {
 
       if (!hasBeenPlaced) {
         const newPropertySet = new PropertySet(monopoly.getCardObject(card.treatAs), [cardKey]).serialize()
-        player.placedCards.serializedPropertySets.push(newPropertySet)
+        sideEffectUtils.addSetToPlacedCards(newPropertySet, player.placedCards)
       }
 
       return player.save()
