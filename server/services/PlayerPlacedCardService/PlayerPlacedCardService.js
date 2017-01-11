@@ -39,6 +39,7 @@ export default class PlayerPlacedCardService {
         const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
 
         sideEffectUtils.removeFirstInstanceFromArray(cardKey, setToUpdate.cards)
+
         const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
         sideEffectUtils.addSetToPlacedCards(newSet.serialize(), player.placedCards)
 
@@ -117,8 +118,6 @@ export default class PlayerPlacedCardService {
         if (!fromSet.cards.length) {
           sideEffectUtils.removeSetFromPlacedCardsBySetIndex(fromSetIndex, player.placedCards)
         }
-
-        player.actionCounter += 1
 
         return Promise.all([
           player.save(),
