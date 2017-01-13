@@ -179,19 +179,18 @@ export default class PlayerService {
     return [first, second]
   }
 
-  removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
+  async removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, payee),
       this.playerRepository.findByGameIdAndUsername(gameId, payer)
     ]
 
-    return Promise.all(promises)
-      .then(([payeePlayer: Player, payerPlayer: Player]) => {
-        return Promise.all([
-          paymentHelper.updatePayee(payeePlayer, payer, [], new Map()),
-          paymentHelper.updatePayer(payerPlayer, [], new Map())
-        ])
-      })
+    const [payeePlayer: Player, payerPlayer: Player] = await Promise.all(promises)
+
+    return Promise.all([
+      paymentHelper.updatePayee(payeePlayer, payer, [], new Map()),
+      paymentHelper.updatePayer(payerPlayer, [], new Map())
+    ])
   }
 
   pay (
