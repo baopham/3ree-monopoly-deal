@@ -22,7 +22,7 @@ export default class PlayerPlacedCardService {
     gameId: string, username: Username, cardKey: CardKey, propertySetId: PropertySetId
   ): Promise<CardKey> {
     if (!monopoly.canFlipCard(cardKey)) {
-      return Promise.reject(`Cannot flip ${cardKey}`)
+      throw new Error(`Cannot flip ${cardKey}`)
     }
 
     const flippedCardKey: CardKey = monopoly.flipCard(cardKey)
@@ -33,7 +33,7 @@ export default class PlayerPlacedCardService {
       .findIndex(set => PropertySet.unserialize(set).getId() === propertySetId)
 
     if (setToUpdateIndex === -1) {
-      return Promise.reject(`Cannot find the set with id ${propertySetId}`)
+      throw new Error(`Cannot find the set with id ${propertySetId}`)
     }
 
     const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
@@ -59,7 +59,7 @@ export default class PlayerPlacedCardService {
 
   async flipPlacedLeftOverCard (gameId: string, username: Username, cardKey: CardKey): Promise<CardKey> {
     if (!monopoly.canFlipCard(cardKey)) {
-      return Promise.reject(`Cannot flip ${cardKey}`)
+      throw new Error(`Cannot flip ${cardKey}`)
     }
 
     const flippedCardKey: CardKey = monopoly.flipCard(cardKey)
@@ -69,7 +69,7 @@ export default class PlayerPlacedCardService {
     const cardIndex = player.placedCards.leftOverCards.findIndex(c => c === cardKey)
 
     if (cardIndex === -1) {
-      return Promise.reject(`Cannot find the card ${cardKey} in the left over list`)
+      throw new Error(`Cannot find the card ${cardKey} in the left over list`)
     }
 
     sideEffectUtils.replaceItemInArray(player.placedCards.leftOverCards, cardIndex, flippedCardKey)
@@ -98,7 +98,7 @@ export default class PlayerPlacedCardService {
     const toSetIndex = mapOfSetIndexes.get(toSetId)
 
     if (fromSetIndex === undefined || toSetIndex === undefined) {
-      return Promise.reject(`Cannot find sets: ${fromSetId}, ${toSetId}`)
+      throw new Error(`Cannot find sets: ${fromSetId}, ${toSetId}`)
     }
 
     const fromSet = player.placedCards.serializedPropertySets[fromSetIndex]
@@ -106,7 +106,7 @@ export default class PlayerPlacedCardService {
 
     // Validate the move
     if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
-      return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
+      throw new Error(`Cannot move card ${cardKey} to ${toSetId}`)
     }
 
     sideEffectUtils.removeFirstInstanceFromArray(cardKey, fromSet.cards)
@@ -133,12 +133,12 @@ export default class PlayerPlacedCardService {
     )
 
     if (!toSet) {
-      return Promise.reject(`Cannot find set: ${toSetId}`)
+      throw new Error(`Cannot find set: ${toSetId}`)
     }
 
     // Validate the move
     if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
-      return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
+      throw new Error(`Cannot move card ${cardKey} to ${toSetId}`)
     }
 
     sideEffectUtils.removeFirstInstanceFromArray(cardKey, player.placedCards.leftOverCards)

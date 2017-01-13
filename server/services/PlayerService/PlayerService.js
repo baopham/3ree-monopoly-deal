@@ -71,7 +71,7 @@ export default class PlayerService {
 
     function putIntoASet (player: Player): Promise<*> {
       if (!setToPutIn) {
-        return Promise.reject(`Need to provide what set to put ${cardKey} in`)
+        throw new Error(`Need to provide what set to put ${cardKey} in`)
       }
 
       const propertySetToPutIn = PropertySet.unserialize(setToPutIn)
@@ -80,13 +80,13 @@ export default class PlayerService {
         .find(s => PropertySet.unserialize(s).equals(propertySetToPutIn))
 
       if (!playerSerializedSet) {
-        return Promise.reject('Cannot place card in the set. Player has no such set')
+        throw new Error('Cannot place card in the set. Player has no such set')
       }
 
       const playerUnserializedSet = PropertySet.unserialize(playerSerializedSet)
 
       if (!playerUnserializedSet.addCard(cardKey)) {
-        return Promise.reject(`Cannot place ${cardKey}. Invalid property set`)
+        throw new Error(`Cannot place ${cardKey}. Invalid property set`)
       }
 
       // Update in place
