@@ -129,17 +129,16 @@ export default class PlayerService {
     ])
   }
 
-  discardCard (gameId: string, username: Username, card: CardKey): Promise<*> {
-    return this.playerRepository
-      .findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        player.game.discardedCards.push(card)
-        player.game.lastCardPlayedBy = username
-        return Promise.all([
-          player.game.save(),
-          this.gameHistoryService.record(gameId, `${username} discarded ${card}`)
-        ])
-      })
+  async discardCard (gameId: string, username: Username, card: CardKey): Promise<*> {
+    const player: Player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
+
+    player.game.discardedCards.push(card)
+    player.game.lastCardPlayedBy = username
+
+    return Promise.all([
+      player.game.save(),
+      this.gameHistoryService.record(gameId, `${username} discarded ${card}`)
+    ])
   }
 
   endTurn (gameId: string): Promise<Username> {
