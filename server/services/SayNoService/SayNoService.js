@@ -73,36 +73,33 @@ export default class SayNoService {
     return sayNo
   }
 
-  acceptSayNo (gameId: string, fromUser: Username, toUser: Username): Promise<*> {
-    const promiseContext = {}
+  async acceptSayNo (gameId: string, fromUser: Username, toUser: Username): Promise<*> {
+    const sayNo = await this.sayNoRepository.findByGameId(gameId)
 
-    return this.sayNoRepository.findByGameId(gameId)
-      .then(sayNo => {
-        if (sayNo.fromUser !== fromUser || sayNo.toUser !== toUser) {
-          return Promise.reject('Cannot find the correct SayNo record')
-        }
+    if (sayNo.fromUser !== fromUser || sayNo.toUser !== toUser) {
+      throw new Error('Cannot find the correct SayNo record')
+    }
 
-        promiseContext.sayNo = sayNo
+    await this.handleAcceptedSayNo(sayNo)
 
-        return this.handleAcceptedSayNo(sayNo)
-      })
-      .then(() => {
-        const { sayNo } = promiseContext
-        const cause = sayNo.cause
+    const cause = sayNo.cause
 
-        sayNo.fromUser = null
-        sayNo.toUser = null
-        sayNo.cause = null
-        sayNo.causeInfo = null
+    sayNo.fromUser = null
+    sayNo.toUser = null
+    sayNo.cause = null
+    sayNo.causeInfo = null
 
-        return Promise.all([
-          sayNo.save(),
-          this.gameHistoryService.record(gameId, `${cause}: ${toUser} accepted NO from ${fromUser}`, [fromUser])
-        ])
-      })
+    return Promise.all([
+      sayNo.save(),
+      this.gameHistoryService.record(gameId, `${cause}: ${toUser} accepted NO from ${fromUser}`, [fromUser])
+    ])
   }
 
   handleAcceptedSayNo (sayNo: SayNo): Promise<*> {
+    if (!sayNo.causeInfo) {
+      return Promise.reject(new Error('Empty causeInfo'))
+    }
+
     switch (sayNo.cause) {
       case sayNoCauses.PAYMENT: {
         const { payer, payee } = sayNo.causeInfo
