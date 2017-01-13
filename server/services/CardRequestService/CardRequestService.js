@@ -33,9 +33,9 @@ export default class CardRequestService {
     return this.cardRequestRepository.find(id)
   }
 
-  cancelRequest (id: string): Promise<*> {
-    return this.cardRequestRepository.find(id)
-      .then((cardRequest: CardRequest) => cardRequest.delete())
+  async cancelRequest (id: string): Promise<*> {
+    const cardRequest: CardRequest = await this.cardRequestRepository.find(id)
+    return cardRequest.delete()
   }
 
   requestToSlyDeal (gameId: string, cardRequestInfo: SlyDealInfo): Promise<[CardRequest, GameHistoryRecord]> {
