@@ -96,38 +96,37 @@ export default class PlayerService {
     }
   }
 
-  playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
-    const cardRequiresPayment = monopoly.cardRequiresPayment(cardKey)
-
+  async playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, username)
     ]
+
+    const cardRequiresPayment = monopoly.cardRequiresPayment(cardKey)
 
     if (cardRequiresPayment) {
       promises.push(this.playerRepository.getAllPlayers(gameId))
     }
 
-    return Promise.all(promises)
-      .then(([player: Player, players: Player[]]) => {
-        player.game.lastCardPlayedBy = username
-        player.game.discardedCards.push(cardKey)
-        player.actionCounter = player.actionCounter + 1
+    const [player: Player, players: Player[]] = await Promise.all(promises)
 
-        if (cardRequiresPayment) {
-          player.payeeInfo = {
-            cardPlayed: cardKey,
-            amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
-            payers: players.filter(p => p.username !== username).map(p => p.username)
-          }
-        }
+    player.game.lastCardPlayedBy = username
+    player.game.discardedCards.push(cardKey)
+    player.actionCounter += 1
 
-        const playersToNotify = player.payeeInfo ? player.payeeInfo.payers : undefined
+    if (cardRequiresPayment) {
+      player.payeeInfo = {
+        cardPlayed: cardKey,
+        amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
+        payers: players.filter(p => p.username !== username).map(p => p.username)
+      }
+    }
 
-        return Promise.all([
-          player.saveAll(),
-          this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, playersToNotify)
-        ])
-      })
+    const playersToNotify = player.payeeInfo ? player.payeeInfo.payers : undefined
+
+    return Promise.all([
+      player.saveAll(),
+      this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, playersToNotify)
+    ])
   }
 
   discardCard (gameId: string, username: Username, card: CardKey): Promise<*> {
