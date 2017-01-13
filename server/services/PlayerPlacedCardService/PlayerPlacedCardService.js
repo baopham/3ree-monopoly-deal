@@ -123,33 +123,32 @@ export default class PlayerPlacedCardService {
     ])
   }
 
-  movePlacedLeftOverCard (
+  async movePlacedLeftOverCard (
     gameId: string, username: Username, cardKey: CardKey, toSetId: PropertySetId
   ): Promise<*> {
-    return this.playerRepository.findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        const toSet = player.placedCards.serializedPropertySets.find(
-          set => PropertySet.unserialize(set).getId() === toSetId
-        )
+    const player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-        if (!toSet) {
-          return Promise.reject(`Cannot find set: ${toSetId}`)
-        }
+    const toSet = player.placedCards.serializedPropertySets.find(
+      set => PropertySet.unserialize(set).getId() === toSetId
+    )
 
-        // Validate the move
-        if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
-          return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
-        }
+    if (!toSet) {
+      return Promise.reject(`Cannot find set: ${toSetId}`)
+    }
 
-        sideEffectUtils.removeFirstInstanceFromArray(cardKey, player.placedCards.leftOverCards)
-        sideEffectUtils.addItemToArray(cardKey, toSet.cards)
+    // Validate the move
+    if (!PropertySet.unserialize(toSet).canAddCard(cardKey)) {
+      return Promise.reject(`Cannot move card ${cardKey} to ${toSetId}`)
+    }
 
-        player.actionCounter += 1
+    sideEffectUtils.removeFirstInstanceFromArray(cardKey, player.placedCards.leftOverCards)
+    sideEffectUtils.addItemToArray(cardKey, toSet.cards)
 
-        return Promise.all([
-          player.save(),
-          this.gameHistoryService.record(gameId, `${username} moved ${cardKey} to another set`)
-        ])
-      })
+    player.actionCounter += 1
+
+    return Promise.all([
+      player.save(),
+      this.gameHistoryService.record(gameId, `${username} moved ${cardKey} to another set`)
+    ])
   }
 }
