@@ -193,25 +193,23 @@ export default class PlayerService {
     ])
   }
 
-  pay (
+  async pay (
     gameId: string, payer: Username,
     payee: Username, moneyCards: CardKey[],
     mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
   ): Promise<*> {
-    const promises = [
+    const [payeePlayer: Player, payerPlayer: Player] = await Promise.all([
       this.playerRepository.findByGameIdAndUsername(gameId, payee),
       this.playerRepository.findByGameIdAndUsername(gameId, payer)
-    ]
+    ])
 
-    return Promise.all(promises)
-      .then(([payeePlayer: Player, payerPlayer: Player]) => {
-        const dueAmount = payeePlayer.payeeInfo.amount
-        return Promise.all([
-          updatePayer(payerPlayer),
-          updatePayee(payeePlayer),
-          this.gameHistoryService.record(gameId, paymentLogMessage(dueAmount))
-        ])
-      })
+    const dueAmount = payeePlayer.payeeInfo.amount
+
+    return Promise.all([
+      updatePayer(payerPlayer),
+      updatePayee(payeePlayer),
+      this.gameHistoryService.record(gameId, paymentLogMessage(dueAmount))
+    ])
 
     //////
     function updatePayee (payeePlayer: Player): Promise<*> {
