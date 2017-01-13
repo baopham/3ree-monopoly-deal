@@ -165,23 +165,22 @@ export default class PlayerService {
       .then(([game, _]) => game.currentTurn)
   }
 
-  drawCards (gameId: string): Promise<CardKey[]> {
-    return this.gameService.getGame(gameId)
-      .then((game: Game) => {
-        if (game.availableCards.length < 2) {
-          game.availableCards = newDeck()
-        }
+  async drawCards (gameId: string): Promise<CardKey[]> {
+    const game: Game = await this.gameService.getGame(gameId)
 
-        const [first, second, ...rest] = game.availableCards
-        game.availableCards = rest
+    if (game.availableCards.length < 2) {
+      game.availableCards = newDeck()
+    }
 
-        return Promise.all([
-          [first, second],
-          this.gameHistoryService.record(gameId, `${game.currentTurn} picked up 2 cards`),
-          game.save()
-        ])
-      })
-      .then(([drawnCards]) => drawnCards)
+    const [first, second, ...rest] = game.availableCards
+    game.availableCards = rest
+
+    await Promise.all([
+      this.gameHistoryService.record(gameId, `${game.currentTurn} picked up 2 cards`),
+      game.save()
+    ])
+
+    return [first, second]
   }
 
   removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
