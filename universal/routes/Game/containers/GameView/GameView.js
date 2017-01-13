@@ -18,7 +18,7 @@ const mapStateToProps = (state) => ({
   currentGame: state.currentGame
 })
 
-export class GameRoute extends React.Component {
+export class GameView extends React.Component {
   props: Props
 
   componentDidMount () {
@@ -46,4 +46,5 @@ export class GameRoute extends React.Component {
 export default connect(
   mapStateToProps,
   gameActions,
-)(GameRoute)
+)(GameView)
+

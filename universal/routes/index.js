@@ -3,13 +3,14 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 
 import CoreLayout from '../layouts/CoreLayout'
-import GameRoute from './Game'
-import GamesRoute from './Games'
+import GameView from './Game'
+import GamesView from './Games'
 
 export default (
   <Route path='/' component={CoreLayout}>
-    <IndexRoute components={GamesRoute} />
-    <Route path='games' components={GamesRoute} />
-    <Route path='games/:id' component={GameRoute} />
+    <IndexRoute components={GamesView} />
+    <Route path='games' components={GamesView} />
+    <Route path='games/:id' component={GameView} />
   </Route>
 )
+

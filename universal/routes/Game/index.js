@@ -1,4 +1,5 @@
 /* @flow */
-import GameRoute from './containers/GameRoute'
+import GameView from './containers/GameView'
 
-export default GameRoute
+export default GameView
+

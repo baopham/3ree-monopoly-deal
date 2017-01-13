@@ -24,7 +24,7 @@ const mapStateToProps = (state) => ({
   games: state.games
 })
 
-export class GamesRoute extends React.Component {
+export class GamesView extends React.Component {
   props: Props
 
   state: State
@@ -105,4 +105,5 @@ export class GamesRoute extends React.Component {
 export default connect(
   mapStateToProps,
   actions
-)(GamesRoute)
+)(GamesView)
+
