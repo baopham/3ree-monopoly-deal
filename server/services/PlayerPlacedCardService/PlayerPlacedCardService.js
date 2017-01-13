@@ -57,32 +57,30 @@ export default class PlayerPlacedCardService {
     return flippedCardKey
   }
 
-  flipPlacedLeftOverCard (
-    gameId: string, username: Username, cardKey: CardKey
-  ): Promise<CardKey> {
+  async flipPlacedLeftOverCard (gameId: string, username: Username, cardKey: CardKey): Promise<CardKey> {
     if (!monopoly.canFlipCard(cardKey)) {
       return Promise.reject(`Cannot flip ${cardKey}`)
     }
 
     const flippedCardKey: CardKey = monopoly.flipCard(cardKey)
 
-    return this.playerRepository.findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        const cardIndex = player.placedCards.leftOverCards.findIndex(c => c === cardKey)
+    const player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-        if (cardIndex === -1) {
-          return Promise.reject(`Cannot find the card ${cardKey} in the left over list`)
-        }
+    const cardIndex = player.placedCards.leftOverCards.findIndex(c => c === cardKey)
 
-        sideEffectUtils.replaceItemInArray(player.placedCards.leftOverCards, cardIndex, flippedCardKey)
-        player.actionCounter += 1
+    if (cardIndex === -1) {
+      return Promise.reject(`Cannot find the card ${cardKey} in the left over list`)
+    }
 
-        return Promise.all([
-          player.save(),
-          this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
-        ])
-      })
-      .then(() => flippedCardKey)
+    sideEffectUtils.replaceItemInArray(player.placedCards.leftOverCards, cardIndex, flippedCardKey)
+    player.actionCounter += 1
+
+    await Promise.all([
+      player.save(),
+      this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
+    ])
+
+    return flippedCardKey
   }
 
   movePlacedCard (
