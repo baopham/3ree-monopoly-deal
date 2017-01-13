@@ -47,49 +47,30 @@ export default class CardRequestService {
     ])
   }
 
-  acceptSlyDeal (slyDealRequestId: string): Promise<CardRequest> {
-    const promiseContext: { cardRequest: ?CardRequest } = {
-      cardRequest: null
-    }
+  async acceptSlyDeal (slyDealRequestId: string): Promise<CardRequest> {
+    const cardRequest: CardRequest = await this.cardRequestRepository.find(slyDealRequestId)
 
-    return this.cardRequestRepository
-      .find(slyDealRequestId)
-      .then(cacheCardRequest)
-      .then(this.findPlayers.bind(this))
-      .then(updatePlayersAndGameHistory.bind(this))
-      .then(deleteRequest.bind(this))
+    const [fromPlayer, toPlayer] = await this.findPlayers(cardRequest)
+
+    const { gameId, info: { fromUser, toUser, card } } = cardRequest
+
+    await Promise.all([
+      updatePlayers(fromPlayer, toPlayer),
+      this.gameHistoryService.record(gameId, `${fromUser} sly dealt ${card} from ${toUser}`, [toUser])
+    ])
+
+    return cardRequest.delete()
 
     //////
-    function cacheCardRequest (cardRequest: CardRequest): CardRequest {
-      promiseContext.cardRequest = cardRequest
-      return cardRequest
-    }
-
-    function updatePlayersAndGameHistory ([fromPlayer: Player, toPlayer: Player]): Promise<*> {
-      const { cardRequest } = promiseContext
-
+    function updatePlayers (fromPlayer: Player, toPlayer: Player): Promise<*> {
       if (!cardRequest) {
         return Promise.reject('Card request record could not be found')
       }
 
-      const logActionAndNotifyPlayer = () => {
-        const { gameId, info: { fromUser, toUser, card } } = cardRequest
-        return this.gameHistoryService.record(
-          gameId,
-          `${fromUser} sly dealt ${card} from ${toUser}`,
-          [toUser]
-        )
-      }
-
       return Promise.all([
         updateThisPlayer(fromPlayer, cardRequest.info.card),
-        updateOtherPlayer(toPlayer, cardRequest.info.card, cardRequest.info.setId),
-        logActionAndNotifyPlayer()
+        updateOtherPlayer(toPlayer, cardRequest.info.card, cardRequest.info.setId)
       ])
-    }
-
-    function deleteRequest () {
-      promiseContext.cardRequest && promiseContext.cardRequest.delete()
     }
 
     function updateThisPlayer (thisPlayer: Player, cardToSlyDeal: CardKey): Promise<*> {
