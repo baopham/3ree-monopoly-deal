@@ -126,49 +126,34 @@ export default class CardRequestService {
     ])
   }
 
-  acceptForcedDeal (forcedDealRequestId: string): Promise<*> {
-    const promiseContext: { cardRequest: ?CardRequest } = {
-      cardRequest: null
-    }
+  async acceptForcedDeal (forcedDealRequestId: string): Promise<*> {
+    const cardRequest: CardRequest = await this.cardRequestRepository.find(forcedDealRequestId)
 
-    return this.cardRequestRepository
-      .find(forcedDealRequestId)
-      .then(cacheCardRequest)
-      .then(this.findPlayers.bind(this))
-      .then(updatePlayersAndGameHistory.bind(this))
-      .then(deleteRequest.bind(this))
+    const [fromPlayer, toPlayer] = await this.findPlayers(cardRequest)
+
+    const { gameId, info: { fromUser, toUser, fromUserCard, toUserCard } } = cardRequest
+
+    await Promise.all([
+      updatePlayers(fromPlayer, toPlayer),
+      this.gameHistoryService.record(
+        gameId,
+        `${fromUser} swapped ${fromUserCard} with ${toUserCard} from ${toUser}`,
+        [toUser]
+      )
+    ])
+
+    return cardRequest.delete()
 
     //////
-    function cacheCardRequest (cardRequest: CardRequest): CardRequest {
-      promiseContext.cardRequest = cardRequest
-      return cardRequest
-    }
-
-    function updatePlayersAndGameHistory ([fromPlayer: Player, toPlayer: Player]): Promise<*> {
-      const { cardRequest } = promiseContext
-
+    function updatePlayers (fromPlayer: Player, toPlayer: Player): Promise<*> {
       if (!cardRequest) {
         return Promise.reject('Card request record could not be found')
       }
 
-      const logActionAndNotifyPlayer = () => {
-        const { gameId, info: { fromUser, toUser, fromUserCard, toUserCard } } = cardRequest
-        return this.gameHistoryService.record(
-          gameId,
-          `${fromUser} swapped ${fromUserCard} with ${toUserCard} from ${toUser}`,
-          [toUser]
-        )
-      }
-
       return Promise.all([
         updateThisPlayer(fromPlayer, cardRequest.info),
-        updateOtherPlayer(toPlayer, cardRequest.info),
-        logActionAndNotifyPlayer()
+        updateOtherPlayer(toPlayer, cardRequest.info)
       ])
-    }
-
-    function deleteRequest () {
-      promiseContext.cardRequest && promiseContext.cardRequest.delete()
     }
 
     function updateThisPlayer (thisPlayer: Player, info: ForcedDealInfo): Promise<*> {
