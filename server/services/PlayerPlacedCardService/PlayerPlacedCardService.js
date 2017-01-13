@@ -18,7 +18,7 @@ export default class PlayerPlacedCardService {
     this.gameHistoryService = new GameHistoryService()
   }
 
-  flipPlacedCard (
+  async flipPlacedCard (
     gameId: string, username: Username, cardKey: CardKey, propertySetId: PropertySetId
   ): Promise<CardKey> {
     if (!monopoly.canFlipCard(cardKey)) {
@@ -27,34 +27,34 @@ export default class PlayerPlacedCardService {
 
     const flippedCardKey: CardKey = monopoly.flipCard(cardKey)
 
-    return this.playerRepository.findByGameIdAndUsername(gameId, username)
-      .then((player: Player) => {
-        const setToUpdateIndex = player.placedCards.serializedPropertySets
-          .findIndex(set => PropertySet.unserialize(set).getId() === propertySetId)
+    const player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-        if (setToUpdateIndex === -1) {
-          return Promise.reject(`Cannot find the set with id ${propertySetId}`)
-        }
+    const setToUpdateIndex = player.placedCards.serializedPropertySets
+      .findIndex(set => PropertySet.unserialize(set).getId() === propertySetId)
 
-        const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
+    if (setToUpdateIndex === -1) {
+      return Promise.reject(`Cannot find the set with id ${propertySetId}`)
+    }
 
-        sideEffectUtils.removeFirstInstanceFromArray(cardKey, setToUpdate.cards)
+    const setToUpdate = player.placedCards.serializedPropertySets[setToUpdateIndex]
 
-        const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
-        sideEffectUtils.addSetToPlacedCards(newSet.serialize(), player.placedCards)
+    sideEffectUtils.removeFirstInstanceFromArray(cardKey, setToUpdate.cards)
 
-        if (!setToUpdate.cards.length) {
-          sideEffectUtils.removeSetFromPlacedCardsBySetIndex(setToUpdateIndex, player.placedCards)
-        }
+    const newSet = new PropertySet(monopoly.getPropertySetIdentifier(flippedCardKey), [flippedCardKey])
+    sideEffectUtils.addSetToPlacedCards(newSet.serialize(), player.placedCards)
 
-        player.actionCounter += 1
+    if (!setToUpdate.cards.length) {
+      sideEffectUtils.removeSetFromPlacedCardsBySetIndex(setToUpdateIndex, player.placedCards)
+    }
 
-        return Promise.all([
-          player.save(),
-          this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
-        ])
-      })
-      .then(() => flippedCardKey)
+    player.actionCounter += 1
+
+    await Promise.all([
+      player.save(),
+      this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
+    ])
+
+    return flippedCardKey
   }
 
   flipPlacedLeftOverCard (
