@@ -28,7 +28,7 @@ export default class SayNoService {
     })
   }
 
-  sayNoToUser (
+  async sayNoToUser (
     gameId: string, fromUser: Username, toUser: Username, cause: SayNoCause, causeInfo: SayNoCauseInfo
   ): Promise<SayNo> {
     const logAction = () => this.gameHistoryService.record(
@@ -37,36 +37,40 @@ export default class SayNoService {
       [toUser]
     )
 
-    return this.sayNoRepository.findByGameId(gameId)
-      .then(sayNo => {
-        sayNo.fromUser = fromUser
-        sayNo.toUser = toUser
-        sayNo.cause = cause
-        sayNo.causeInfo = causeInfo
+    let sayNo
 
-        return Promise.all([
-          sayNo.save(),
-          logAction()
-        ])
-      })
-      .catch(error => {
-        if (error.name !== ModelNotFound.name) {
-          return Promise.reject(error)
-        }
+    try {
+      sayNo = await this.sayNoRepository.findByGameId(gameId)
 
-        const sayNo = {
-          fromUser,
-          toUser,
-          gameId,
-          cause,
-          causeInfo
-        }
+      sayNo.fromUser = fromUser
+      sayNo.toUser = toUser
+      sayNo.cause = cause
+      sayNo.causeInfo = causeInfo
 
-        return Promise.all([
-          this.sayNoRepository.insert(sayNo),
-          logAction()
-        ])
-      })
+      await Promise.all([
+        sayNo.save(),
+        logAction()
+      ])
+    } catch (error) {
+      if (error.name !== ModelNotFound.name) {
+        throw error
+      }
+
+      sayNo = {
+        fromUser,
+        toUser,
+        gameId,
+        cause,
+        causeInfo
+      }
+
+      await Promise.all([
+        this.sayNoRepository.insert(sayNo),
+        logAction()
+      ])
+    }
+
+    return sayNo
   }
 
   acceptSayNo (gameId: string, fromUser: Username, toUser: Username): Promise<*> {
@@ -127,3 +131,4 @@ export default class SayNoService {
     }
   }
 }
+
