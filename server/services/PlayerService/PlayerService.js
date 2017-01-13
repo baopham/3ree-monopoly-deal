@@ -141,24 +141,24 @@ export default class PlayerService {
     ])
   }
 
-  endTurn (gameId: string): Promise<Username> {
-    return this.gameService.getGame(gameId)
-      .then((game: Game) => {
-        const players = game.players
-        const currentTurnIndex = players.findIndex(player => player.username === game.currentTurn)
-        const currentPlayer = players[currentTurnIndex]
-        const nextTurnIndex = currentTurnIndex + 1 === players.length ? 0 : currentTurnIndex + 1
-        const nextTurn = game.players[nextTurnIndex].username
+  async endTurn (gameId: string): Promise<Username> {
+    const game: Game = await this.gameService.getGame(gameId)
 
-        game.currentTurn = nextTurn
-        currentPlayer.actionCounter = 0
+    const players = game.players
+    const currentTurnIndex = players.findIndex(player => player.username === game.currentTurn)
+    const currentPlayer = players[currentTurnIndex]
+    const nextTurnIndex = currentTurnIndex + 1 === players.length ? 0 : currentTurnIndex + 1
+    const nextTurn = game.players[nextTurnIndex].username
 
-        return Promise.all([
-          game.saveAll(),
-          this.gameHistoryService.record(gameId, `${nextTurn}'s turn`, [nextTurn])
-        ])
-      })
-      .then(([game, _]) => game.currentTurn)
+    game.currentTurn = nextTurn
+    currentPlayer.actionCounter = 0
+
+    await Promise.all([
+      game.saveAll(),
+      this.gameHistoryService.record(gameId, `${nextTurn}'s turn`, [nextTurn])
+    ])
+
+    return game.currentTurn
   }
 
   async drawCards (gameId: string): Promise<CardKey[]> {
