@@ -31,23 +31,21 @@ export default class PlayerService {
     })
   }
 
-  placeCard (
+  async placeCard (
     gameId: string, username: Username, cardKey: CardKey, asMoney: boolean = false, setToPutIn?: SerializedPropertySet
   ): Promise<*> {
-    const logAction = () => this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
+    const player: Player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-    return this.playerRepository
-      .findByGameIdAndUsername(gameId, username)
-      .then(increaseActionCounter)
-      .then(putCardInTheRightPlace)
-      .then(logAction)
+    const updatedPlayer = await putCardInTheRightPlace(Object.assign(
+      player,
+      { actionCounter: player.actionCounter + 1 }
+    ))
+
+    await this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
+
+    return updatedPlayer
 
     //////
-    function increaseActionCounter (player: Player): Player {
-      player.actionCounter = player.actionCounter + 1
-      return player
-    }
-
     function putCardInTheRightPlace (player: Player): Promise<*> {
       if (asMoney) {
         player.placedCards.bank.push(cardKey)
