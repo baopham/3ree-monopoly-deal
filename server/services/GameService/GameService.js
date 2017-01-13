@@ -74,19 +74,17 @@ export default class GameService {
     return newPlayer
   }
 
-  setWinner (gameId: string, winner: Username): Promise<*> {
-    return this.playerRepository
-      .findByGameIdAndUsername(gameId, winner)
-      .then((player: Player) => {
-        const propertySets = player.placedCards.serializedPropertySets.map(PropertySet.unserialize)
+  async setWinner (gameId: string, winner: Username): Promise<*> {
+    const player = await this.playerRepository.findByGameIdAndUsername(gameId, winner)
 
-        if (!monopoly.hasEnoughFullSetsToWin(propertySets)) {
-          return Promise.reject(`${winner} does not have enough full sets to win!`)
-        }
+    const propertySets = player.placedCards.serializedPropertySets.map(PropertySet.unserialize)
 
-        player.game.winner = winner
+    if (!monopoly.hasEnoughFullSetsToWin(propertySets)) {
+      throw new Error(`${winner} does not have enough full sets to win!`)
+    }
 
-        return player.game.save()
-      })
+    player.game.winner = winner
+
+    return player.game.save()
   }
 }
