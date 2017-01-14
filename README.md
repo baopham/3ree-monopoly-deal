@@ -38,6 +38,7 @@ Notes
 TODOs
 -----
 
+- [ ] Allow to sly deal, force deal, pay "left over cards"
 - [ ] Say no to
   - [x] sly deal
   - [x] forced deal
