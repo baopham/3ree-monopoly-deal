@@ -7,16 +7,14 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000, // We need to accept that Webpack may take a while to build!
     singleRun: true,
     colors: true,
-    frameworks: [ 'mocha', 'sinon', 'chai' ], // Mocha is our testing framework of choice
+    frameworks: [ 'mocha', 'testdouble', 'chai' ], // Mocha is our testing framework of choice
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
       'universal/**/*.spec.js',
-      'server/**/*.spec.js',
       'client/**/*.spec.js'
     ],
     preprocessors: {
       'universal/**/*.spec.js': [ 'webpack' ],
-      'server/**/*.spec.js': [ 'webpack' ],
       'client/**/*.spec.js': [ 'webpack' ]
     },
     reporters: [ 'mocha' ],
@@ -24,7 +22,6 @@ module.exports = function (config) {
       module: {
         loaders: webpackConfig.module.loaders,
         noParse: [
-            /node_modules\/sinon/,
         ]
       },
       node: {
