@@ -22,9 +22,7 @@ export default class SayNoService {
 
   static liveUpdates (io) {
     SayNoRepository.watchForChanges((change) => {
-      if (change.updated || change.created) {
-        io.emit(`game-${change.new_val.gameId}-say-no-update`, change.new_val)
-      }
+      io.emit(`game-${change.new_val.gameId}-say-no-update`, change)
     })
   }
 
@@ -84,13 +82,8 @@ export default class SayNoService {
 
     const cause = sayNo.cause
 
-    sayNo.fromUser = null
-    sayNo.toUser = null
-    sayNo.cause = null
-    sayNo.causeInfo = null
-
     return Promise.all([
-      sayNo.save(),
+      sayNo.delete(),
       this.gameHistoryService.record(gameId, `${cause}: ${toUser} accepted NO from ${fromUser}`, [fromUser])
     ])
   }

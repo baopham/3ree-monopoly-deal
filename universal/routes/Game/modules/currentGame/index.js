@@ -1,12 +1,11 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
+import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { actions as paymentActions } from '../payment'
 import { actions as gameHistoryActions } from '../gameHistory'
 import { actions as currentPlayerCardsOnHandActions } from '../currentPlayerCardsOnHand'
 import { actions as sayNoActions } from '../sayNo'
 import { actions as cardRequestActions } from '../cardRequest'
-import { getCurrentPlayer } from '../gameSelectors'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 function ns (value) {
@@ -77,8 +76,7 @@ function flipPlacedCard (card: CardKey, propertySetId: PropertySetId) {
   return {
     types: [FLIP_PLACED_CARD_REQUEST, FLIP_PLACED_CARD_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
       return request.put(`${gamesUrl}/${id}/flip-card`, { card, username, propertySetId })
     }
   }
@@ -88,8 +86,7 @@ function flipPlacedLeftOverCard (card: CardKey) {
   return {
     types: [FLIP_PLACED_LEFT_OVER_CARD_REQUEST, FLIP_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
       return request.put(`${gamesUrl}/${id}/flip-left-over-card`, { card, username })
     }
   }
@@ -99,8 +96,7 @@ function movePlacedCard (card: CardKey, fromSetId: PropertySetId, toSetId: Prope
   return {
     types: [MOVE_PLACED_CARD_REQUEST, MOVE_PLACED_CARD_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
       return request.put(`${gamesUrl}/${id}/move-card`, { card, username, fromSetId, toSetId })
     }
   }
@@ -110,8 +106,7 @@ function movePlacedLeftOverCard (card: CardKey, toSetId: PropertySetId) {
   return {
     types: [MOVE_PLACED_LEFT_OVER_CARD_REQUEST, MOVE_PLACED_LEFT_OVER_CARD_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
-      const id = getState().currentGame.game.id
-      const username = getCurrentPlayer(getState()).username
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
       return request.put(`${gamesUrl}/${id}/move-left-over-card`, { card, username, toSetId })
     }
   }

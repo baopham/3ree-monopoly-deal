@@ -1,7 +1,6 @@
 /* @flow */
 import * as request from '../../../../request-util'
-import { namespace, apiUrl } from '../../../../ducks-utils'
-import { getCurrentPlayer } from '../gameSelectors'
+import { namespace, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import sayNoCauses from '../../../../monopoly/sayNoCauses'
 import type { SayNoCause, SayNoCauseInfo } from '../../../../monopoly/sayNoCauses'
 
@@ -27,15 +26,14 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 function sayNo (toUser: Username, onSuccess: Function, cause: SayNoCause) {
   return (dispatch: Function, getState: Function) => {
-    const currentGame = getState().currentGame
-    const currentPlayer = getCurrentPlayer(getState())
-    const fromUser = currentPlayer.username
+    const [gameId, fromUser] = getGameIdAndCurrentPlayerUsername(getState())
+
     const causeInfo = getCauseInfo(getState, fromUser, toUser, cause)
 
     dispatch({ type: SAY_NO_REQUEST, fromUser, toUser, cause, causeInfo })
 
     return request
-      .put(`${gamesUrl}/${currentGame.game.id}/say-no/${fromUser}/${toUser}`, { cause, causeInfo })
+      .put(`${gamesUrl}/${gameId}/say-no/${fromUser}/${toUser}`, { cause, causeInfo })
       .then(handleSuccessRequest, handleErrorRequest)
 
     //////
@@ -100,8 +98,12 @@ function unsubscribeSayNoEvent (socket: Socket, gameId: string) {
   }
 }
 
-function onSayNoUpdate (dispatch: Function, getState: Function, sayNo: SayNo) {
-  dispatch(updateSayNoState(sayNo))
+function onSayNoUpdate (dispatch: Function, getState: Function, change: SocketSayNoChangeEvent) {
+  if (!change.new_val || change.deleted) {
+    return { type: ACCEPT_SUCCESS }
+  }
+
+  dispatch(updateSayNoState(change.new_val))
 }
 
 function reset () {

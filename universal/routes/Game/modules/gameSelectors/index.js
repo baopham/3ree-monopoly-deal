@@ -12,7 +12,7 @@ const getCurrentPlayerCardsOnHand = (state) => state.currentPlayerCardsOnHand
 const getSayNoState = (state) => state.sayNo
 
 export const getCurrentPlayer = createSelector(
-  [getCurrentGame],
+  getCurrentGame,
   (currentGame: CurrentGameState): ?Player => {
     const game = currentGame.game
 
@@ -26,8 +26,8 @@ export const getCurrentPlayer = createSelector(
 )
 
 export const isPlayerTurn = createSelector(
-  [getCurrentGame, getCurrentPlayer],
-  (currentGame: CurrentGameState, currentPlayer: Player): boolean => {
+  getCurrentGame, getCurrentPlayer,
+  (currentGame: CurrentGameState, currentPlayer: ?Player): boolean => {
     return !!(
       currentPlayer &&
       currentGame.game &&
@@ -38,30 +38,33 @@ export const isPlayerTurn = createSelector(
 )
 
 export const getOtherPlayers = createSelector(
-  [getCurrentGame, getCurrentPlayer],
-  (currentGame: CurrentGameState, currentPlayer: Player): ?Player[] => {
-    return currentPlayer &&
-      currentGame.game &&
-      currentGame.game.players.filter(player => player.id !== currentPlayer.id)
+  getCurrentGame, getCurrentPlayer,
+  (currentGame: CurrentGameState, currentPlayer: ?Player): ?Player[] => {
+    if (!currentPlayer || !currentGame.game) {
+      return []
+    }
+
+    const thisPlayer = currentPlayer
+    return currentGame.game.players.filter(player => player.id !== thisPlayer.id)
   }
 )
 
 export const isPayee = createSelector(
-  [getCurrentPlayer, getPayment],
-  (currentPlayer: Player, payment: PaymentState): boolean => {
+  getCurrentPlayer, getPayment,
+  (currentPlayer: ?Player, payment: PaymentState): boolean => {
     return !!(currentPlayer && payment.amount && payment.payee === currentPlayer.username)
   }
 )
 
 export const isPayer = createSelector(
-  [getCurrentPlayer, getPayment],
-  (currentPlayer: Player, payment: PaymentState): boolean => {
+  getCurrentPlayer, getPayment,
+  (currentPlayer: ?Player, payment: PaymentState): boolean => {
     return !!(currentPlayer && payment.payers && payment.payers.includes(currentPlayer.username))
   }
 )
 
 export const canSayNo = createSelector(
-  [getCurrentPlayerCardsOnHand],
+  getCurrentPlayerCardsOnHand,
   (currentPlayerCardsOnHand: CurrentPlayerCardsOnHandState): boolean => {
     const { cardsOnHand } = currentPlayerCardsOnHand
     return cardsOnHand.includes(SAY_NO)
@@ -69,8 +72,8 @@ export const canSayNo = createSelector(
 )
 
 export const canRespondToASayNo = createSelector(
-  [canSayNo, getSayNoState, getCurrentPlayer],
-  (canSayNo: boolean, sayNo: SayNoState, currentPlayer: Player): boolean => {
-    return currentPlayer.username === sayNo.toUser && canSayNo
+  canSayNo, getSayNoState, getCurrentPlayer,
+  (canSayNo: boolean, sayNo: SayNoState, currentPlayer: ?Player): boolean => {
+    return !!currentPlayer && currentPlayer.username === sayNo.toUser && canSayNo
   }
 )

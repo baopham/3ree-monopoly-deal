@@ -1,5 +1,6 @@
 /* @flow */
 import merge from 'lodash/mergeWith'
+import { getCurrentPlayer } from './routes/Game/modules/gameSelectors'
 
 const serverUrl = ''
 export const apiUrl = `${serverUrl}/api/v1`
@@ -20,6 +21,17 @@ export function keyMirror (obj: Object): Object {
   }
 
   return newObject
+}
+
+export function getGameIdAndCurrentPlayerUsername (state: Object): [string, Username] {
+  const id = state.currentGame.game.id
+  const player = getCurrentPlayer(state)
+
+  if (!player) {
+    throw new Error('Cannot find current player')
+  }
+
+  return [id, player.username]
 }
 
 export function deepmerge (original: Object, next?: Object): Object {

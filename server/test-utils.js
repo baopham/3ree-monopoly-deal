@@ -1,5 +1,5 @@
 /* @flow */
-import uuid from 'uuid'
+import uuid from 'node-uuid'
 import td from 'testdouble'
 import { newDeck } from '../universal/monopoly/cards'
 

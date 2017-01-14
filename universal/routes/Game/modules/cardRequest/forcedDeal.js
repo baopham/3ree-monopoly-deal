@@ -45,6 +45,11 @@ function askToForceDeal (
     promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const currentPlayer = getCurrentPlayer(getState())
+
+      if (!currentPlayer) {
+        throw new Error('No player to perform a forced deal')
+      }
+
       const payload: ForcedDealInfo = {
         toUser: toPlayer.username,
         fromUser: currentPlayer.username,

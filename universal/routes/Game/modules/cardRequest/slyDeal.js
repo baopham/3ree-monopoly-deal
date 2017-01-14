@@ -40,6 +40,11 @@ function askToSlyDeal (playerToSlyDealFrom: Player, fromSet: PropertySet, cardTo
     promise: (dispatch: Function, getState: Function) => {
       const currentGame = getState().currentGame
       const currentPlayer = getCurrentPlayer(getState())
+
+      if (!currentPlayer) {
+        throw new Error('No player to perform the sly deal')
+      }
+
       const payload: SlyDealInfo = {
         toUser: playerToSlyDealFrom.username,
         fromUser: currentPlayer.username,

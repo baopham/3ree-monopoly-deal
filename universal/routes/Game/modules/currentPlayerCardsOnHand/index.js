@@ -1,5 +1,5 @@
 /* @flow */
-import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
+import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { PASS_GO } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
@@ -45,9 +45,8 @@ function discardCard (card: CardKey) {
     types: [DISCARD_CARD_REQUEST, DISCARD_CARD_SUCCESS, ERROR],
     card,
     promise: (dispatch: Function, getState: Function) => {
-      const currentGame = getState().currentGame
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/discard`, { username, card })
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
+      return request.put(`${gamesUrl}/${id}/discard`, { username, card })
     }
   }
 }
@@ -57,9 +56,8 @@ function placeCard (card: CardKey, asMoney: boolean = false, setToPutIn?: Serial
     types: [PLACE_CARD_REQUEST, PLACE_CARD_SUCCESS, ERROR],
     card,
     promise: (dispatch: Function, getState: Function) => {
-      const currentGame = getState().currentGame
-      const username = getCurrentPlayer(getState()).username
-      return request.put(`${gamesUrl}/${currentGame.game.id}/place`, { card, username, asMoney, setToPutIn })
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
+      return request.put(`${gamesUrl}/${id}/place`, { card, username, asMoney, setToPutIn })
     }
   }
 }
@@ -71,11 +69,19 @@ function playCard (card: CardKey) {
     const currentGame = getState().currentGame
     const currentPlayer = getCurrentPlayer(getState())
 
+    if (!currentPlayer) {
+      throw new Error('Cannot find current player')
+    }
+
     return request
       .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username: currentPlayer.username })
       .then(handleSuccessRequest, handleErrorRequest)
 
     function handleSuccessRequest (res) {
+      if (!currentPlayer) {
+        throw new Error('Cannot find current player')
+      }
+
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
       card === PASS_GO && dispatch(drawCards())
 

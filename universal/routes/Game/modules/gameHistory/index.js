@@ -42,7 +42,13 @@ function unsubscribeGameHistoryEvent (socket: Socket, gameId: string) {
 }
 
 function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: GameHistoryRecord) {
-  if (newRecord.playersToNotify.length && newRecord.playersToNotify.includes(getCurrentPlayer(getState()).username)) {
+  const currentPlayer = getCurrentPlayer(getState())
+
+  if (!currentPlayer) {
+    throw new Error('Cannot find current player')
+  }
+
+  if (newRecord.playersToNotify.length && newRecord.playersToNotify.includes(currentPlayer.username)) {
     audioLoad('/notification.mp3').then(audioPlay)
   }
 
