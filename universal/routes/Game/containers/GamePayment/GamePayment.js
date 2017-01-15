@@ -18,7 +18,12 @@ type Props = {
   isPayee: boolean,
   isPayer: boolean,
   canSayNo: boolean,
-  pay: (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
+  pay: (
+    payer: Username,
+    bankCards: CardKey[],
+    leftOverCards: CardKey[],
+    mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
+  ) => void
 }
 
 const mapStateToProps = (state) => ({
@@ -32,9 +37,9 @@ const mapStateToProps = (state) => ({
 export class GamePayment extends React.Component {
   props: Props
 
-  onPay = (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => {
+  onPay = (bankCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => {
     const { pay, currentPlayer } = this.props
-    pay(currentPlayer.username, moneyCards, mapOfNonMoneyCards)
+    pay(currentPlayer.username, bankCards, leftOverCards, mapOfNonMoneyCards)
   }
 
   payerHasNotEnoughMoney (): boolean {

@@ -11,7 +11,7 @@ type Props = {
   dueAmount: number,
   cards: PlacedCards,
   sayNoButton: ?Node,
-  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
+  onPay: (moneyCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 type State = {
@@ -67,7 +67,7 @@ export default class AutoPaymentAlert extends React.Component {
       mapOfNonMoneyCards.set(set.getId(), set.getCards())
     })
 
-    onPay(cards.bank, mapOfNonMoneyCards)
+    onPay(cards.bank, cards.leftOverCards, mapOfNonMoneyCards)
   }
 
   hasSayNoOption () {

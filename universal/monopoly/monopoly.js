@@ -162,6 +162,7 @@ export function getTotalMoneyFromCards (cardKeys: CardKey[]): number {
 
 export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number {
   return getTotalMoneyFromCards(placedCards.bank) +
+    getTotalMoneyFromCards(placedCards.leftOverCards) +
     getTotalMoneyFromCards(flattenSerializedPropertySetCards(placedCards.serializedPropertySets))
 }
 

@@ -2,9 +2,10 @@
 import PropertySet from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
+export type MoneyCardType = 'bank' | 'leftOverCard'
 export type CardIndex = number
 export type SerializedPropertySetIndex = number
-export type MoneyCardTuple = [CardKey, CardIndex]
+export type MoneyCardTuple = [CardKey, MoneyCardType, CardIndex]
 export type NonMoneyCardTuple = [CardKey, CardIndex, SerializedPropertySetIndex]
 
 export function getMapOfNonMoneyCards (

@@ -11,15 +11,18 @@ import ScrollableBackgroundModal from '../../../../components/ScrollableBackgrou
 import * as monopoly from '../../../../monopoly/monopoly'
 import * as helper from './helper'
 import PropertySetClass from '../../../../monopoly/PropertySet'
-import type { CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
+import type { MoneyCardType, CardIndex, SerializedPropertySetIndex, NonMoneyCardTuple, MoneyCardTuple } from './helper'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
+
+const BANK_CARD: MoneyCardType = 'bank'
+const LEFT_OVER_CARD: MoneyCardType = 'leftOverCard'
 
 type Props = {
   cards: PlacedCards,
   payee: Username,
   dueAmount: number,
   sayNoButton: ?Node,
-  onPay: (moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
+  onPay: (bankCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
 type State = {
@@ -37,11 +40,11 @@ export default class PaymentForm extends React.Component {
     selectedNonMoneyCards: []
   }
 
-  toggleSelectMoneyCard = (card: CardKey, index: CardIndex) => {
+  toggleSelectMoneyCard = (card: CardKey, type: MoneyCardType, index: CardIndex) => {
     const { selectedMoneyCards } = this.state
-    const tuple: MoneyCardTuple = [card, index]
+    const tuple: MoneyCardTuple = [card, type, index]
 
-    if (this.isMoneyCardHighlighted(card, index)) {
+    if (this.isMoneyCardHighlighted(card, type, index)) {
       this.setState({
         selectedMoneyCards: helper.unselectCard(tuple, selectedMoneyCards)
       })
@@ -79,13 +82,19 @@ export default class PaymentForm extends React.Component {
     const { selectedMoneyCards, selectedNonMoneyCards } = this.state
     const { serializedPropertySets } = this.props.cards
     const mapOfNonMoneyCards = helper.getMapOfNonMoneyCards(selectedNonMoneyCards, serializedPropertySets)
-    const moneyCards = selectedMoneyCards.map(([c]) => c)
+    const bankCards = selectedMoneyCards
+      .filter(([c, type]) => type === BANK_CARD)
+      .map(([c]) => c)
 
-    this.props.onPay(moneyCards, mapOfNonMoneyCards)
+    const leftOverCards = selectedMoneyCards
+      .filter(([c, type]) => type === LEFT_OVER_CARD)
+      .map(([c]) => c)
+
+    this.props.onPay(bankCards, leftOverCards, mapOfNonMoneyCards)
   }
 
-  isMoneyCardHighlighted = (card: CardKey, index: CardIndex): boolean => {
-    return helper.cardIsSelected([card, index], this.state.selectedMoneyCards)
+  isMoneyCardHighlighted = (card: CardKey, type: MoneyCardType, index: CardIndex): boolean => {
+    return helper.cardIsSelected([card, type, index], this.state.selectedMoneyCards)
   }
 
   isNonMoneyCardHighlighted = (
@@ -103,24 +112,36 @@ export default class PaymentForm extends React.Component {
     const bsStyle = amountSelected >= dueAmount ? 'success' : 'warning'
 
     return (
-      <Alert
-        bsStyle={bsStyle}
-      >
+      <Alert bsStyle={bsStyle}>
         You selected ${amountSelected}M
       </Alert>
     )
   }
 
-  renderBankCards (): React.Element<*> {
+  renderMoneyCards (): React.Element<*> {
     const { cards } = this.props
+    const bankCards = cards.bank
+    const moneyCardsFromLeftOverList = cards.leftOverCards.filter(card => monopoly.cardCanBeMoney(card))
 
     return (
       <ul className='list-inline'>
-        {cards.bank.map((card, i) =>
-          <li key={i}>
+        {bankCards.map((card, i) =>
+          <li key={`bank-${i}`}>
             <Card
-              highlighted={this.isMoneyCardHighlighted(card, i)}
-              onClick={() => this.toggleSelectMoneyCard(card, i)}
+              highlighted={this.isMoneyCardHighlighted(card, BANK_CARD, i)}
+              onClick={() => this.toggleSelectMoneyCard(card, BANK_CARD, i)}
+              card={card}
+              size='small'
+              faceUp
+            />
+          </li>
+        )}
+
+        {moneyCardsFromLeftOverList.map((card, i) =>
+          <li key={`left-over-${i}`}>
+            <Card
+              highlighted={this.isMoneyCardHighlighted(card, LEFT_OVER_CARD, i)}
+              onClick={() => this.toggleSelectMoneyCard(card, LEFT_OVER_CARD, i)}
               card={card}
               size='small'
               faceUp
@@ -159,7 +180,7 @@ export default class PaymentForm extends React.Component {
         <Modal.Body>
           <h4>Select cards to pay {payee} ${dueAmount}M</h4>
           {this.renderTotalAmountAlert()}
-          {this.renderBankCards()}
+          {this.renderMoneyCards()}
           <ul className='list-inline'>
             {propertySets.map((set, setIndex) =>
               <li key={setIndex}>

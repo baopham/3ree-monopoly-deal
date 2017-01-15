@@ -188,14 +188,14 @@ export default class PlayerService {
     const [payeePlayer: Player, payerPlayer: Player] = await Promise.all(promises)
 
     return Promise.all([
-      paymentHelper.updatePayee(payeePlayer, payer, [], new Map()),
-      paymentHelper.updatePayer(payerPlayer, [], new Map())
+      paymentHelper.updatePayee(payeePlayer, payer, [], [], new Map()),
+      paymentHelper.updatePayer(payerPlayer, [], [], new Map())
     ])
   }
 
   async pay (
     gameId: string, payer: Username,
-    payee: Username, moneyCards: CardKey[],
+    payee: Username, bankCards: CardKey[], leftOverCards: CardKey[],
     mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
   ): Promise<*> {
     const [payeePlayer: Player, payerPlayer: Player] = await Promise.all([
@@ -213,20 +213,20 @@ export default class PlayerService {
 
     //////
     function updatePayee (payeePlayer: Player): Promise<*> {
-      return paymentHelper.updatePayee(payeePlayer, payer, moneyCards, mapOfNonMoneyCards)
+      return paymentHelper.updatePayee(payeePlayer, payer, bankCards, leftOverCards, mapOfNonMoneyCards)
     }
 
     function updatePayer (payerPlayer: Player): Promise<*> {
-      return paymentHelper.updatePayer(payerPlayer, moneyCards, mapOfNonMoneyCards)
+      return paymentHelper.updatePayer(payerPlayer, bankCards, leftOverCards, mapOfNonMoneyCards)
     }
 
     function paymentLogMessage (dueAmount: number): string {
-      if (!moneyCards.length && !mapOfNonMoneyCards.size) {
+      if (!bankCards.length && !mapOfNonMoneyCards.size && !leftOverCards.length) {
         return `${payer} has no money to pay ${payee} $${dueAmount}M`
       }
 
       const allNonMoneyCards = Array.from(mapOfNonMoneyCards.values()).reduce((acc, cards) => acc.concat(cards), [])
-      const allCards = moneyCards.concat(allNonMoneyCards)
+      const allCards = bankCards.concat(leftOverCards).concat(allNonMoneyCards)
 
       return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
     }

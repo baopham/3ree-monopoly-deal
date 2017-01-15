@@ -75,7 +75,8 @@ export function pay (req: AppRequest, res: express$Response) {
     req.params.id,
     req.body.payer,
     req.body.payee,
-    req.body.moneyCards,
+    req.body.bankCards,
+    req.body.leftOverCards,
     request.jsonToMap(req.body.mapOfNonMoneyCards)
   )
 

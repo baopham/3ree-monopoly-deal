@@ -8,10 +8,14 @@ import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 export function updatePayee (
   payeePlayer: Player,
   payer: Username,
-  moneyCards: CardKey[],
+  bankCards: CardKey[],
+  leftOverCards: CardKey[],
   mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
 ): Promise<*> {
   const { payeeInfo } = payeePlayer
+
+  // Left over cards should just be HOUSE, HOTEL.
+  const moneyCards = bankCards.concat(leftOverCards)
 
   if (!payeeInfo.payers || !payeeInfo.payers.includes(payer)) {
     return Promise.reject(`${payer} does not owe anything`)
@@ -46,14 +50,20 @@ export function updatePayee (
 
 export function updatePayer (
   payerPlayer: Player,
-  moneyCards: CardKey[],
+  bankCards: CardKey[],
+  leftOverCards: CardKey[],
   mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
 ): Promise<*> {
   const { placedCards } = payerPlayer
 
   // Remove the money cards
-  moneyCards.forEach(card => {
+  bankCards.forEach(card => {
     sideEffectUtils.removeFirstInstanceFromArray(card, placedCards.bank)
+  })
+
+  // Remove the left over cards
+  leftOverCards.forEach(card => {
+    sideEffectUtils.removeFirstInstanceFromArray(card, placedCards.leftOverCards)
   })
 
   // Remove the property sets, if there are any to remove.

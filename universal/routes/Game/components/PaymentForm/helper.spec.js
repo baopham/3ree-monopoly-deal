@@ -94,22 +94,22 @@ describe('PaymentForm: helper', function () {
     describe('Given an array of money tuples', function () {
       it('should return true if the card is selected', function () {
         const selected = [
-          [MONEY_1M, 0],
-          [MONEY_2M, 1]
+          [MONEY_1M, 'bank', 0],
+          [MONEY_2M, 'bank', 1]
         ]
 
-        const tuple = [MONEY_1M, 0]
+        const tuple = [MONEY_1M, 'bank', 0]
 
         expect(helper.cardIsSelected(tuple, selected)).to.be.true
       })
 
       it('should return false if the card is not selected', function () {
         const selected = [
-          [MONEY_1M, 0],
-          [MONEY_2M, 1]
+          [MONEY_1M, 'bank', 0],
+          [MONEY_2M, 'bank', 1]
         ]
 
-        const tuple = [MONEY_1M, 1]
+        const tuple = [MONEY_1M, 'bank', 1]
 
         expect(helper.cardIsSelected(tuple, selected)).to.be.false
       })

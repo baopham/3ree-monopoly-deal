@@ -32,7 +32,11 @@ function requestForPayment (payee: Username, payers: Username[], cardPlayed: Car
   }
 }
 
-function pay (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) {
+function pay (
+  payer: Username,
+  bankCards: CardKey[],
+  leftOverCards: CardKey[],
+  mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) {
   return {
     types: [PAY_REQUEST, PAY_SUCCESS, ERROR],
     payer,
@@ -42,7 +46,8 @@ function pay (payer: Username, moneyCards: CardKey[], mapOfNonMoneyCards: Map<Pr
       return request.put(`${gamesUrl}/${game.id}/pay`, {
         payer,
         payee,
-        moneyCards,
+        bankCards,
+        leftOverCards,
         mapOfNonMoneyCards: request.mapToJSON(mapOfNonMoneyCards)
       })
     }
