@@ -2,14 +2,13 @@
 import CardRequestRepository from '../../repositories/CardRequestRepository'
 import PlayerRepository from '../../repositories/PlayerRepository'
 import GameHistoryService from '../GameHistoryService'
-import cardRequestTypes from '../../../universal/monopoly/cardRequestTypes'
+import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
 import type { SlyDealInfo, ForcedDealInfo } from '../../../universal/monopoly/cardRequestTypes'
-import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
 export default class CardRequestService {
   cardRequestRepository: CardRequestRepository
@@ -69,7 +68,7 @@ export default class CardRequestService {
 
       return Promise.all([
         updateThisPlayer(fromPlayer, cardRequest.info.card),
-        updateOtherPlayer(toPlayer, cardRequest.info.card, cardRequest.info.setId)
+        updateOtherPlayer(toPlayer, cardRequest.info)
       ])
     }
 
@@ -95,7 +94,18 @@ export default class CardRequestService {
       return thisPlayer.saveAll()
     }
 
-    function updateOtherPlayer (otherPlayer: Player, cardToSlyDeal: CardKey, fromSetId: PropertySetId): Promise<*> {
+    function updateOtherPlayer (otherPlayer: Player, slyDealInfo: SlyDealInfo): Promise<*> {
+      if (slyDealInfo.cardType === LeftOverCardType) {
+        sideEffectUtils.removeFirstInstanceFromArray(slyDealInfo.card, otherPlayer.placedCards.leftOverCards)
+        return otherPlayer.save()
+      }
+
+      const { setId: fromSetId, card: cardToSlyDeal } = slyDealInfo
+
+      if (slyDealInfo.cardType !== SetCardType || !fromSetId) {
+        return Promise.reject(`Invalid sly deal info ${JSON.stringify(slyDealInfo)}`)
+      }
+
       const setToUpdateIndex = otherPlayer.placedCards.serializedPropertySets
         .findIndex(s => PropertySet.unserialize(s).getId() === fromSetId)
 
@@ -188,9 +198,17 @@ export default class CardRequestService {
     }
 
     function updateOtherPlayer (otherPlayer: Player, info: ForcedDealInfo): Promise<*> {
-      const { fromUserCard, toUserSetId, toUserCard } = info
+      const { cardType, fromUserCard, toUserSetId, toUserCard } = info
 
-      sideEffectUtils.removeCardFromSetBySetId(toUserCard, toUserSetId, otherPlayer.placedCards.serializedPropertySets)
+      if (cardType === LeftOverCardType) {
+        sideEffectUtils.removeFirstInstanceFromArray(info.toUserCard, otherPlayer.placedCards.leftOverCards)
+      } else if (cardType === SetCardType && toUserSetId) {
+        sideEffectUtils.removeCardFromSetBySetId(
+          toUserCard,
+          toUserSetId,
+          otherPlayer.placedCards.serializedPropertySets
+        )
+      }
 
       const hasBeenPlaced = monopoly.putInTheFirstNonFullSet(
         fromUserCard,

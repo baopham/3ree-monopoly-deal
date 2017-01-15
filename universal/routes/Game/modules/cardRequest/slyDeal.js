@@ -3,6 +3,7 @@ import { namespace, apiUrl } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { getCurrentPlayer } from '../gameSelectors'
 import PropertySet from '../../../../monopoly/PropertySet'
+import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { SlyDealInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -34,7 +35,7 @@ function onSlyDealUpdateEvent (change: SocketCardRequestChangeEvent) {
   return { type: UPDATE, payload: { cardRequest: change.new_val } }
 }
 
-function askToSlyDeal (playerToSlyDealFrom: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
+function askToSlyDealSetCard (playerToSlyDealFrom: Player, fromSet: PropertySet, cardToSlyDeal: CardKey) {
   return {
     types: [ASK_REQUEST, ASK_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
@@ -49,7 +50,31 @@ function askToSlyDeal (playerToSlyDealFrom: Player, fromSet: PropertySet, cardTo
         toUser: playerToSlyDealFrom.username,
         fromUser: currentPlayer.username,
         setId: fromSet.getId(),
+        cardType: SetCardType,
         card: cardToSlyDeal
+      }
+      return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/sly-deal`, payload)
+    }
+  }
+}
+
+function askToSlyDealLeftOverCard (playerToSlyDealFrom: Player, wildcardToSlyDeal: CardKey) {
+  return {
+    types: [ASK_REQUEST, ASK_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const currentGame = getState().currentGame
+      const currentPlayer = getCurrentPlayer(getState())
+
+      if (!currentPlayer) {
+        throw new Error('No player to perform the sly deal')
+      }
+
+      const payload: SlyDealInfo = {
+        toUser: playerToSlyDealFrom.username,
+        fromUser: currentPlayer.username,
+        setId: null,
+        cardType: LeftOverCardType,
+        card: wildcardToSlyDeal
       }
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/sly-deal`, payload)
     }
@@ -73,7 +98,8 @@ function reset () {
 
 export const actions = {
   onSlyDealUpdateEvent,
-  askToSlyDeal,
+  askToSlyDealSetCard,
+  askToSlyDealLeftOverCard,
   acceptSlyDeal,
   reset
 }

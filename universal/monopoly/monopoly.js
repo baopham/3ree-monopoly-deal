@@ -175,12 +175,12 @@ export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySet
 
   const hasBeenPlaced = serializedPropertySets
     .some((set, index) => {
-      if (set.identifier.key !== card.treatAs || PropertySet.unserialize(set).isFullSet()) {
+      // TODO: move this logic to PropertySet class
+      if (card.key !== PROPERTY_WILDCARD && set.identifier.key !== card.treatAs) {
         return false
       }
 
-      set.cards.push(cardKey)
-      return true
+      return PropertySet.unserialize(set).addCard(cardKey)
     })
 
   return hasBeenPlaced

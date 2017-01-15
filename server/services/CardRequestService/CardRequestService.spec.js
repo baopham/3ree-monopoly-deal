@@ -8,7 +8,7 @@ import {
 } from '../../../universal/monopoly/cards'
 import { getCardObject } from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
-import cardRequestTypes from '../../../universal/monopoly/cardRequestTypes'
+import cardRequestTypes, { SetCardType } from '../../../universal/monopoly/cardRequestTypes'
 
 describe('CardRequestService', function () {
   let cardRequestService
@@ -73,6 +73,7 @@ describe('CardRequestService', function () {
           gameId: fakeGame.id,
           type: cardRequestTypes.SLY_DEAL,
           info: {
+            cardType: SetCardType,
             fromUser: fakeFromPlayer.username,
             toUser: fakeToPlayer.username,
             setId: propertySetStub.getId(),

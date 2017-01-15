@@ -9,18 +9,25 @@ const types = {
 
 export type CardRequestType = $Keys<typeof types>
 
+export const SetCardType = 'set'
+export const LeftOverCardType = 'leftOverCard'
+
+export type CardType = 'set' | 'leftOverCard'
+
 export type SlyDealInfo = {
   fromUser: Username,
   toUser: Username,
-  setId: PropertySetId,
+  cardType: CardType,
+  setId: ?PropertySetId,
   card: CardKey
 }
 
 export type ForcedDealInfo = {
+  cardType: CardType,
   fromUser: Username,
   toUser: Username,
   fromUserSetId: PropertySetId,
-  toUserSetId: PropertySetId,
+  toUserSetId: ?PropertySetId,
   fromUserCard: CardKey,
   toUserCard: CardKey
 }

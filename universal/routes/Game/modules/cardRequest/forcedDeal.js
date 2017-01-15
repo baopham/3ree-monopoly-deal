@@ -2,6 +2,7 @@
 import { namespace, apiUrl } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { getCurrentPlayer } from '../gameSelectors'
+import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { ForcedDealInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -33,7 +34,7 @@ function onForcedDealUpdateEvent (change: SocketCardRequestChangeEvent) {
   return { type: UPDATE, payload: { cardRequest: change.new_val } }
 }
 
-function askToForceDeal (
+function askToForceDealSetCard (
   toPlayer: Player,
   toPlayerSetId: PropertySetId,
   toPlayerCard: CardKey,
@@ -51,9 +52,40 @@ function askToForceDeal (
       }
 
       const payload: ForcedDealInfo = {
+        cardType: SetCardType,
         toUser: toPlayer.username,
         fromUser: currentPlayer.username,
         toUserSetId: toPlayerSetId,
+        fromUserSetId: fromPlayerSetId,
+        toUserCard: toPlayerCard,
+        fromUserCard: fromPlayerCard
+      }
+      return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/force-deal`, payload)
+    }
+  }
+}
+
+function askToForceDealLeftOverCard (
+  toPlayer: Player,
+  toPlayerCard: CardKey,
+  fromPlayerSetId: PropertySetId,
+  fromPlayerCard: CardKey
+) {
+  return {
+    types: [ASK_REQUEST, ASK_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const currentGame = getState().currentGame
+      const currentPlayer = getCurrentPlayer(getState())
+
+      if (!currentPlayer) {
+        throw new Error('No player to perform a forced deal')
+      }
+
+      const payload: ForcedDealInfo = {
+        cardType: LeftOverCardType,
+        toUser: toPlayer.username,
+        fromUser: currentPlayer.username,
+        toUserSetId: undefined,
         fromUserSetId: fromPlayerSetId,
         toUserCard: toPlayerCard,
         fromUserCard: fromPlayerCard
@@ -80,7 +112,8 @@ function reset () {
 
 export const actions = {
   onForcedDealUpdateEvent,
-  askToForceDeal,
+  askToForceDealSetCard,
+  askToForceDealLeftOverCard,
   acceptForcedDeal,
   reset
 }
