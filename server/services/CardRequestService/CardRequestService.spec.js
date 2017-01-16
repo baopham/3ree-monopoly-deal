@@ -4,123 +4,190 @@ import { expect } from 'chai'
 import td from 'testdouble'
 import * as testUtils from '../../test-utils'
 import {
-  PROPERTY_BLUE
+  PROPERTY_BLUE,
+  PROPERTY_WILDCARD
 } from '../../../universal/monopoly/cards'
 import { getCardObject } from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
-import cardRequestTypes, { SetCardType } from '../../../universal/monopoly/cardRequestTypes'
+import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
+import type { CardType } from '../../../universal/monopoly/cardRequestTypes'
 
 describe('CardRequestService', function () {
-  let cardRequestService
+  afterEach(function () {
+    td.reset()
+  })
 
   describe('#acceptSlyDeal', function () {
-    let fakeGame
-    let fakeFromPlayer
-    let fakeToPlayer
-    let cardRequestRepository
-    let playerRepository
-    let gameHistoryService
-    let fakeCardRequest
-
     const gameId = 'game-id'
-    const propertySetStub = new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE])
-    const [expectedCardToSlyDeal] = propertySetStub.getCards()
+    const propertyBlueNonFullSetStub = new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE])
 
-    afterEach(function () {
-      td.reset()
-    })
+    describe('Given the sly dealt card is of set card type', function () {
+      const expectedCardToSlyDeal = propertyBlueNonFullSetStub.getCards()[0]
 
-    beforeEach(function () {
-      setupGameAndPlayers()
-      setupCardRequest()
-      setupCardRequestRepository()
-      setupPlayerRepository()
-      setupGameHistoryService()
+      beforeEach(function () {
+        const fakeFromPlayerOverride = {}
 
-      const CardRequestService = require('./CardRequestService').default
-
-      cardRequestService = new CardRequestService()
-
-      //////
-      function setupGameAndPlayers () {
-        fakeFromPlayer = testUtils.fakePlayer({
-          id: 'foo-bar',
-          gameId
-        })
-
-        fakeToPlayer = testUtils.fakePlayer({
-          id: 'foo-bar-2',
-          gameId,
+        const fakeToPlayerOverride = {
           placedCards: {
             bank: [],
             leftOverCards: [],
-            serializedPropertySets: [propertySetStub.serialize()]
+            serializedPropertySets: [propertyBlueNonFullSetStub.serialize()]
           }
+        }
+
+        setUpDependencies.bind(this)(SetCardType, expectedCardToSlyDeal, fakeFromPlayerOverride, fakeToPlayerOverride)
+      })
+
+      it('should delete the request and transfer the card over to requester', async function () {
+        expect(this.fakeFromPlayer.placedCards.serializedPropertySets).to.be.empty
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
+
+        await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
+
+        td.verify(this.fakeCardRequest.delete(), { times: 1 })
+        expect(this.fakeFromPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets).to.be.empty
+      })
+
+      it('should log the action', async function () {
+        await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
+
+        td.verify(this.gameHistoryService.record(
+          this.fakeGame.id,
+          `${this.fakeFromPlayer.username} sly dealt ${expectedCardToSlyDeal} from ${this.fakeToPlayer.username}`,
+          [this.fakeToPlayer.username]
+        ), { times: 1 })
+      })
+    })
+
+    describe('Given the sly dealt card is in the left over cards section', function () {
+      const expectedCardToSlyDeal = PROPERTY_WILDCARD
+
+      beforeEach(function () {
+        const fakeFromPlayerOverride = {
+          placedCards: {
+            bank: [],
+            leftOverCards: [],
+            serializedPropertySets: [propertyBlueNonFullSetStub.serialize()]
+          }
+        }
+
+        const fakeToPlayerOverride = {
+          placedCards: {
+            bank: [],
+            leftOverCards: [PROPERTY_WILDCARD],
+            serializedPropertySets: []
+          }
+        }
+
+        setUpDependencies
+          .bind(this)(LeftOverCardType, expectedCardToSlyDeal, fakeFromPlayerOverride, fakeToPlayerOverride)
+      })
+
+      it('should delete the request and transfer the card over to requester', async function () {
+        let fromPlayerSet = PropertySet.unserialize(this.fakeFromPlayer.placedCards.serializedPropertySets[0])
+        expect(fromPlayerSet.isFullSet()).to.be.false
+        expect(this.fakeToPlayer.placedCards.leftOverCards).to.eql([expectedCardToSlyDeal])
+
+        await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
+
+        td.verify(this.fakeCardRequest.delete(), { times: 1 })
+
+        fromPlayerSet = PropertySet.unserialize(this.fakeFromPlayer.placedCards.serializedPropertySets[0])
+        expect(fromPlayerSet.isFullSet()).to.be.true
+        expect(this.fakeToPlayer.placedCards.leftOverCards).to.be.empty
+      })
+
+      it('should log the action', async function () {
+        await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
+
+        td.verify(this.gameHistoryService.record(
+          this.fakeGame.id,
+          `${this.fakeFromPlayer.username} sly dealt ${expectedCardToSlyDeal} from ${this.fakeToPlayer.username}`,
+          [this.fakeToPlayer.username]
+        ), { times: 1 })
+      })
+    })
+
+    function setUpDependencies (
+      cardType: CardType,
+      expectedCardToSlyDeal: CardKey,
+      fakeFromPlayerOverride: Object,
+      fakeToPlayerOverride: Object
+    ) {
+      this.cardRequestService = null
+      this.fakeGame = null
+      this.fakeFromPlayer = null
+      this.fakeToPlayer = null
+      this.gameHistoryService = null
+      this.fakeCardRequest = null
+
+      setupGameAndPlayers.bind(this)()
+      setupCardRequest.bind(this)()
+      setupCardRequestRepository.bind(this)()
+      setupPlayerRepository.bind(this)()
+      setupGameHistoryService.bind(this)()
+
+      const CardRequestService = require('./CardRequestService').default
+
+      this.cardRequestService = new CardRequestService()
+
+      //////
+      function setupGameAndPlayers () {
+        this.fakeFromPlayer = testUtils.fakePlayer({
+          id: 'foo-bar',
+          gameId,
+          ...fakeFromPlayerOverride
         })
 
-        fakeGame = testUtils.fakeGame({
+        this.fakeToPlayer = testUtils.fakePlayer({
+          id: 'foo-bar-2',
+          gameId,
+          ...fakeToPlayerOverride
+        })
+
+        this.fakeGame = testUtils.fakeGame({
           id: gameId,
-          currentTurn: fakeFromPlayer.username,
-          players: [fakeFromPlayer, fakeToPlayer]
+          currentTurn: this.fakeFromPlayer.username,
+          players: [this.fakeFromPlayer, this.fakeToPlayer]
         })
 
-        fakeFromPlayer.game = fakeGame
-        fakeToPlayer.game = fakeGame
+        this.fakeFromPlayer.game = this.fakeGame
+        this.fakeToPlayer.game = this.fakeGame
       }
 
       function setupCardRequest () {
-        fakeCardRequest = testUtils.fakeCardRequest({
-          gameId: fakeGame.id,
+        this.fakeCardRequest = testUtils.fakeCardRequest({
+          gameId: this.fakeGame.id,
           type: cardRequestTypes.SLY_DEAL,
           info: {
-            cardType: SetCardType,
-            fromUser: fakeFromPlayer.username,
-            toUser: fakeToPlayer.username,
-            setId: propertySetStub.getId(),
+            cardType,
+            fromUser: this.fakeFromPlayer.username,
+            toUser: this.fakeToPlayer.username,
+            setId: cardType === SetCardType ? propertyBlueNonFullSetStub.getId() : null,
             card: expectedCardToSlyDeal
           }
         })
       }
 
       function setupCardRequestRepository () {
-        cardRequestRepository = td.replace('../../repositories/CardRequestRepository').default
-        td.when(cardRequestRepository.find(fakeCardRequest.id)).thenResolve(fakeCardRequest)
+        const cardRequestRepository = td.replace('../../repositories/CardRequestRepository').default
+        td.when(cardRequestRepository.find(this.fakeCardRequest.id)).thenResolve(this.fakeCardRequest)
       }
 
       function setupPlayerRepository () {
-        playerRepository = td.replace('../../repositories/PlayerRepository').default
+        const playerRepository = td.replace('../../repositories/PlayerRepository').default
 
-        td.when(playerRepository.findByGameIdAndUsername(fakeGame.id, fakeFromPlayer.username))
-          .thenResolve(fakeFromPlayer)
+        td.when(playerRepository.findByGameIdAndUsername(this.fakeGame.id, this.fakeFromPlayer.username))
+          .thenResolve(this.fakeFromPlayer)
 
-        td.when(playerRepository.findByGameIdAndUsername(fakeGame.id, fakeToPlayer.username))
-          .thenResolve(fakeToPlayer)
+        td.when(playerRepository.findByGameIdAndUsername(this.fakeGame.id, this.fakeToPlayer.username))
+          .thenResolve(this.fakeToPlayer)
       }
 
       function setupGameHistoryService () {
-        gameHistoryService = td.replace('../GameHistoryService').default
+        this.gameHistoryService = td.replace('../GameHistoryService').default
       }
-    })
-
-    it('should delete the request and transfer the card over to requester', async function () {
-      expect(fakeFromPlayer.placedCards.serializedPropertySets).to.be.empty
-      expect(fakeToPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
-
-      await cardRequestService.acceptSlyDeal(fakeCardRequest.id)
-
-      td.verify(fakeCardRequest.delete(), { times: 1 })
-      expect(fakeFromPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
-      expect(fakeToPlayer.placedCards.serializedPropertySets).to.be.empty
-    })
-
-    it('should log the action', async function () {
-      await cardRequestService.acceptSlyDeal(fakeCardRequest.id)
-
-      td.verify(gameHistoryService.record(
-        fakeGame.id,
-        `${fakeFromPlayer.username} sly dealt ${expectedCardToSlyDeal} from ${fakeToPlayer.username}`,
-        [fakeToPlayer.username]
-      ), { times: 1 })
-    })
+    }
   })
 })
