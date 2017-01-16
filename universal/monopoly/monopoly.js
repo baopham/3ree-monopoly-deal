@@ -168,7 +168,13 @@ export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number 
  */
 export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySets: SerializedPropertySet[]): boolean {
   const hasBeenPlaced = serializedPropertySets
-    .some((set, index) => PropertySet.unserialize(set).addCard(cardKey))
+    .some((set, index) => {
+      const canAddCard = PropertySet.unserialize(set).canAddCard(cardKey)
+
+      canAddCard && set.cards.push(cardKey)
+
+      return canAddCard
+    })
 
   return hasBeenPlaced
 }

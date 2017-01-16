@@ -11,10 +11,17 @@ export function removeCardFromSetBySetId (
 ): void {
   const setToUpdateIndex = serializedPropertySets
     .findIndex(s => PropertySet.unserialize(s).getId() === setId)
+
   const setToUpdate = serializedPropertySets[setToUpdateIndex]
+
   removeCardFromSet(card, setToUpdate)
+
+  if (!setToUpdate.cards.length) {
+    serializedPropertySets.splice(setToUpdateIndex, 1)
+  }
 }
 
+// Remember to clean up this set if the set becomes empty after removing the card.
 export function removeCardFromSet (card: CardKey, set: SerializedPropertySet): void {
   const cardIndex = set.cards.indexOf(card)
   set.cards.splice(cardIndex, 1)
