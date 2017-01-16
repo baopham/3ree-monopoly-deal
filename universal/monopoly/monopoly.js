@@ -1,6 +1,5 @@
 /* @flow */
 import {
-  CARDS,
   SAY_NO,
   PROPERTY_CARD_TYPE,
   PROPERTY_WILDCARD_TYPE,
@@ -12,16 +11,13 @@ import {
   RENT_ALL_COLOUR,
   FORCED_DEAL,
   BIRTHDAY,
-  DEBT_COLLECTOR
+  DEBT_COLLECTOR,
+  getCardObject
 } from './cards'
 import PropertySet from './PropertySet'
 
 export const MAX_NUMBER_OF_ACTIONS = 3
 export const NUMBER_OF_FULL_SETS_TO_WIN = 3
-
-export function getCardObject (cardKeyOrCard: CardKeyOrCard): Card {
-  return typeof cardKeyOrCard === 'string' ? CARDS[cardKeyOrCard] : cardKeyOrCard
-}
 
 export function getPropertySetIdentifier (cardKeyOrCard: CardKeyOrCard): Card {
   return getCardObject(getCardObject(cardKeyOrCard).treatAs)
@@ -171,17 +167,8 @@ export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number 
  * Return boolean: if false, no set to put in, if true, the card has been put in a set
  */
 export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySets: SerializedPropertySet[]): boolean {
-  const card = getCardObject(cardKey)
-
   const hasBeenPlaced = serializedPropertySets
-    .some((set, index) => {
-      // TODO: move this logic to PropertySet class
-      if (card.key !== PROPERTY_WILDCARD && set.identifier.key !== card.treatAs) {
-        return false
-      }
-
-      return PropertySet.unserialize(set).addCard(cardKey)
-    })
+    .some((set, index) => PropertySet.unserialize(set).addCard(cardKey))
 
   return hasBeenPlaced
 }

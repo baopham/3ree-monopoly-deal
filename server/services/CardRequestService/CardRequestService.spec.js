@@ -5,9 +5,9 @@ import td from 'testdouble'
 import * as testUtils from '../../test-utils'
 import {
   PROPERTY_BLUE,
-  PROPERTY_WILDCARD
+  PROPERTY_WILDCARD,
+  getCardObject
 } from '../../../universal/monopoly/cards'
-import { getCardObject } from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
 import type { CardType } from '../../../universal/monopoly/cardRequestTypes'

@@ -8,10 +8,10 @@ import {
   HOUSE,
   PROPERTY_WILDCARD,
   PROPERTY_BLACK,
-  PROPERTY_LIGHT_GREEN
+  PROPERTY_LIGHT_GREEN,
+  getCardObject
 } from './cards'
 import PropertySet from './PropertySet'
-import { getCardObject } from './monopoly'
 
 const propertyBlueIdentifier = getCardObject(PROPERTY_BLUE)
 

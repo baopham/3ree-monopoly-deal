@@ -13,7 +13,8 @@ import {
   RENT_ALL_COLOUR,
   PROPERTY_WILDCARD,
   HOUSE,
-  HOTEL
+  HOTEL,
+  getCardObject
 } from './cards'
 import * as monopoly from './monopoly'
 import PropertySet from './PropertySet'
@@ -25,7 +26,7 @@ describe('monopoly', function () {
       const placedCards: PlacedCards = {
         bank: [],
         serializedPropertySets: [{
-          identifier: monopoly.getCardObject(PROPERTY_BLUE),
+          identifier: getCardObject(PROPERTY_BLUE),
           cards: [PROPERTY_BLUE]
         }],
         leftOverCards: []
@@ -38,7 +39,7 @@ describe('monopoly', function () {
       const placedCards: PlacedCards = {
         bank: [],
         serializedPropertySets: [{
-          identifier: monopoly.getCardObject(PROPERTY_PINK),
+          identifier: getCardObject(PROPERTY_PINK),
           cards: [PROPERTY_PINK]
         }],
         leftOverCards: []
@@ -72,7 +73,7 @@ describe('monopoly', function () {
         const placedCards: PlacedCards = {
           bank: [],
           serializedPropertySets: [{
-            identifier: monopoly.getCardObject(PROPERTY_RED),
+            identifier: getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED]
           }],
           leftOverCards: []
@@ -97,7 +98,7 @@ describe('monopoly', function () {
         const placedCards: PlacedCards = {
           bank: [],
           serializedPropertySets: [{
-            identifier: monopoly.getCardObject(PROPERTY_RED),
+            identifier: getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED]
           }],
           leftOverCards: []
@@ -113,7 +114,7 @@ describe('monopoly', function () {
           const placedCards: PlacedCards = {
             bank: [],
             serializedPropertySets: [{
-              identifier: monopoly.getCardObject(PROPERTY_BLUE),
+              identifier: getCardObject(PROPERTY_BLUE),
               cards: [PROPERTY_BLUE_OR_GREEN]
             }],
             leftOverCards: []
@@ -126,7 +127,7 @@ describe('monopoly', function () {
           const placedCards: PlacedCards = {
             bank: [],
             serializedPropertySets: [{
-              identifier: monopoly.getCardObject(PROPERTY_PINK),
+              identifier: getCardObject(PROPERTY_PINK),
               cards: [PROPERTY_PINK_OR_ORANGE]
             }],
             leftOverCards: []
@@ -143,14 +144,14 @@ describe('monopoly', function () {
         'a full set C2 that cannot be merged and a set of the same colour as A', function () {
         it('should merge other property sets into mine with no left over non property cards', function () {
           const mine = [
-            new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE]).serialize(),
-            new PropertySet(monopoly.getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD]).serialize()
+            new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE]).serialize(),
+            new PropertySet(getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD]).serialize()
           ]
 
           const theirs = [
-            new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE]).serialize(),
-            new PropertySet(monopoly.getCardObject(PROPERTY_RED), [PROPERTY_RED]).serialize(),
-            new PropertySet(monopoly.getCardObject(PROPERTY_PINK), [
+            new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE]).serialize(),
+            new PropertySet(getCardObject(PROPERTY_RED), [PROPERTY_RED]).serialize(),
+            new PropertySet(getCardObject(PROPERTY_PINK), [
               PROPERTY_PINK,
               PROPERTY_PINK,
               PROPERTY_PINK,
@@ -168,25 +169,25 @@ describe('monopoly', function () {
 
           // Full set A
           expect(mine.shift()).to.eql({
-            identifier: monopoly.getCardObject(PROPERTY_BLUE),
+            identifier: getCardObject(PROPERTY_BLUE),
             cards: [PROPERTY_BLUE, PROPERTY_BLUE]
           })
 
           // Set B now becomes a full set
           expect(mine.shift()).to.eql({
-            identifier: monopoly.getCardObject(PROPERTY_RED),
+            identifier: getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED, PROPERTY_WILDCARD, PROPERTY_RED]
           })
 
           // A new set since set A is full
           expect(mine.shift()).to.eql({
-            identifier: monopoly.getCardObject(PROPERTY_BLUE),
+            identifier: getCardObject(PROPERTY_BLUE),
             cards: [PROPERTY_BLUE]
           })
 
           // Completely new set C
           expect(mine.shift()).to.eql({
-            identifier: monopoly.getCardObject(PROPERTY_PINK),
+            identifier: getCardObject(PROPERTY_PINK),
             cards: [
               PROPERTY_PINK,
               PROPERTY_PINK,
@@ -202,7 +203,7 @@ describe('monopoly', function () {
     describe('Given I have a non full set A', function () {
       describe('Given the other player has a full set A2 with house and hotel of the same colour as A', function () {
         it('should merge into 2 different property sets', function () {
-          const setIdentifier = monopoly.getCardObject(PROPERTY_BLUE)
+          const setIdentifier = getCardObject(PROPERTY_BLUE)
           const mine = [
             new PropertySet(setIdentifier, [PROPERTY_BLUE])
           ]

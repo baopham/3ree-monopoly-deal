@@ -4,9 +4,9 @@ import { expect } from 'chai'
 import {
   PROPERTY_BLUE,
   PROPERTY_WILDCARD,
-  HOUSE
+  HOUSE,
+  getCardObject
 } from '../universal/monopoly/cards'
-import { getCardObject } from '../universal/monopoly/monopoly'
 import * as propertySetUtils from './property-set-utils'
 
 const propertyBlueIdentifier = getCardObject(PROPERTY_BLUE)
