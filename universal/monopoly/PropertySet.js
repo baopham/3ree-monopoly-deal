@@ -145,8 +145,8 @@ export default class PropertySet {
 
   serialize (): SerializedPropertySet {
     return {
-      cards: this.getCards(),
-      identifier: this.identifier
+      cards: [...this.getCards()],
+      identifier: { ...this.identifier }
     }
   }
 
