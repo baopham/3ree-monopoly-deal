@@ -7,7 +7,8 @@ import {
   PROPERTY_WILDCARD,
   HOUSE,
   HOTEL,
-  newDeck
+  newDeck,
+  getCardObject
 } from '../../../universal/monopoly/cards'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import * as paymentHelper from './paymentHelper'
@@ -56,13 +57,13 @@ export default class PlayerService {
         return putIntoASet(player)
       }
 
-      const card = monopoly.getCardObject(cardKey)
+      const card = getCardObject(cardKey)
 
       // Side effect
       const hasBeenPlaced = monopoly.putInTheFirstNonFullSet(cardKey, player.placedCards.serializedPropertySets)
 
       if (!hasBeenPlaced) {
-        const newPropertySet = new PropertySet(monopoly.getCardObject(card.treatAs), [cardKey]).serialize()
+        const newPropertySet = new PropertySet(getCardObject(card.treatAs), [cardKey]).serialize()
         sideEffectUtils.addSetToPlacedCards(newPropertySet, player.placedCards)
       }
 

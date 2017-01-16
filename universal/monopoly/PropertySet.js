@@ -1,12 +1,12 @@
 /* @flow */
 import {
-  CARDS,
   HOUSE,
   HOTEL,
   PROPERTY_WILDCARD,
   RENT_ALL_COLOUR,
   HOUSE_ADDON_AMOUNT,
-  HOTEL_ADDON_AMOUNT
+  HOTEL_ADDON_AMOUNT,
+  getCardObject
 } from './cards'
 
 export type PropertySetId = string
@@ -58,7 +58,7 @@ export default class PropertySet {
       return false
     }
 
-    if (![HOUSE, HOTEL, PROPERTY_WILDCARD].includes(card) && CARDS[card].treatAs !== this.identifier.key) {
+    if (![HOUSE, HOTEL, PROPERTY_WILDCARD].includes(card) && getCardObject(card).treatAs !== this.identifier.key) {
       return false
     }
 
@@ -145,8 +145,8 @@ export default class PropertySet {
 
   serialize (): SerializedPropertySet {
     return {
-      cards: this.getCards(),
-      identifier: this.identifier
+      cards: [...this.getCards()],
+      identifier: { ...this.identifier }
     }
   }
 

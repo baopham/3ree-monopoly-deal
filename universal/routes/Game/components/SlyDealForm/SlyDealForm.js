@@ -2,39 +2,54 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
-import MultiplePlayerPropertyCardSelector from '../MultiplePlayerPropertyCardSelector'
+import MultiplePlayerCardSelector from '../MultiplePlayerCardSelector'
 import PropertySetClass from '../../../../monopoly/PropertySet'
+import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
+import type { CardType } from '../../../../monopoly/cardRequestTypes'
 
 type Props = {
   header: string,
   subheader: string,
   players: Player[],
-  onSelect: (player: Player, set: PropertySetClass, card: CardKey) => void,
+  onSetCardSelect: (player: Player, set: PropertySetClass, card: CardKey) => void,
+  onLeftOverCardSelect: (player: Player, card: CardKey) => void,
   onCancel: () => void,
   playerPropertySetFilter: (propertySet: PropertySetClass) => boolean
 }
 
 type State = {
   player: Player,
+  cardType: CardType,
   setIndex: number,
   selectedCardIndex: number
 }
 
-export default class MultiplePlayerPropertyCardSelectorForm extends React.Component {
+export default class SlyDealForm extends React.Component {
   props: Props
 
   state: State
 
   state = {
     player: undefined,
+    cardType: undefined,
     setIndex: undefined,
     selectedCardIndex: undefined
   }
 
-  onCardSelect = (player: Player, setIndex: number, selectedCardIndex: number) => {
+  onSetCardSelect = (player: Player, setIndex: number, selectedCardIndex: number) => {
     this.setState({
       player,
+      cardType: SetCardType,
       setIndex,
+      selectedCardIndex
+    })
+  }
+
+  onLeftOverCardSelect = (player: Player, selectedCardIndex: number) => {
+    this.setState({
+      player,
+      cardType: LeftOverCardType,
+      setIndex: undefined,
       selectedCardIndex
     })
   }
@@ -42,18 +57,31 @@ export default class MultiplePlayerPropertyCardSelectorForm extends React.Compon
   onCardUnselect = () => {
     this.setState({
       player: undefined,
+      cardType: undefined,
       setIndex: undefined,
       selectedCardIndex: undefined
     })
   }
 
   select = () => {
-    const { player, setIndex, selectedCardIndex } = this.state
-    if (player === undefined || setIndex === undefined || selectedCardIndex === undefined) {
+    const { player, cardType, setIndex, selectedCardIndex } = this.state
+    if (player === undefined || cardType === undefined || selectedCardIndex === undefined) {
       return
     }
-    const set = player.placedCards.serializedPropertySets[setIndex]
-    this.props.onSelect(player, PropertySetClass.unserialize(set), set.cards[selectedCardIndex])
+
+    if (cardType === LeftOverCardType) {
+      return this.props.onLeftOverCardSelect(player, player.placedCards.leftOverCards[selectedCardIndex])
+    }
+
+    if (cardType === SetCardType && setIndex !== undefined) {
+      const set = player.placedCards.serializedPropertySets[setIndex]
+
+      return this.props.onSetCardSelect(
+        player,
+        PropertySetClass.unserialize(set),
+        set.cards[selectedCardIndex]
+      )
+    }
   }
 
   render () {
@@ -70,9 +98,10 @@ export default class MultiplePlayerPropertyCardSelectorForm extends React.Compon
 
         <Modal.Body>
           <h5>{subheader}</h5>
-          <MultiplePlayerPropertyCardSelector
+          <MultiplePlayerCardSelector
             players={players}
-            onCardSelect={this.onCardSelect}
+            onSetCardSelect={this.onSetCardSelect}
+            onLeftOverCardSelect={this.onLeftOverCardSelect}
             onCardUnselect={this.onCardUnselect}
             playerPropertySetFilter={playerPropertySetFilter}
           />

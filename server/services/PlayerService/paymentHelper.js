@@ -1,4 +1,5 @@
 /* @flow */
+import { getCardObject } from '../../../universal/monopoly/cards'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
@@ -96,7 +97,7 @@ function convertMapOfNonMoneyCards (
   mapOfNonMoneyCards.forEach((cards, setId) => {
     const sortedCards = PropertySet.sortCards(cards)
     const identifierKey = PropertySet.fromIdToIdentifierKey(setId)
-    const propertySet = new PropertySet(monopoly.getCardObject(identifierKey), [])
+    const propertySet = new PropertySet(getCardObject(identifierKey), [])
 
     sortedCards.filter(card => !propertySet.addCard(card)).forEach(card => leftOverCards.push(card))
     propertySet.getCards().length && newSets.push(propertySet.serialize())

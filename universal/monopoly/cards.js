@@ -495,6 +495,10 @@ export function shuffle (cards: CardKey[]): CardKey[] {
   return cards
 }
 
+export function getCardObject (cardKeyOrCard: CardKeyOrCard): Card {
+  return typeof cardKeyOrCard === 'string' ? CARDS[cardKeyOrCard] : cardKeyOrCard
+}
+
 // Side effect
 function setMissingProperties (cards: Object): MapOfCards {
   Object.keys(cards).map((key) => {

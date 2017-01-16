@@ -3,16 +3,24 @@ import React from 'react'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { Modal, Button, Panel } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
-import MultiplePlayerPropertyCardSelector from '../MultiplePlayerPropertyCardSelector'
-import type { PropertySetId } from '../../../../monopoly/PropertySet'
+import MultiplePlayerCardSelector from '../MultiplePlayerCardSelector'
 import PropertySetClass from '../../../../monopoly/PropertySet'
+import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
+import type { PropertySetId } from '../../../../monopoly/PropertySet'
+import type { CardType } from '../../../../monopoly/cardRequestTypes'
 
 type Props = {
   otherPlayers: Player[],
   thisPlayer: Player,
-  onSubmit: (
+  onSetCardSelect: (
     playerToForceDeal: Player,
     cardToForceDealSetId: PropertySetId,
+    cardToForceDeal: CardKey,
+    cardUsedToSwapSetId: PropertySetId,
+    cardUsedToSwap: CardKey
+  ) => void,
+  onLeftOverCardSelect: (
+    playerToForceDeal: Player,
     cardToForceDeal: CardKey,
     cardUsedToSwapSetId: PropertySetId,
     cardUsedToSwap: CardKey
@@ -22,6 +30,7 @@ type Props = {
 
 type State = {
   playerToForceDeal: Player,
+  cardType: CardType,
   cardUsedToSwapSetIndex: number,
   cardUsedToSwapIndex: CardKey,
   cardToForceDealSetIndex: number,
@@ -35,6 +44,7 @@ export default class ForcedDealForm extends React.Component {
 
   state = {
     playerToForceDeal: undefined,
+    cardType: undefined,
     cardUsedToSwapSetIndex: undefined,
     cardUsedToSwapIndex: undefined,
     cardToForceDealSetIndex: undefined,
@@ -60,13 +70,28 @@ export default class ForcedDealForm extends React.Component {
     return cardUsedToSwapSetIndex === setIndex && cardUsedToSwapIndex === cardIndex
   }
 
-  onSelectCardToForceDeal = (player: Player, setIndex: number, cardIndex: number) => {
-    this.setState({ playerToForceDeal: player, cardToForceDealSetIndex: setIndex, cardToForceDealIndex: cardIndex })
+  onSelectSetCardToForceDeal = (player: Player, setIndex: number, cardIndex: number) => {
+    this.setState({
+      playerToForceDeal: player,
+      cardType: SetCardType,
+      cardToForceDealSetIndex: setIndex,
+      cardToForceDealIndex: cardIndex
+    })
+  }
+
+  onSelectLeftOverCardToForceDeal = (player: Player, cardIndex: number) => {
+    this.setState({
+      playerToForceDeal: player,
+      cardType: LeftOverCardType,
+      cardToForceDealSetIndex: undefined,
+      cardToForceDealIndex: cardIndex
+    })
   }
 
   onUnselectCardToForceDeal = () => {
     this.setState({
       playerToForceDeal: undefined,
+      cardType: undefined,
       cardToForceDealSetIndex: undefined,
       cardToForceDealIndex: undefined
     })
@@ -97,9 +122,10 @@ export default class ForcedDealForm extends React.Component {
     const { otherPlayers } = this.props
 
     return (
-      <MultiplePlayerPropertyCardSelector
+      <MultiplePlayerCardSelector
         players={otherPlayers}
-        onCardSelect={this.onSelectCardToForceDeal}
+        onSetCardSelect={this.onSelectSetCardToForceDeal}
+        onLeftOverCardSelect={this.onSelectLeftOverCardToForceDeal}
         onCardUnselect={this.onUnselectCardToForceDeal}
         playerPropertySetFilter={set => !set.isFullSet()}
       />
@@ -108,6 +134,7 @@ export default class ForcedDealForm extends React.Component {
 
   submit = () => {
     const {
+      cardType,
       playerToForceDeal,
       cardUsedToSwapSetIndex,
       cardUsedToSwapIndex,
@@ -116,30 +143,42 @@ export default class ForcedDealForm extends React.Component {
     } = this.state
 
     if (
+      cardType === undefined ||
       playerToForceDeal === undefined ||
       cardUsedToSwapSetIndex === undefined ||
       cardUsedToSwapIndex === undefined ||
-      cardToForceDealSetIndex === undefined ||
       cardToForceDealIndex === undefined
     ) {
       return
     }
 
-    const { thisPlayer, onSubmit } = this.props
+    const { thisPlayer, onSetCardSelect, onLeftOverCardSelect } = this.props
     const unserialize = PropertySetClass.unserialize
 
     const cardUsedToSwapSet = unserialize(thisPlayer.placedCards.serializedPropertySets[cardUsedToSwapSetIndex])
-    const cardToForceDealSet = unserialize(
-      playerToForceDeal.placedCards.serializedPropertySets[cardToForceDealSetIndex]
-    )
 
-    onSubmit(
-      playerToForceDeal,
-      cardToForceDealSet.getId(),
-      cardToForceDealSet.cards[cardToForceDealIndex],
-      cardUsedToSwapSet.getId(),
-      cardUsedToSwapSet.cards[cardUsedToSwapIndex]
-    )
+    if (cardType === LeftOverCardType) {
+      return onLeftOverCardSelect(
+        playerToForceDeal,
+        playerToForceDeal.placedCards.leftOverCards[cardToForceDealIndex],
+        cardUsedToSwapSet.getId(),
+        cardUsedToSwapSet.cards[cardUsedToSwapIndex]
+      )
+    }
+
+    if (cardType === SetCardType && cardToForceDealSetIndex !== undefined) {
+      const cardToForceDealSet = unserialize(
+        playerToForceDeal.placedCards.serializedPropertySets[cardToForceDealSetIndex]
+      )
+
+      return onSetCardSelect(
+        playerToForceDeal,
+        cardToForceDealSet.getId(),
+        cardToForceDealSet.cards[cardToForceDealIndex],
+        cardUsedToSwapSet.getId(),
+        cardUsedToSwapSet.cards[cardUsedToSwapIndex]
+      )
+    }
   }
 
   render () {

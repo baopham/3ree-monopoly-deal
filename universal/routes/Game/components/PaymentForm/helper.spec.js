@@ -2,14 +2,14 @@
 /* eslint-env node, mocha */
 import { expect } from 'chai'
 import * as helper from './helper'
-import * as monopoly from '../../../../monopoly/monopoly'
 import {
   PROPERTY_BLUE,
   PROPERTY_RED,
   HOUSE,
   PROPERTY_WILDCARD,
   MONEY_1M,
-  MONEY_2M
+  MONEY_2M,
+  getCardObject
 } from '../../../../monopoly/cards'
 import PropertySet from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
@@ -19,8 +19,8 @@ describe('PaymentForm: helper', function () {
     describe('Given I want to pay by giving some of the properties from my full sets', function () {
       it('should return a map of unique property set ids and the selected non-money cards', function () {
         const propertySets = [
-          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]),
-          new PropertySet(monopoly.getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD])
+          new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE]),
+          new PropertySet(getCardObject(PROPERTY_RED), [PROPERTY_RED, PROPERTY_WILDCARD])
         ]
 
         const serializedPropertySets = propertySets.map(s => s.serialize())
@@ -46,7 +46,7 @@ describe('PaymentForm: helper', function () {
     describe('Given I need to pay by giving the HOUSE from a full set', function () {
       it('should return a map of set id and selected card', function () {
         const propertySets = [
-          new PropertySet(monopoly.getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
+          new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
         ]
 
         const serializedPropertySets = propertySets.map(s => s.serialize())

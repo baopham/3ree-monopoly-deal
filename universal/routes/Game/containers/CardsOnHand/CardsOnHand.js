@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
-import MultiplePlayerPropertyCardSelectorForm from '../../components/MultiplePlayerPropertyCardSelectorForm'
+import SlyDealForm from '../../components/SlyDealForm'
 import ForcedDealForm from '../../components/ForcedDealForm'
 import { MAX_CARDS_IN_HAND, SLY_DEAL, FORCED_DEAL } from '../../../../monopoly/cards'
 import PropertySetClass from '../../../../monopoly/PropertySet'
@@ -19,10 +19,17 @@ type Props = {
   isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
-  askToSlyDeal: (otherPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => void,
-  askToForceDeal: (
+  askToSlyDealSetCard: (otherPlayer: Player, fromSet: PropertySetClass, selectedCard: CardKey) => void,
+  askToSlyDealLeftOverCard: (otherPlayer: Player, selectedCard: CardKey) => void,
+  askToForceDealSetCard: (
     toPlayer: Player,
     toPlayerSetId: PropertySetId,
+    toPlayerCard: CardKey,
+    fromPlayerSetId: PropertySetId,
+    fromPlayerCard: CardKey
+  ) => void,
+  askToForceDealLeftOverCard: (
+    toPlayer: Player,
     toPlayerCard: CardKey,
     fromPlayerSetId: PropertySetId,
     fromPlayerCard: CardKey
@@ -96,8 +103,14 @@ export class CardsOnHand extends React.Component {
     this.props.playCard(card)
   }
 
-  onSlyDeal = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
-    this.props.askToSlyDeal(playerToSlyDealFrom, fromSet, selectedCard)
+  onSlyDealSetCard = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
+    this.props.askToSlyDealSetCard(playerToSlyDealFrom, fromSet, selectedCard)
+    this.props.discardCard(SLY_DEAL)
+    this.onCancelSlyDealRequest()
+  }
+
+  onSlyDealLeftOverCard = (playerToSlyDealFrom: Player, selectedCard: CardKey) => {
+    this.props.askToSlyDealLeftOverCard(playerToSlyDealFrom, selectedCard)
     this.props.discardCard(SLY_DEAL)
     this.onCancelSlyDealRequest()
   }
@@ -106,16 +119,32 @@ export class CardsOnHand extends React.Component {
     this.setState({ slyDealing: false })
   }
 
-  onForceDeal = (
+  onForceDealSetCard = (
     toPlayer: Player,
     toPlayerSetId: PropertySetId,
     toPlayerCard: CardKey,
     fromPlayerSetId: PropertySetId,
     fromPlayerCard: CardKey
   ) => {
-    this.props.askToForceDeal(
+    this.props.askToForceDealSetCard(
       toPlayer,
       toPlayerSetId,
+      toPlayerCard,
+      fromPlayerSetId,
+      fromPlayerCard
+    )
+    this.props.discardCard(FORCED_DEAL)
+    this.onCancelForcedDealRequest()
+  }
+
+  onForceDealLeftOverCard = (
+    toPlayer: Player,
+    toPlayerCard: CardKey,
+    fromPlayerSetId: PropertySetId,
+    fromPlayerCard: CardKey
+  ) => {
+    this.props.askToForceDealLeftOverCard(
+      toPlayer,
       toPlayerCard,
       fromPlayerSetId,
       fromPlayerCard
@@ -133,12 +162,13 @@ export class CardsOnHand extends React.Component {
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
 
     return (
-      <MultiplePlayerPropertyCardSelectorForm
+      <SlyDealForm
         header='Select a card'
         subheader='Click to select a card to sly deal'
         players={otherPlayers}
         playerPropertySetFilter={propertySetFilter}
-        onSelect={this.onSlyDeal}
+        onSetCardSelect={this.onSlyDealSetCard}
+        onLeftOverCardSelect={this.onSlyDealLeftOverCard}
         onCancel={this.onCancelSlyDealRequest}
       />
     )
@@ -153,7 +183,8 @@ export class CardsOnHand extends React.Component {
         thisPlayer={currentPlayer}
         otherPlayers={otherPlayers}
         playerPropertySetFilter={propertySetFilter}
-        onSubmit={this.onForceDeal}
+        onSetCardSelect={this.onForceDealSetCard}
+        onLeftOverCardSelect={this.onForceDealLeftOverCard}
         onCancel={this.onCancelForcedDealRequest}
       />
     )
