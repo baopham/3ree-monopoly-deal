@@ -32,6 +32,12 @@ export type ForcedDealInfo = {
   toUserCard: CardKey
 }
 
+export type DealBreakInfo = {
+  fromUser: Username,
+  toUser: Username,
+  setId: PropertySetId
+}
+
 export type CardRequestInfo = SlyDealInfo | ForcedDealInfo | null
 
 export { types as default }

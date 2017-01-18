@@ -3,8 +3,10 @@ import { combineReducers } from 'redux'
 import cardRequestTypes from '../../../../monopoly/cardRequestTypes'
 import slyDeal, { actions as slyDealActions } from './slyDeal'
 import forcedDeal, { actions as forcedDealActions } from './forcedDeal'
+import dealBreaker, { actions as dealBreakerActions } from './dealBreaker'
 import type { SlyDealState } from './slyDeal'
 import type { ForcedDealState } from './forcedDeal'
+import type { DealBreakerState } from './dealBreaker'
 
 // ------------------------------------
 // Action creators
@@ -33,6 +35,10 @@ function onCardRequestUpdate (dispatch: Function, change: Object) {
       dispatch(forcedDealActions.onForcedDealUpdateEvent(change))
       return
 
+    case cardRequestTypes.DEAL_BREAKER:
+      dispatch(dealBreakerActions.onDealBreakerUpdateEvent(change))
+      return
+
     default:
       throw new Error('Invalid card request type')
   }
@@ -42,6 +48,7 @@ function reset () {
   return (dispatch: Function, getState: Function) => {
     dispatch(slyDealActions.reset())
     dispatch(forcedDealActions.reset())
+    dispatch(dealBreakerActions.reset())
   }
 }
 
@@ -50,7 +57,8 @@ export const actions = {
   unsubscribeCardRequestEvent,
   reset,
   ...slyDealActions,
-  ...forcedDealActions
+  ...forcedDealActions,
+  ...dealBreakerActions
 }
 
 // ------------------------------------
@@ -58,10 +66,12 @@ export const actions = {
 // ------------------------------------
 export type CardRequestState = {
   slyDeal: SlyDealState,
-  forcedDeal: ForcedDealState
+  forcedDeal: ForcedDealState,
+  dealBreaker: DealBreakerState
 }
 
 export default combineReducers({
   slyDeal,
-  forcedDeal
+  forcedDeal,
+  dealBreaker
 })

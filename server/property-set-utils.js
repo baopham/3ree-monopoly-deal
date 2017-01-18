@@ -1,5 +1,6 @@
 /* @flow */
 import PropertySet from '../universal/monopoly/PropertySet'
+import type { PropertySetId } from '../universal/monopoly/PropertySet'
 
 export function cleanUpPlacedCards (placedCards: PlacedCards): PlacedCards {
   const invalidCardsInSets = []
@@ -21,4 +22,11 @@ export function cleanUpPlacedCards (placedCards: PlacedCards): PlacedCards {
     serializedPropertySets: nonEmptySets,
     leftOverCards
   }
+}
+
+export function getSetIndexBySetId (
+  setId: PropertySetId,
+  sets: SerializedPropertySet[]
+): number {
+  return sets.findIndex(set => PropertySet.unserialize(set).getId() === setId)
 }

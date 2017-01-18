@@ -8,7 +8,7 @@ import PropertySet from '../../../universal/monopoly/PropertySet'
 import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
-import type { SlyDealInfo, ForcedDealInfo } from '../../../universal/monopoly/cardRequestTypes'
+import type { SlyDealInfo, ForcedDealInfo, DealBreakInfo } from '../../../universal/monopoly/cardRequestTypes'
 
 export default class CardRequestService {
   cardRequestRepository: CardRequestRepository
@@ -228,6 +228,52 @@ export default class CardRequestService {
 
       return otherPlayer.save()
     }
+  }
+
+  requestToDealBreak (gameId: string, cardRequestInfo: DealBreakInfo): Promise<[CardRequest, GameHistoryRecord]> {
+    const { fromUser, toUser, setId } = cardRequestInfo
+
+    return Promise.all([
+      this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.DEAL_BREAKER, info: cardRequestInfo }),
+      this.gameHistoryService.record(
+        gameId,
+        `${fromUser} wants to deal break ${setId} from ${toUser}`
+      )
+    ])
+  }
+
+  async acceptDealBreaker (dealBreakerRequestId: string): Promise<*> {
+    const cardRequest = this.cardRequestRepository.find(dealBreakerRequestId)
+
+    const { fromUser, toUser, setId } = cardRequest.info
+    const { gameId } = cardRequest
+
+    const [fromPlayer: Player, toPlayer: Player] = await Promise.all([
+      this.playerRepository.findByGameIdAndUsername(gameId, fromUser),
+      this.playerRepository.findByGameIdAndUsername(gameId, toUser)
+    ])
+
+    const setIndexToDealBreak: number = propertySetUtils.getSetIndexBySetId(
+      setId,
+      toPlayer.placedCards.serializedPropertySets
+    )
+
+    if (setIndexToDealBreak < 0) {
+      throw new Error('Could not find the set to deal break')
+    }
+
+    const setToDealBreak = toPlayer.placedCards.serializedPropertySets[setIndexToDealBreak]
+
+    sideEffectUtils.removeSetFromPlacedCardsBySetIndex(setIndexToDealBreak, toPlayer.placedCards)
+    sideEffectUtils.addSetToPlacedCards(setToDealBreak, fromPlayer.placedCards)
+
+    fromPlayer.actionCounter += 1
+
+    return Promise.all([
+      fromPlayer.save(),
+      toPlayer.save(),
+      this.gameHistoryService.record(gameId, `${toUser} accepted the deal breaker request from ${fromUser}`, [fromUser])
+    ])
   }
 
   findPlayers (cardRequest: CardRequest): Promise<[Player, Player]> {
