@@ -7,7 +7,8 @@ type Props = {
   faceUp?: boolean,
   highlighted?: boolean,
   onClick: (card: CardKey) => void,
-  size: 'large' | 'small' | 'xsmall'
+  size: 'large' | 'small' | 'xsmall',
+  style?: Object
 }
 
 function getStyles (props: Props) {
@@ -29,6 +30,9 @@ function getStyles (props: Props) {
     },
     highlighted: {
       border: props.highlighted ? '1px solid red' : 'none'
+    },
+    box: {
+      display: 'block'
     }
   }
 }
@@ -39,7 +43,8 @@ export default class Card extends React.Component {
   static defaultProps = {
     faceUp: false,
     size: 'large',
-    onClick: (card: CardKey) => {}
+    onClick: (card: CardKey) => {},
+    style: {}
   }
 
   getImageSrc () {
@@ -62,11 +67,11 @@ export default class Card extends React.Component {
   }
 
   render () {
-    const { card, size } = this.props
+    const { card, size, style: wrapperStyle } = this.props
     const styles = getStyles(this.props)
 
     return (
-      <div>
+      <span style={wrapperStyle}>
         {card &&
           <img
             onClick={this.onClick}
@@ -76,12 +81,12 @@ export default class Card extends React.Component {
           />
         }
         {!card &&
-          <div
+          <span
             onClick={this.onClick}
-            style={{ ...styles[size], ...styles.withBorder }}
+            style={{ ...styles.box, ...styles[size], ...styles.withBorder }}
           />
         }
-      </div>
+      </span>
     )
   }
 }

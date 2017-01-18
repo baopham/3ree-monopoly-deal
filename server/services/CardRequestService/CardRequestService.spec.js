@@ -11,6 +11,7 @@ import {
 } from '../../../universal/monopoly/cards'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
+import { markCard } from '../../../universal/monopoly/logMessageParser'
 
 describe('CardRequestService', function () {
   afterEach(function () {
@@ -63,7 +64,8 @@ describe('CardRequestService', function () {
 
         td.verify(this.gameHistoryService.record(
           this.fakeGame.id,
-          `${this.fakeFromPlayer.username} sly dealt ${expectedCardToSlyDeal} from ${this.fakeToPlayer.username}`,
+          `${this.fakeFromPlayer.username} sly dealt ` +
+          `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
           [this.fakeToPlayer.username]
         ), { times: 1 })
       })
@@ -120,7 +122,8 @@ describe('CardRequestService', function () {
 
         td.verify(this.gameHistoryService.record(
           this.fakeGame.id,
-          `${this.fakeFromPlayer.username} sly dealt ${expectedCardToSlyDeal} from ${this.fakeToPlayer.username}`,
+          `${this.fakeFromPlayer.username} sly dealt ` +
+          `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
           [this.fakeToPlayer.username]
         ), { times: 1 })
       })

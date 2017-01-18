@@ -13,6 +13,7 @@ import {
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import * as paymentHelper from './paymentHelper'
 import * as sideEffectUtils from '../../side-effect-utils'
+import { markCard } from '../../../universal/monopoly/logMessageParser'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
 export default class PlayerService {
@@ -42,7 +43,7 @@ export default class PlayerService {
       { actionCounter: player.actionCounter + 1 }
     ))
 
-    await this.gameHistoryService.record(gameId, `${username} placed ${cardKey}`)
+    await this.gameHistoryService.record(gameId, `${username} placed ${markCard(cardKey)}`)
 
     return updatedPlayer
 
@@ -126,7 +127,7 @@ export default class PlayerService {
 
     return Promise.all([
       player.saveAll(),
-      this.gameHistoryService.record(gameId, `${username} played ${cardKey}`, playersToNotify)
+      this.gameHistoryService.record(gameId, `${username} played ${markCard(cardKey)}`, playersToNotify)
     ])
   }
 
@@ -138,7 +139,7 @@ export default class PlayerService {
 
     return Promise.all([
       player.game.save(),
-      this.gameHistoryService.record(gameId, `${username} discarded ${card}`)
+      this.gameHistoryService.record(gameId, `${username} discarded ${markCard(card)}`)
     ])
   }
 
@@ -227,9 +228,9 @@ export default class PlayerService {
       }
 
       const allNonMoneyCards = Array.from(mapOfNonMoneyCards.values()).reduce((acc, cards) => acc.concat(cards), [])
-      const allCards = bankCards.concat(leftOverCards).concat(allNonMoneyCards)
+      const allCards = bankCards.concat(leftOverCards).concat(allNonMoneyCards).map(markCard)
 
-      return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(', ')}`
+      return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(' ')}`
     }
   }
 }

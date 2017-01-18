@@ -33,6 +33,12 @@ type State = {
   selectingPropertySet: boolean
 }
 
+const styles = {
+  card: {
+    display: 'block'
+  }
+}
+
 export default class CardOnHand extends React.Component {
   props: Props
 
@@ -127,7 +133,7 @@ export default class CardOnHand extends React.Component {
 
     return (
       <div>
-        <Card card={card} faceUp />
+        <Card card={card} faceUp style={styles.card} />
         {!canOnlyBeMoney &&
           <PlaceCardButton
             disabled={cannotPlaceCard}

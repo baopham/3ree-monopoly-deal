@@ -4,6 +4,8 @@ import GameService from '../GameService'
 import GameHistoryService from '../GameHistoryService'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import * as sideEffectUtils from '../../side-effect-utils'
+import * as propertySetUtils from '../../property-set-utils'
+import { markCard } from '../../../universal/monopoly/logMessageParser'
 import PropertySet from '../../../universal/monopoly/PropertySet'
 import type { PropertySetId } from '../../../universal/monopoly/PropertySet'
 
@@ -29,10 +31,12 @@ export default class PlayerPlacedCardService {
 
     const player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-    const setToUpdateIndex = player.placedCards.serializedPropertySets
-      .findIndex(set => PropertySet.unserialize(set).getId() === propertySetId)
+    const setToUpdateIndex = propertySetUtils.getSetIndexBySetId(
+      propertySetId,
+      player.placedCards.serializedPropertySets
+    )
 
-    if (setToUpdateIndex === -1) {
+    if (setToUpdateIndex < 0) {
       throw new Error(`Cannot find the set with id ${propertySetId}`)
     }
 
@@ -51,7 +55,7 @@ export default class PlayerPlacedCardService {
 
     await Promise.all([
       player.save(),
-      this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
+      this.gameHistoryService.record(gameId, `${username} flipped ${markCard(cardKey)}`)
     ])
 
     return flippedCardKey
@@ -77,7 +81,7 @@ export default class PlayerPlacedCardService {
 
     await Promise.all([
       player.save(),
-      this.gameHistoryService.record(gameId, `${username} flipped ${cardKey}`)
+      this.gameHistoryService.record(gameId, `${username} flipped ${markCard(cardKey)}`)
     ])
 
     return flippedCardKey
@@ -119,7 +123,7 @@ export default class PlayerPlacedCardService {
 
     return Promise.all([
       player.save(),
-      this.gameHistoryService.record(gameId, `${username} moved ${cardKey} to another set`)
+      this.gameHistoryService.record(gameId, `${username} moved ${markCard(cardKey)} to another set`)
     ])
   }
 
@@ -148,7 +152,7 @@ export default class PlayerPlacedCardService {
 
     return Promise.all([
       player.save(),
-      this.gameHistoryService.record(gameId, `${username} moved ${cardKey} to another set`)
+      this.gameHistoryService.record(gameId, `${username} moved ${markCard(cardKey)} to another set`)
     ])
   }
 }

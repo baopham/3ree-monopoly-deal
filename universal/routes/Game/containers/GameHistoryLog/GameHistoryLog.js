@@ -3,6 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
 import type { GameHistoryState } from '../../modules/gameHistory'
+import { parseToJxs } from '../../../../monopoly/logMessageParser'
 
 type Props = {
   records: GameHistoryState
@@ -31,7 +32,7 @@ export class GameHistoryLog extends React.Component {
           {records.map(record =>
             <ListGroupItem key={record.id}>
               <p>
-                <strong>{record.message}</strong>
+                <strong>{parseToJxs(record.message)}</strong>
 
                 {!!record.playersToNotify.length &&
                   <small className='help-block'>

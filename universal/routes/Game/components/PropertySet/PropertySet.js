@@ -11,6 +11,12 @@ type Props = {
   isCardHighlighted: (card: CardKey, index: number) => boolean
 }
 
+const styles = {
+  card: {
+    display: 'block'
+  }
+}
+
 export default class PropertySet extends React.Component {
   props: Props
 
@@ -35,6 +41,7 @@ export default class PropertySet extends React.Component {
           {propertySet.getCards().map((card, i) =>
             <li key={i}>
               <Card
+                style={styles.card}
                 highlighted={isCardHighlighted(card, i)}
                 onClick={(card) => onCardClick(card, i)}
                 card={card}

@@ -8,6 +8,7 @@ import PropertySet from '../../../universal/monopoly/PropertySet'
 import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
+import { markCard } from '../../../universal/monopoly/logMessageParser'
 import type { SlyDealInfo, ForcedDealInfo, DealBreakInfo } from '../../../universal/monopoly/cardRequestTypes'
 
 export default class CardRequestService {
@@ -42,7 +43,7 @@ export default class CardRequestService {
 
     return Promise.all([
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.SLY_DEAL, info: cardRequestInfo }),
-      this.gameHistoryService.record(gameId, `${fromUser} wants to sly deal ${card} from ${toUser}`)
+      this.gameHistoryService.record(gameId, `${fromUser} wants to sly deal ${markCard(card)} from ${toUser}`)
     ])
   }
 
@@ -55,7 +56,7 @@ export default class CardRequestService {
 
     await Promise.all([
       updatePlayers(fromPlayer, toPlayer),
-      this.gameHistoryService.record(gameId, `${fromUser} sly dealt ${card} from ${toUser}`, [toUser])
+      this.gameHistoryService.record(gameId, `${fromUser} sly dealt ${markCard(card)} from ${toUser}`, [toUser])
     ])
 
     return cardRequest.delete()
@@ -131,7 +132,7 @@ export default class CardRequestService {
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.FORCED_DEAL, info: cardRequestInfo }),
       this.gameHistoryService.record(
         gameId,
-        `${fromUser} wants to swap ${fromUserCard} with ${toUserCard} from ${toUser}`
+        `${fromUser} wants to swap ${markCard(fromUserCard)} with ${markCard(toUserCard)} from ${toUser}`
       )
     ])
   }
@@ -147,7 +148,7 @@ export default class CardRequestService {
       updatePlayers(fromPlayer, toPlayer),
       this.gameHistoryService.record(
         gameId,
-        `${fromUser} swapped ${fromUserCard} with ${toUserCard} from ${toUser}`,
+        `${fromUser} swapped ${markCard(fromUserCard)} with ${markCard(toUserCard)} from ${toUser}`,
         [toUser]
       )
     ])
@@ -231,13 +232,13 @@ export default class CardRequestService {
   }
 
   requestToDealBreak (gameId: string, cardRequestInfo: DealBreakInfo): Promise<[CardRequest, GameHistoryRecord]> {
-    const { fromUser, toUser, setId } = cardRequestInfo
+    const { fromUser, toUser } = cardRequestInfo
 
     return Promise.all([
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.DEAL_BREAKER, info: cardRequestInfo }),
       this.gameHistoryService.record(
         gameId,
-        `${fromUser} wants to deal break ${setId} from ${toUser}`
+        `${fromUser} wants to deal break from ${toUser}`
       )
     ])
   }

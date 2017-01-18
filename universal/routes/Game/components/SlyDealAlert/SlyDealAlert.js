@@ -36,7 +36,9 @@ export default class SlyDealAlert extends React.Component {
           {currentPlayerIsRequester &&
             <div>
               Requesting to sly deal
+              {' '}
               <Card card={cardToSlyDeal} size='xsmall' faceUp />
+              {' '}
               from {toUser}... Please wait.
             </div>
           }
@@ -44,7 +46,9 @@ export default class SlyDealAlert extends React.Component {
           {!currentPlayerIsRequester &&
             <div>
               {fromUser} wants to sly deal
+              {' '}
               <Card card={cardToSlyDeal} size='xsmall' faceUp />
+              {' '}
               from you. Accept?
             </div>
           }

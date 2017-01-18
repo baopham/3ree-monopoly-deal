@@ -39,8 +39,11 @@ export default class ForcedDealAlert extends React.Component {
             <div>
               Requesting to swap
               <Card card={fromUserCard} size='xsmall' faceUp />
+              {' '}
               with
+              {' '}
               <Card card={toUserCard} size='xsmall' faceUp />
+              {' '}
               from {toUser}... Please wait
             </div>
           }
@@ -48,9 +51,13 @@ export default class ForcedDealAlert extends React.Component {
           {!currentPlayerIsRequester &&
             <div>
               {fromUser} wants to swap
+              {' '}
               <Card card={fromUserCard} size='xsmall' faceUp />
+              {' '}
               with
+              {' '}
               <Card card={toUserCard} size='xsmall' faceUp />
+              {' '}
               from you. Accept?
             </div>
           }

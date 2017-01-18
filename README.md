@@ -38,6 +38,7 @@ Notes
 TODOs
 -----
 
+- [x] Improve log - show card images for example
 - [x] Allow to sly deal, force deal, pay "left over cards"
 - [ ] Say no to
   - [x] sly deal
