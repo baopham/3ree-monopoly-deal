@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react'
-import Card from '../Card'
+import Card from '../../../../components/Card'
 import FlipCardButton from '../FlipCardButton'
 import MoveCardButton from '../MoveCardButton'
 import PropertySetSelector from '../PropertySetSelector'

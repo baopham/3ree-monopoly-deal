@@ -1,6 +1,6 @@
 /* @flow */
 import replace from 'string-replace-to-array'
-import Card from '../routes/Game/components/Card'
+import Card from '../components/Card'
 import React from 'react'
 
 const CARD_MARKER = 'card'

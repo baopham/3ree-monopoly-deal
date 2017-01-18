@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react'
-import Card from '../Card'
+import Card from '../../../../components/Card'
 import ScrollableBackgroundModal from '../../../../components/ScrollableBackgroundModal'
 import { Modal, Button } from 'react-bootstrap'
 

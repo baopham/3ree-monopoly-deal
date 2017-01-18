@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react'
-import Card from '../Card'
+import Card from '../../../../components/Card'
 
 type Props = {
   faceUp?: boolean,

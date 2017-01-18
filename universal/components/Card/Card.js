@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react'
-import { getCardImageSrc } from '../../../../monopoly/monopoly'
+import { getCardImageSrc } from '../../monopoly/monopoly'
 
 type Props = {
   card: ?CardKey,
