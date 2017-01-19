@@ -6,14 +6,16 @@
   "scripts": {
     "build:prod": "NODE_ENV=production webpack",
     "db:setup": "node dbSetup.babel.js",
-    "lint": "eslint client server universal test server.js dbSetup.js",
+    "lint": "eslint client server universal test stories .storybook server.js dbSetup.js",
     "lint:fix": "npm run lint -- --fix",
     "start": "NODE_ENV=development node start-dev.js",
     "start:prod": "NODE_ENV=production node server.babel.js",
     "test:server": "mocha --require babel-polyfill --compilers js:babel-core/register --recursive server/**/*.spec.js",
     "test:client": "karma start",
     "test": "npm run test:server && npm run test:client",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "storybook": "start-storybook -s ./static -p 6006",
+    "build-storybook": "build-storybook"
   },
   "pre-push": [
     "test",
@@ -123,6 +125,7 @@
     "testdouble": "^1.10.2",
     "webpack": "1.13.x",
     "webpack-dev-middleware": "^1.9.0",
-    "webpack-hot-middleware": "^2.13.2"
+    "webpack-hot-middleware": "^2.13.2",
+    "@kadira/storybook": "^2.21.0"
   }
 }
