@@ -21,7 +21,7 @@ type Props = {
   cards: PlacedCards,
   payee: Username,
   dueAmount: number,
-  sayNoButton: ?Node,
+  sayNoButton: ?React$Element<*>,
   onPay: (bankCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 

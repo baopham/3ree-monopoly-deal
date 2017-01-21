@@ -10,7 +10,7 @@ type Props = {
   payee: Username,
   dueAmount: number,
   cards: PlacedCards,
-  sayNoButton: ?Node,
+  sayNoButton: ?React$Element<*>,
   onPay: (moneyCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => void
 }
 
