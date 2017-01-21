@@ -1,5 +1,3 @@
-/* global __DEV__ */
-
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import clientMiddleware from './middleware/clientMiddleware'

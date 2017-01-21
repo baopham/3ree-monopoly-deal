@@ -16,11 +16,6 @@ export const playableForcedDealState = {
     isWorking: true,
     error: null,
     game: {
-      availableCards: [
-        'PROPERTY_WILDCARD',
-        'PROPERTY_GREEN',
-        'RENT_ALL_COLOUR'
-      ],
       createdAt: '2017-01-21T09:07:51.451Z',
       discardedCards: [
         'PASS_GO',
@@ -133,11 +128,6 @@ export const playableSlyDealState = {
     isWorking: true,
     error: null,
     game: {
-      availableCards: [
-        'PROPERTY_WILDCARD',
-        'PROPERTY_GREEN',
-        'RENT_ALL_COLOUR'
-      ],
       createdAt: '2017-01-21T09:07:51.451Z',
       discardedCards: [
         'PASS_GO',

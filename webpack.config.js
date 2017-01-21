@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
     publicPath: `http://localhost:${port}/`
   }
   plugins = [
-    new webpack.DefinePlugin({ __DEV__: true }),
+    new webpack.DefinePlugin({ __DEV__: true, 'process.env.BASE_PATH': '""' }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin()
@@ -52,8 +52,8 @@ if (process.env.NODE_ENV === 'development') {
     filename: 'bundle.js'
   }
   plugins = [
-    new webpack.DefinePlugin({ __DEV__: false, 'process.env.NODE_ENV': '"production"' }),
-    new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en)$/),
+    new webpack.DefinePlugin({ __DEV__: false, 'process.env.NODE_ENV': '"production"', 'process.env.BASE_PATH': '""' }),
+    new webpack.ContextReplacementPlugin(/moment[\\/]locale$/, /^\.\/(en)$/),
     new webpack.optimize.UglifyJsPlugin(),
     new ExtractTextPlugin('style.css'),
     new webpack.NoErrorsPlugin()

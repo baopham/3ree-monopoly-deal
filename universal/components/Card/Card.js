@@ -1,6 +1,7 @@
 /* @flow */
 import React from 'react'
 import { getCardImageSrc } from '../../monopoly/monopoly'
+import { BASE_PATH } from '../../config'
 
 type Props = {
   card: ?CardKey,
@@ -48,13 +49,19 @@ export default class Card extends React.Component {
   }
 
   getImageSrc () {
-    const { card, faceUp } = this.props
-    if (!card) {
+    if (this.showEmptyPlaceholder()) {
       return
     }
 
-    const src = faceUp ? getCardImageSrc(card) : '/images/cards/back.png'
+    const { card, faceUp } = this.props
+    const src = faceUp && card ? getCardImageSrc(card) : `${BASE_PATH}/images/cards/back.png`
     return src
+  }
+
+  showEmptyPlaceholder () {
+    const { card, faceUp } = this.props
+
+    return !card && faceUp
   }
 
   onClick = () => {
@@ -69,10 +76,11 @@ export default class Card extends React.Component {
   render () {
     const { card, size, style: wrapperStyle } = this.props
     const styles = getStyles(this.props)
+    const showEmptyPlaceholder = this.showEmptyPlaceholder()
 
     return (
       <span style={wrapperStyle}>
-        {card &&
+        {!showEmptyPlaceholder &&
           <img
             onClick={this.onClick}
             title={card}
@@ -80,7 +88,7 @@ export default class Card extends React.Component {
             src={this.getImageSrc()}
           />
         }
-        {!card &&
+        {showEmptyPlaceholder &&
           <span
             onClick={this.onClick}
             style={{ ...styles.box, ...styles[size], ...styles.withBorder }}

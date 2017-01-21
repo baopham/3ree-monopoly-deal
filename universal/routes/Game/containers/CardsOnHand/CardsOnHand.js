@@ -223,35 +223,37 @@ export class CardsOnHand extends React.Component {
         header={this.renderHeader()}
         expanded={this.state.open}
       >
-        <div>
-          {needsToDiscard &&
-            <Alert bsStyle='danger'>
-              You have more then {MAX_CARDS_IN_HAND} cards! Please discard.
-            </Alert>
-          }
-          {slyDealing &&
-            this.renderSlyDealForm()
-          }
-          {forceDealing &&
-            this.renderForcedDealForm()
-          }
-          <ul className='list-inline' style={styles.cardsOnHand}>
-            {cardsOnHand.map((card, i) =>
-              <li key={i} style={styles.card}>
-                <CardOnHand
-                  placedCards={currentPlayer.placedCards}
-                  card={card}
-                  needsToDiscard={this.state.needsToDiscard}
-                  isPlayerTurn={isPlayerTurn}
-                  onPlaceCard={placeCard}
-                  onPlayCard={this.onPlayCard}
-                  onDiscardCard={discardCard}
-                  onFlipCard={flipCardOnHand}
-                />
-              </li>
-            )}
-          </ul>
-        </div>
+        {currentPlayer &&
+          <div>
+            {needsToDiscard &&
+              <Alert bsStyle='danger'>
+                You have more then {MAX_CARDS_IN_HAND} cards! Please discard.
+              </Alert>
+            }
+            {slyDealing &&
+              this.renderSlyDealForm()
+            }
+            {forceDealing &&
+              this.renderForcedDealForm()
+            }
+            <ul className='list-inline' style={styles.cardsOnHand}>
+              {cardsOnHand.map((card, i) =>
+                <li key={i} style={styles.card}>
+                  <CardOnHand
+                    placedCards={currentPlayer.placedCards}
+                    card={card}
+                    needsToDiscard={this.state.needsToDiscard}
+                    isPlayerTurn={isPlayerTurn}
+                    onPlaceCard={placeCard}
+                    onPlayCard={this.onPlayCard}
+                    onDiscardCard={discardCard}
+                    onFlipCard={flipCardOnHand}
+                  />
+                </li>
+              )}
+            </ul>
+          </div>
+        }
       </Panel>
     )
   }

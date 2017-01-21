@@ -31,11 +31,17 @@ export default class GameService {
     page = parseInt(page, 10)
     limit = parseInt(limit, 10)
 
-    return this.gameRepository.getAll(page, limit)
+    return this.gameRepository.getAll(page, limit).then(games => games.map(this._removeAvailableCards))
   }
 
-  getGame (id: string): Promise<Game> {
-    return this.gameRepository.find(id)
+  getGame (id: string, includeAvailableCards: boolean = true): Promise<Game> {
+    return this.gameRepository.find(id).then(game => {
+      if (includeAvailableCards) {
+        return game
+      }
+
+      return this._removeAvailableCards(game)
+    })
   }
 
   getCount (): number {
@@ -86,5 +92,9 @@ export default class GameService {
     player.game.winner = winner
 
     return player.game.save()
+  }
+
+  _removeAvailableCards (game: Game): Game {
+    return { ...game, availableCards: undefined }
   }
 }

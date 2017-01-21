@@ -3,7 +3,7 @@ type Game = {
   name: string,
   winner: Username,
   discardedCards: CardKey[],
-  availableCards: CardKey[],
+  availableCards?: CardKey[],
   currentTurn: Username,
   lastCardPlayedBy: Username,
   players: Player[],

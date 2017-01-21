@@ -166,6 +166,10 @@ export default class PlayerService {
   async drawCards (gameId: string): Promise<CardKey[]> {
     const game: Game = await this.gameService.getGame(gameId)
 
+    if (!game.availableCards) {
+      return Promise.reject(new Error('No available cards'))
+    }
+
     if (game.availableCards.length < 2) {
       game.availableCards = newDeck()
     }

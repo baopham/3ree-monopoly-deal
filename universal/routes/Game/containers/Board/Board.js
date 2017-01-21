@@ -67,7 +67,6 @@ export class Board extends React.Component {
       <Container fluid>
         <Col md={2}>
           <DrawPile
-            cards={game.availableCards}
             drawCardsButton={drawCardsButton}
             endTurnButton={endTurnButton}
           />

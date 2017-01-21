@@ -25,7 +25,8 @@ export function getGames (req: AppRequest, res: express$Response) {
 }
 
 export function getGame (req: AppRequest, res: express$Response) {
-  const promise = service.getGame(req.params.id)
+  const includeAvailableCards = false
+  const promise = service.getGame(req.params.id, includeAvailableCards)
 
   promise
     .then(game => res.json({ game }))

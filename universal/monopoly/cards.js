@@ -1,4 +1,6 @@
 /* @flow */
+import { BASE_PATH } from '../config'
+
 // ------------------------------------
 // Types
 // ------------------------------------
@@ -91,21 +93,21 @@ export const CARDS: MapOfCards = setMissingProperties({
   [HOUSE]: {
     count: 3,
     value: 3,
-    image: '/images/cards/house.png',
+    image: `${BASE_PATH}/images/cards/house.png`,
     type: PROPERTY_ADDON_TYPE
   },
 
   [HOTEL]: {
     count: 3,
     value: 4,
-    image: '/images/cards/hotel.png',
+    image: `${BASE_PATH}/images/cards/hotel.png`,
     type: PROPERTY_ADDON_TYPE
   },
 
   [DEAL_BREAKER]: {
     count: 2,
     value: 4,
-    image: '/images/cards/deal-breaker.png',
+    image: `${BASE_PATH}/images/cards/deal-breaker.png`,
     type: ACTION_CARD_TYPE
   },
 
@@ -113,21 +115,21 @@ export const CARDS: MapOfCards = setMissingProperties({
     count: 3,
     value: 3,
     paymentAmount: 5,
-    image: '/images/cards/debt-collector.png',
+    image: `${BASE_PATH}/images/cards/debt-collector.png`,
     type: ACTION_CARD_TYPE
   },
 
   [DOUBLE_RENT]: {
     count: 2,
     value: 1,
-    image: '/images/cards/double-rent.png',
+    image: `${BASE_PATH}/images/cards/double-rent.png`,
     type: ACTION_CARD_TYPE
   },
 
   [FORCED_DEAL]: {
     count: 3,
     value: 3,
-    image: '/images/cards/forced-deal.png',
+    image: `${BASE_PATH}/images/cards/forced-deal.png`,
     type: ACTION_CARD_TYPE
   },
 
@@ -135,28 +137,28 @@ export const CARDS: MapOfCards = setMissingProperties({
     count: 3,
     value: 2,
     paymentAmount: 2,
-    image: '/images/cards/birthday.png',
+    image: `${BASE_PATH}/images/cards/birthday.png`,
     type: ACTION_CARD_TYPE
   },
 
   [SAY_NO]: {
     count: 3,
     value: 4,
-    image: '/images/cards/say-no.png',
+    image: `${BASE_PATH}/images/cards/say-no.png`,
     type: ACTION_CARD_TYPE
   },
 
   [PASS_GO]: {
     count: 10,
     value: 1,
-    image: '/images/cards/pass-go.png',
+    image: `${BASE_PATH}/images/cards/pass-go.png`,
     type: ACTION_CARD_TYPE
   },
 
   [SLY_DEAL]: {
     count: 3,
     value: 3,
-    image: '/images/cards/sly-deal.png',
+    image: `${BASE_PATH}/images/cards/sly-deal.png`,
     type: ACTION_CARD_TYPE
   },
 
@@ -165,7 +167,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 1,
     needs: 2,
     rent: [1, 2],
-    image: '/images/cards/property-brown.png',
+    image: `${BASE_PATH}/images/cards/property-brown.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -174,7 +176,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 4,
     needs: 2,
     rent: [3, 8],
-    image: '/images/cards/property-blue.png',
+    image: `${BASE_PATH}/images/cards/property-blue.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -183,7 +185,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 4,
     needs: 3,
     rent: [2, 4, 7],
-    image: '/images/cards/property-green.png',
+    image: `${BASE_PATH}/images/cards/property-green.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -192,7 +194,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 1,
     needs: 3,
     rent: [1, 2, 3],
-    image: '/images/cards/property-light-blue.png',
+    image: `${BASE_PATH}/images/cards/property-light-blue.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -201,7 +203,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 2,
     needs: 3,
     rent: [1, 3, 5],
-    image: '/images/cards/property-orange.png',
+    image: `${BASE_PATH}/images/cards/property-orange.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -210,7 +212,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 2,
     needs: 3,
     rent: [1, 2, 4],
-    image: '/images/cards/property-pink.png',
+    image: `${BASE_PATH}/images/cards/property-pink.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -220,7 +222,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     needs: 4,
     rent: [1, 2, 3, 4],
     canAddHouseOrHotel: false,
-    image: '/images/cards/property-black.png',
+    image: `${BASE_PATH}/images/cards/property-black.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -229,7 +231,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 3,
     needs: 3,
     rent: [2, 3, 6],
-    image: '/images/cards/property-red.png',
+    image: `${BASE_PATH}/images/cards/property-red.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -238,7 +240,7 @@ export const CARDS: MapOfCards = setMissingProperties({
     value: 3,
     needs: 3,
     rent: [2, 4, 6],
-    image: '/images/cards/property-yellow.png',
+    image: `${BASE_PATH}/images/cards/property-yellow.png`,
     type: PROPERTY_CARD_TYPE
   },
 
@@ -248,21 +250,21 @@ export const CARDS: MapOfCards = setMissingProperties({
     needs: 2,
     rent: [1, 2],
     canAddHouseOrHotel: false,
-    image: '/images/cards/property-light-green.png',
+    image: `${BASE_PATH}/images/cards/property-light-green.png`,
     type: PROPERTY_CARD_TYPE
   },
 
   [PROPERTY_WILDCARD]: {
     count: 2,
     value: 0,
-    image: '/images/cards/property-wildcard.png',
+    image: `${BASE_PATH}/images/cards/property-wildcard.png`,
     type: PROPERTY_WILDCARD_ALL_COLOUR_TYPE
   },
 
   [PROPERTY_GREEN_OR_BLUE]: {
     count: 1,
     value: 4,
-    image: '/images/cards/property-green-or-blue.png',
+    image: `${BASE_PATH}/images/cards/property-green-or-blue.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_GREEN,
     flipTo: PROPERTY_BLUE_OR_GREEN
@@ -271,7 +273,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_BLUE_OR_GREEN]: {
     count: 0,
     value: 4,
-    image: '/images/cards/property-blue-or-green.png',
+    image: `${BASE_PATH}/images/cards/property-blue-or-green.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BLUE,
     flipTo: PROPERTY_GREEN_OR_BLUE
@@ -280,7 +282,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_LIGHT_BLUE_OR_BROWN]: {
     count: 1,
     value: 1,
-    image: '/images/cards/property-light-blue-or-brown.png',
+    image: `${BASE_PATH}/images/cards/property-light-blue-or-brown.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_LIGHT_BLUE,
     flipTo: PROPERTY_BROWN_OR_LIGHT_BLUE
@@ -289,7 +291,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_BROWN_OR_LIGHT_BLUE]: {
     count: 0,
     value: 1,
-    image: '/images/cards/property-brown-or-light-blue.png',
+    image: `${BASE_PATH}/images/cards/property-brown-or-light-blue.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BROWN,
     flipTo: PROPERTY_LIGHT_BLUE_OR_BROWN
@@ -298,7 +300,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_PINK_OR_ORANGE]: {
     count: 2,
     value: 2,
-    image: '/images/cards/property-pink-or-orange.png',
+    image: `${BASE_PATH}/images/cards/property-pink-or-orange.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_PINK,
     flipTo: PROPERTY_ORANGE_OR_PINK
@@ -307,7 +309,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_ORANGE_OR_PINK]: {
     count: 0,
     value: 2,
-    image: '/images/cards/property-orange-or-pink.png',
+    image: `${BASE_PATH}/images/cards/property-orange-or-pink.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_ORANGE,
     flipTo: PROPERTY_PINK_OR_ORANGE
@@ -316,7 +318,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_GREEN_OR_BLACK]: {
     count: 1,
     value: 4,
-    image: '/images/cards/property-green-or-black.png',
+    image: `${BASE_PATH}/images/cards/property-green-or-black.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_GREEN,
     flipTo: PROPERTY_BLACK_OR_GREEN
@@ -325,7 +327,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_BLACK_OR_GREEN]: {
     count: 0,
     value: 4,
-    image: '/images/cards/property-black-or-green.png',
+    image: `${BASE_PATH}/images/cards/property-black-or-green.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BLACK,
     flipTo: PROPERTY_GREEN_OR_BLACK
@@ -334,7 +336,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_LIGHT_BLUE_OR_BLACK]: {
     count: 1,
     value: 4,
-    image: '/images/cards/property-light-blue-or-black.png',
+    image: `${BASE_PATH}/images/cards/property-light-blue-or-black.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_LIGHT_BLUE,
     flipTo: PROPERTY_BLACK_OR_LIGHT_BLUE
@@ -343,7 +345,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_BLACK_OR_LIGHT_BLUE]: {
     count: 0,
     value: 4,
-    image: '/images/cards/property-black-or-light-blue.png',
+    image: `${BASE_PATH}/images/cards/property-black-or-light-blue.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BLACK,
     flipTo: PROPERTY_LIGHT_BLUE_OR_BLACK
@@ -352,7 +354,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_LIGHT_GREEN_OR_BLACK]: {
     count: 1,
     value: 2,
-    image: '/images/cards/property-light-green-or-black.png',
+    image: `${BASE_PATH}/images/cards/property-light-green-or-black.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_LIGHT_GREEN,
     flipTo: PROPERTY_BLACK_OR_LIGHT_GREEN
@@ -361,7 +363,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_BLACK_OR_LIGHT_GREEN]: {
     count: 0,
     value: 2,
-    image: '/images/cards/property-black-or-light-green.png',
+    image: `${BASE_PATH}/images/cards/property-black-or-light-green.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_BLACK,
     flipTo: PROPERTY_LIGHT_GREEN_OR_BLACK
@@ -370,7 +372,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_YELLOW_OR_RED]: {
     count: 2,
     value: 3,
-    image: '/images/cards/property-yellow-or-red.png',
+    image: `${BASE_PATH}/images/cards/property-yellow-or-red.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_YELLOW,
     flipTo: PROPERTY_RED_OR_YELLOW
@@ -379,7 +381,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [PROPERTY_RED_OR_YELLOW]: {
     count: 0,
     value: 3,
-    image: '/images/cards/property-red-or-yellow.png',
+    image: `${BASE_PATH}/images/cards/property-red-or-yellow.png`,
     type: PROPERTY_WILDCARD_TYPE,
     treatAs: PROPERTY_RED,
     flipTo: PROPERTY_YELLOW_OR_RED
@@ -388,14 +390,14 @@ export const CARDS: MapOfCards = setMissingProperties({
   [RENT_ALL_COLOUR]: {
     count: 3,
     value: 3,
-    image: '/images/cards/rent-all-colour.png',
+    image: `${BASE_PATH}/images/cards/rent-all-colour.png`,
     type: RENT_CARD_TYPE
   },
 
   [RENT_BLUE_OR_GREEN]: {
     count: 2,
     value: 1,
-    image: '/images/cards/rent-blue-or-green.png',
+    image: `${BASE_PATH}/images/cards/rent-blue-or-green.png`,
     forCards: [PROPERTY_BLUE, PROPERTY_GREEN],
     type: RENT_CARD_TYPE
   },
@@ -403,7 +405,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [RENT_LIGHT_BLUE_OR_BROWN]: {
     count: 2,
     value: 1,
-    image: '/images/cards/rent-light-blue-or-brown.png',
+    image: `${BASE_PATH}/images/cards/rent-light-blue-or-brown.png`,
     forCards: [PROPERTY_LIGHT_BLUE, PROPERTY_BROWN],
     type: RENT_CARD_TYPE
   },
@@ -411,7 +413,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [RENT_ORANGE_OR_PINK]: {
     count: 2,
     value: 1,
-    image: '/images/cards/rent-orange-or-pink.png',
+    image: `${BASE_PATH}/images/cards/rent-orange-or-pink.png`,
     forCards: [PROPERTY_ORANGE, PROPERTY_PINK],
     type: RENT_CARD_TYPE
   },
@@ -419,7 +421,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [RENT_BLACK_OR_LIGHT_GREEN]: {
     count: 2,
     value: 1,
-    image: '/images/cards/rent-black-or-light-green.png',
+    image: `${BASE_PATH}/images/cards/rent-black-or-light-green.png`,
     forCards: [PROPERTY_BLACK, PROPERTY_LIGHT_GREEN],
     type: RENT_CARD_TYPE
   },
@@ -427,7 +429,7 @@ export const CARDS: MapOfCards = setMissingProperties({
   [RENT_RED_OR_YELLOW]: {
     count: 2,
     value: 1,
-    image: '/images/cards/rent-red-or-yellow.png',
+    image: `${BASE_PATH}/images/cards/rent-red-or-yellow.png`,
     forCards: [PROPERTY_RED, PROPERTY_YELLOW],
     type: RENT_CARD_TYPE
   },
@@ -435,35 +437,35 @@ export const CARDS: MapOfCards = setMissingProperties({
   [MONEY_1M]: {
     count: 6,
     value: 1,
-    image: '/images/cards/money-1m.png',
+    image: `${BASE_PATH}/images/cards/money-1m.png`,
     type: MONEY_CARD_TYPE
   },
 
   [MONEY_2M]: {
     count: 5,
     value: 2,
-    image: '/images/cards/money-2m.png',
+    image: `${BASE_PATH}/images/cards/money-2m.png`,
     type: MONEY_CARD_TYPE
   },
 
   [MONEY_3M]: {
     count: 3,
     value: 3,
-    image: '/images/cards/money-3m.png',
+    image: `${BASE_PATH}/images/cards/money-3m.png`,
     type: MONEY_CARD_TYPE
   },
 
   [MONEY_4M]: {
     count: 3,
     value: 4,
-    image: '/images/cards/money-4m.png',
+    image: `${BASE_PATH}/images/cards/money-4m.png`,
     type: MONEY_CARD_TYPE
   },
 
   [MONEY_5M]: {
     count: 2,
     value: 5,
-    image: '/images/cards/money-5m.png',
+    image: `${BASE_PATH}/images/cards/money-5m.png`,
     type: MONEY_CARD_TYPE
   }
 })

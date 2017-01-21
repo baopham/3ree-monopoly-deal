@@ -13,7 +13,8 @@
     "test": "jest --forceExit",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "storybook": "start-storybook -s ./static -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook -s ./static -o .out",
+    "deploy-storybook": "storybook-to-ghpages"
   },
   "pre-push": [
     "test",
@@ -74,6 +75,7 @@
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
+    "@kadira/storybook-deployer": "^1.2.0",
     "babel-cli": "^6.5.1",
     "babel-core": "^6.21.0",
     "babel-eslint": "^6.0.0-beta.6",
