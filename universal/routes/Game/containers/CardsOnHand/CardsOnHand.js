@@ -13,7 +13,7 @@ import { actions as cardsOnHandActions } from '../../modules/currentPlayerCardsO
 import { actions as cardRequestActions } from '../../modules/cardRequest'
 
 type Props = {
-  currentPlayer: Player,
+  currentPlayer: ?Player,
   otherPlayers: Player[],
   cardsOnHand: CardKey[],
   isPlayerTurn: boolean,

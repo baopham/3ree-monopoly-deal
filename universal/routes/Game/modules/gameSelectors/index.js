@@ -39,7 +39,7 @@ export const isPlayerTurn = createSelector(
 
 export const getOtherPlayers = createSelector(
   getCurrentGame, getCurrentPlayer,
-  (currentGame: CurrentGameState, currentPlayer: ?Player): ?Player[] => {
+  (currentGame: CurrentGameState, currentPlayer: ?Player): Player[] => {
     if (!currentPlayer || !currentGame.game) {
       return []
     }
