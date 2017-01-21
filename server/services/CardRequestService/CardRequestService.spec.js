@@ -1,7 +1,5 @@
 /* @flow */
-/* eslint-env node, mocha */
-import { expect } from 'chai'
-import td from 'testdouble'
+/* eslint-env jest */
 import * as testUtils from '../../test-utils'
 import {
   PROPERTY_BLUE,
@@ -13,19 +11,21 @@ import PropertySet from '../../../universal/monopoly/PropertySet'
 import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
 import { markCard } from '../../../universal/monopoly/logMessageParser'
 
+jest.mock('../../thinky')
+
 describe('CardRequestService', function () {
-  afterEach(function () {
-    td.reset()
+  afterEach(() => {
+    jest.resetAllMocks().resetModules()
   })
 
   describe('#acceptSlyDeal', function () {
     const gameId = 'game-id'
     const propertyBlueNonFullSetStub = new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE])
 
-    describe('Given the sly dealt card is of set card type', function () {
+    describe('Given the sly dealt card is of set card type', () => {
       const expectedCardToSlyDeal = propertyBlueNonFullSetStub.getCards()[0]
 
-      beforeEach(function () {
+      beforeEach(() => {
         const fakeFromPlayerOverride = {}
 
         const fakeToPlayerOverride = {
@@ -48,33 +48,34 @@ describe('CardRequestService', function () {
         setUpDependencies.bind(this)(gameId, fakeFromPlayerOverride, fakeToPlayerOverride, cardRequestOverride)
       })
 
-      it('should delete the request and transfer the card over to requester', async function () {
-        expect(this.fakeFromPlayer.placedCards.serializedPropertySets).to.be.empty
-        expect(this.fakeToPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
+      it('should delete the request and transfer the card over to requester', async () => {
+        expect(this.fakeFromPlayer.placedCards.serializedPropertySets).toHaveLength(0)
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets[0].cards).toEqual([expectedCardToSlyDeal])
 
         await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
 
-        td.verify(this.fakeCardRequest.delete(), { times: 1 })
-        expect(this.fakeFromPlayer.placedCards.serializedPropertySets[0].cards).to.eql([expectedCardToSlyDeal])
-        expect(this.fakeToPlayer.placedCards.serializedPropertySets).to.be.empty
+        expect(this.fakeCardRequest.delete).toHaveBeenCalledTimes(1)
+        expect(this.fakeFromPlayer.placedCards.serializedPropertySets[0].cards).toEqual([expectedCardToSlyDeal])
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets).toHaveLength(0)
       })
 
-      it('should log the action', async function () {
+      it('should log the action', async () => {
         await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
 
-        td.verify(this.gameHistoryService.record(
-          this.fakeGame.id,
-          `${this.fakeFromPlayer.username} sly dealt ` +
-          `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
-          [this.fakeToPlayer.username]
-        ), { times: 1 })
+        expect(this.cardRequestService.gameHistoryService.record)
+          .toHaveBeenCalledWith(
+            this.fakeGame.id,
+            `${this.fakeFromPlayer.username} sly dealt ` +
+            `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
+            [this.fakeToPlayer.username]
+          )
       })
     })
 
     describe('Given the sly dealt card is in the left over cards section', function () {
       const expectedCardToSlyDeal = PROPERTY_WILDCARD
 
-      beforeEach(function () {
+      beforeEach(() => {
         const fakeFromPlayerOverride = {
           placedCards: {
             bank: [],
@@ -103,29 +104,30 @@ describe('CardRequestService', function () {
         setUpDependencies.bind(this)(gameId, fakeFromPlayerOverride, fakeToPlayerOverride, cardRequestOverride)
       })
 
-      it('should delete the request and transfer the card over to requester', async function () {
+      it('should delete the request and transfer the card over to requester', async () => {
         const previousFromPlayerSet = PropertySet.unserialize(this.fakeFromPlayer.placedCards.serializedPropertySets[0])
-        expect(previousFromPlayerSet.isFullSet()).to.be.false
-        expect(this.fakeToPlayer.placedCards.leftOverCards).to.eql([expectedCardToSlyDeal])
+        expect(previousFromPlayerSet.isFullSet()).toBe(false)
+        expect(this.fakeToPlayer.placedCards.leftOverCards).toEqual([expectedCardToSlyDeal])
 
         await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
 
-        td.verify(this.fakeCardRequest.delete(), { times: 1 })
+        expect(this.fakeCardRequest.delete).toHaveBeenCalledTimes(1)
 
         const currentFromPlayerSet = PropertySet.unserialize(this.fakeFromPlayer.placedCards.serializedPropertySets[0])
-        expect(currentFromPlayerSet.isFullSet()).to.be.true
-        expect(this.fakeToPlayer.placedCards.leftOverCards).to.be.empty
+        expect(currentFromPlayerSet.isFullSet()).toBe(true)
+        expect(this.fakeToPlayer.placedCards.leftOverCards).toHaveLength(0)
       })
 
-      it('should log the action', async function () {
+      it('should log the action', async () => {
         await this.cardRequestService.acceptSlyDeal(this.fakeCardRequest.id)
 
-        td.verify(this.gameHistoryService.record(
-          this.fakeGame.id,
-          `${this.fakeFromPlayer.username} sly dealt ` +
-          `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
-          [this.fakeToPlayer.username]
-        ), { times: 1 })
+        expect(this.cardRequestService.gameHistoryService.record)
+          .toHaveBeenCalledWith(
+            this.fakeGame.id,
+            `${this.fakeFromPlayer.username} sly dealt ` +
+            `${markCard(expectedCardToSlyDeal)} from ${this.fakeToPlayer.username}`,
+            [this.fakeToPlayer.username]
+          )
       })
     })
   })
@@ -135,11 +137,11 @@ describe('CardRequestService', function () {
     const propertyBlueNonFullSetStub = new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE])
     const propertyBlackNonFullSetStub = new PropertySet(getCardObject(PROPERTY_BLACK), [PROPERTY_BLACK])
 
-    describe('Given the forced deal card is of set card type', function () {
+    describe('Given the forced deal card is of set card type', () => {
       const expectedFromUserCard = PROPERTY_BLACK
       const expectedToUserCard = PROPERTY_BLUE
 
-      beforeEach(function () {
+      beforeEach(() => {
         const fakeFromPlayerOverride = {
           placedCards: {
             bank: [],
@@ -173,24 +175,24 @@ describe('CardRequestService', function () {
         setUpDependencies.bind(this)(gameId, fakeFromPlayerOverride, fakeToPlayerOverride, cardRequestOverride)
       })
 
-      it('should swap cards: card should go to the first non-full set and empty sets are removed', async function () {
+      it('should swap cards: card should go to the first non-full set and empty sets are removed', async () => {
         const previousFromPlayerSets = this.fakeFromPlayer
           .placedCards.serializedPropertySets.map(PropertySet.unserialize)
-        expect(previousFromPlayerSets.filter(set => set.isFullSet())).to.be.empty
+        expect(previousFromPlayerSets.filter(set => set.isFullSet())).toHaveLength(0)
 
-        expect(this.fakeToPlayer.placedCards.serializedPropertySets).to.have.lengthOf(1)
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets).toHaveLength(1)
 
         await this.cardRequestService.acceptForcedDeal(this.fakeCardRequest.id)
 
         const currentFromPlayerSets = this.fakeFromPlayer
           .placedCards.serializedPropertySets.map(PropertySet.unserialize)
         const fromPlayerFullSets = currentFromPlayerSets.filter(set => set.isFullSet())
-        expect(fromPlayerFullSets).to.have.lengthOf(1)
-        expect(fromPlayerFullSets[0].identifier.key).to.equal(PROPERTY_BLUE)
+        expect(fromPlayerFullSets).toHaveLength(1)
+        expect(fromPlayerFullSets[0].identifier.key).toBe(PROPERTY_BLUE)
 
         const currentToPlayerSets = this.fakeToPlayer.placedCards.serializedPropertySets.map(PropertySet.unserialize)
-        expect(currentToPlayerSets).to.have.lengthOf(1)
-        expect(currentToPlayerSets[0].identifier.key).to.equal(PROPERTY_BLACK)
+        expect(currentToPlayerSets).toHaveLength(1)
+        expect(currentToPlayerSets[0].identifier.key).toBe(PROPERTY_BLACK)
       })
     })
 
@@ -198,7 +200,7 @@ describe('CardRequestService', function () {
       const expectedFromUserCard = PROPERTY_BLACK
       const expectedToUserCard = PROPERTY_WILDCARD
 
-      beforeEach(function () {
+      beforeEach(() => {
         const fakeFromPlayerOverride = {
           placedCards: {
             bank: [],
@@ -232,25 +234,25 @@ describe('CardRequestService', function () {
         setUpDependencies.bind(this)(gameId, fakeFromPlayerOverride, fakeToPlayerOverride, cardRequestOverride)
       })
 
-      it('should swap cards: card should go to the first non-full set and empty sets are removed', async function () {
+      it('should swap cards: card should go to the first non-full set and empty sets are removed', async () => {
         const previousFromPlayerSets = this.fakeFromPlayer
           .placedCards.serializedPropertySets.map(PropertySet.unserialize)
-        expect(previousFromPlayerSets.filter(set => set.isFullSet())).to.be.empty
+        expect(previousFromPlayerSets.filter(set => set.isFullSet())).toHaveLength(0)
 
-        expect(this.fakeToPlayer.placedCards.leftOverCards).to.have.lengthOf(1)
-        expect(this.fakeToPlayer.placedCards.serializedPropertySets).to.be.empty
+        expect(this.fakeToPlayer.placedCards.leftOverCards).toHaveLength(1)
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets).toHaveLength(0)
 
         await this.cardRequestService.acceptForcedDeal(this.fakeCardRequest.id)
 
         const currentFromPlayerSets = this.fakeFromPlayer
           .placedCards.serializedPropertySets.map(PropertySet.unserialize)
         const fromPlayerFullSets = currentFromPlayerSets.filter(set => set.isFullSet())
-        expect(fromPlayerFullSets).to.have.lengthOf(1)
-        expect(fromPlayerFullSets[0].identifier.key).to.equal(PROPERTY_BLUE)
-        expect(fromPlayerFullSets[0].getCards()).to.contain(PROPERTY_WILDCARD)
+        expect(fromPlayerFullSets).toHaveLength(1)
+        expect(fromPlayerFullSets[0].identifier.key).toBe(PROPERTY_BLUE)
+        expect(fromPlayerFullSets[0].getCards()).toContain(PROPERTY_WILDCARD)
 
-        expect(this.fakeToPlayer.placedCards.leftOverCards).to.be.empty
-        expect(this.fakeToPlayer.placedCards.serializedPropertySets).to.have.lengthOf(1)
+        expect(this.fakeToPlayer.placedCards.leftOverCards).toHaveLength(0)
+        expect(this.fakeToPlayer.placedCards.serializedPropertySets).toHaveLength(1)
       })
     })
   })
@@ -313,22 +315,26 @@ describe('CardRequestService', function () {
     }
 
     function setupCardRequestRepository () {
-      const cardRequestRepository = td.replace('../../repositories/CardRequestRepository').default
-      td.when(cardRequestRepository.find(this.fakeCardRequest.id)).thenResolve(this.fakeCardRequest)
+      jest.mock('../../repositories/CardRequestRepository', () => () => ({
+        find: () => Promise.resolve(this.fakeCardRequest)
+      }))
     }
 
     function setupPlayerRepository () {
-      const playerRepository = td.replace('../../repositories/PlayerRepository').default
+      jest.mock('../../repositories/PlayerRepository', () => () => ({
+        findByGameIdAndUsername: (gameId, username) => {
+          const returnedValues = {
+            [this.fakeFromPlayer.username]: this.fakeFromPlayer,
+            [this.fakeToPlayer.username]: this.fakeToPlayer
+          }
 
-      td.when(playerRepository.findByGameIdAndUsername(this.fakeGame.id, this.fakeFromPlayer.username))
-        .thenResolve(this.fakeFromPlayer)
-
-      td.when(playerRepository.findByGameIdAndUsername(this.fakeGame.id, this.fakeToPlayer.username))
-        .thenResolve(this.fakeToPlayer)
+          return returnedValues[username]
+        }
+      }))
     }
 
     function setupGameHistoryService () {
-      this.gameHistoryService = td.replace('../GameHistoryService').default
+      jest.mock('../GameHistoryService', () => jest.genMockFromModule('../GameHistoryService'))
     }
   }
 })

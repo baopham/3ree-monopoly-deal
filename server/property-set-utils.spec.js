@@ -1,6 +1,5 @@
 /* @flow */
-/* eslint-env node, mocha */
-import { expect } from 'chai'
+/* eslint-env jest */
 import {
   PROPERTY_BLUE,
   PROPERTY_WILDCARD,
@@ -25,7 +24,7 @@ describe('Property Set utils', function () {
 
         const actualPlacedCards = propertySetUtils.cleanUpPlacedCards(placedCards)
 
-        expect(actualPlacedCards.serializedPropertySets).to.be.empty
+        expect(actualPlacedCards.serializedPropertySets).toHaveLength(0)
       })
     })
 
@@ -42,9 +41,9 @@ describe('Property Set utils', function () {
 
         const actualPlacedCards = propertySetUtils.cleanUpPlacedCards(placedCards)
 
-        expect(actualPlacedCards.serializedPropertySets).to.have.lengthOf(1)
-        expect(actualPlacedCards.serializedPropertySets[0].cards).to.eql([PROPERTY_BLUE, PROPERTY_WILDCARD])
-        expect(actualPlacedCards.leftOverCards).to.eql([PROPERTY_WILDCARD, HOUSE])
+        expect(actualPlacedCards.serializedPropertySets).toHaveLength(1)
+        expect(actualPlacedCards.serializedPropertySets[0].cards).toEqual([PROPERTY_BLUE, PROPERTY_WILDCARD])
+        expect(actualPlacedCards.leftOverCards).toEqual([PROPERTY_WILDCARD, HOUSE])
       })
     })
   })

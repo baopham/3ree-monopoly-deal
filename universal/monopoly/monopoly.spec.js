@@ -1,6 +1,5 @@
 /* @flow */
-/* eslint-env node, mocha */
-import { expect } from 'chai'
+/* eslint-env jest */
 import {
   RENT_BLUE_OR_GREEN,
   PROPERTY_BLUE_OR_GREEN,
@@ -31,7 +30,7 @@ describe('monopoly', function () {
         }],
         leftOverCards: []
       }
-      expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+      expect(monopoly.canPlayCard(card, placedCards)).toBe(true)
     })
 
     it('should return false for a rent card if the player has no rentable card', function () {
@@ -44,7 +43,7 @@ describe('monopoly', function () {
         }],
         leftOverCards: []
       }
-      expect(monopoly.canPlayCard(card, placedCards)).to.be.false
+      expect(monopoly.canPlayCard(card, placedCards)).toBe(false)
     })
 
     it('should return true if the card is an action card', function () {
@@ -54,7 +53,7 @@ describe('monopoly', function () {
         serializedPropertySets: [],
         leftOverCards: []
       }
-      expect(monopoly.canPlayCard(actionCard, placedCards)).to.be.true
+      expect(monopoly.canPlayCard(actionCard, placedCards)).toBe(true)
     })
 
     describe('Given the card is a FORCED_DEAL', function () {
@@ -65,7 +64,7 @@ describe('monopoly', function () {
           serializedPropertySets: [],
           leftOverCards: []
         }
-        expect(monopoly.canPlayCard(card, placedCards)).to.be.false
+        expect(monopoly.canPlayCard(card, placedCards)).toBe(false)
       })
 
       it('should return true if the player has properties to trade with', function () {
@@ -78,7 +77,7 @@ describe('monopoly', function () {
           }],
           leftOverCards: []
         }
-        expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+        expect(monopoly.canPlayCard(card, placedCards)).toBe(true)
       })
     })
 
@@ -90,7 +89,7 @@ describe('monopoly', function () {
           serializedPropertySets: [],
           leftOverCards: []
         }
-        expect(monopoly.canPlayCard(card, placedCards)).to.be.false
+        expect(monopoly.canPlayCard(card, placedCards)).toBe(false)
       })
 
       it('should return true if the player has properties to rent', function () {
@@ -103,7 +102,7 @@ describe('monopoly', function () {
           }],
           leftOverCards: []
         }
-        expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+        expect(monopoly.canPlayCard(card, placedCards)).toBe(true)
       })
     })
 
@@ -119,7 +118,7 @@ describe('monopoly', function () {
             }],
             leftOverCards: []
           }
-          expect(monopoly.canPlayCard(card, placedCards)).to.be.true
+          expect(monopoly.canPlayCard(card, placedCards)).toBe(true)
         })
 
         it('should return false if none of the wildcard properties are rentable', function () {
@@ -132,7 +131,7 @@ describe('monopoly', function () {
             }],
             leftOverCards: []
           }
-          expect(monopoly.canPlayCard(card, placedCards)).to.be.false
+          expect(monopoly.canPlayCard(card, placedCards)).toBe(false)
         })
       })
     })
@@ -162,31 +161,31 @@ describe('monopoly', function () {
 
           const leftOverNonPropertyCards = monopoly.mergeSerializedPropertySets(mine, theirs)
 
-          expect(leftOverNonPropertyCards).to.be.instanceof(Array)
-          expect(leftOverNonPropertyCards).to.be.empty
+          expect(leftOverNonPropertyCards).toBeInstanceOf(Array)
+          expect(leftOverNonPropertyCards).toHaveLength(0)
 
-          expect(mine).to.have.lengthOf(4)
+          expect(mine).toHaveLength(4)
 
           // Full set A
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: getCardObject(PROPERTY_BLUE),
             cards: [PROPERTY_BLUE, PROPERTY_BLUE]
           })
 
           // Set B now becomes a full set
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: getCardObject(PROPERTY_RED),
             cards: [PROPERTY_RED, PROPERTY_WILDCARD, PROPERTY_RED]
           })
 
           // A new set since set A is full
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: getCardObject(PROPERTY_BLUE),
             cards: [PROPERTY_BLUE]
           })
 
           // Completely new set C
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: getCardObject(PROPERTY_PINK),
             cards: [
               PROPERTY_PINK,
@@ -214,16 +213,16 @@ describe('monopoly', function () {
 
           const leftOverNonPropertyCards = monopoly.mergeSerializedPropertySets(mine, theirs)
 
-          expect(leftOverNonPropertyCards).to.be.instanceof(Array)
-          expect(leftOverNonPropertyCards).to.be.empty
-          expect(mine).to.have.lengthOf(2)
+          expect(leftOverNonPropertyCards).toBeInstanceOf(Array)
+          expect(leftOverNonPropertyCards).toHaveLength(0)
+          expect(mine).toHaveLength(2)
 
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: setIdentifier,
             cards: [PROPERTY_BLUE]
           })
 
-          expect(mine.shift()).to.eql({
+          expect(mine.shift()).toEqual({
             identifier: setIdentifier,
             cards: [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE, HOTEL]
           })

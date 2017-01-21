@@ -1,6 +1,5 @@
 /* @flow */
-/* eslint-env node, mocha */
-import { expect } from 'chai'
+/* eslint-env jest */
 import * as helper from './helper'
 import {
   PROPERTY_BLUE,
@@ -36,10 +35,10 @@ describe('PaymentForm: helper', function () {
           serializedPropertySets
         )
 
-        expect(map.size).to.equal(2)
+        expect(map.size).toEqual(2)
 
-        expect(map.get(propertySets[0].getId())).to.eql([PROPERTY_BLUE, HOUSE])
-        expect(map.get(propertySets[1].getId())).to.eql([PROPERTY_RED])
+        expect(map.get(propertySets[0].getId())).toEqual([PROPERTY_BLUE, HOUSE])
+        expect(map.get(propertySets[1].getId())).toEqual([PROPERTY_RED])
       })
     })
 
@@ -60,8 +59,8 @@ describe('PaymentForm: helper', function () {
           serializedPropertySets
         )
 
-        expect(map.size).to.equal(1)
-        expect(map.get(propertySets[0].getId())).to.eql([HOUSE])
+        expect(map.size).toEqual(1)
+        expect(map.get(propertySets[0].getId())).toEqual([HOUSE])
       })
     })
   })
@@ -76,7 +75,7 @@ describe('PaymentForm: helper', function () {
 
         const tuple = [PROPERTY_BLUE, 0, 1]
 
-        expect(helper.cardIsSelected(tuple, selected)).to.be.true
+        expect(helper.cardIsSelected(tuple, selected)).toBe(true)
       })
 
       it('should return false if the card is not selected', function () {
@@ -87,7 +86,7 @@ describe('PaymentForm: helper', function () {
 
         const tuple = [PROPERTY_BLUE, 1, 1]
 
-        expect(helper.cardIsSelected(tuple, selected)).to.be.false
+        expect(helper.cardIsSelected(tuple, selected)).toBe(false)
       })
     })
 
@@ -100,7 +99,7 @@ describe('PaymentForm: helper', function () {
 
         const tuple = [MONEY_1M, 'bank', 0]
 
-        expect(helper.cardIsSelected(tuple, selected)).to.be.true
+        expect(helper.cardIsSelected(tuple, selected)).toBe(true)
       })
 
       it('should return false if the card is not selected', function () {
@@ -111,7 +110,7 @@ describe('PaymentForm: helper', function () {
 
         const tuple = [MONEY_1M, 'bank', 1]
 
-        expect(helper.cardIsSelected(tuple, selected)).to.be.false
+        expect(helper.cardIsSelected(tuple, selected)).toBe(false)
       })
     })
   })

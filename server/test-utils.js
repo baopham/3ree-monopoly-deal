@@ -1,10 +1,10 @@
 /* @flow */
+/* eslint-env jest */
 import uuid from 'node-uuid'
-import td from 'testdouble'
 import { newDeck } from '../universal/monopoly/cards'
 
 export function fakePlayer (override: Object = {}): Player {
-  return td.object(Object.assign({
+  return Object.assign({
     id: uuid.v1(),
     gameId: uuid.v1(),
     username: uuid.v1(),
@@ -16,13 +16,13 @@ export function fakePlayer (override: Object = {}): Player {
     },
     payeeInfo: null,
     game: null,
-    save: () => {},
-    saveAll: () => {}
-  }, override))
+    save: jest.fn(),
+    saveAll: jest.fn()
+  }, override)
 }
 
 export function fakeGame (override: Object = {}): Game {
-  return td.object(Object.assign({
+  return Object.assign({
     id: uuid.v1(),
     gameId: uuid.v1(),
     name: uuid.v1(),
@@ -34,18 +34,18 @@ export function fakeGame (override: Object = {}): Game {
     players: [],
     createdAt: (new Date()).toString(),
     updatedAt: (new Date()).toString(),
-    save: () => {},
-    saveAll: () => {}
-  }, override))
+    save: jest.fn(),
+    saveAll: jest.fn()
+  }, override)
 }
 
 export function fakeCardRequest (override: Object = {}): CardRequest {
-  return td.object(Object.assign({
+  return Object.assign({
     id: uuid.v1(),
     gameId: uuid.v1(),
     info: null,
     type: null,
-    save: () => {},
-    delete: () => {}
-  }, override))
+    save: jest.fn(),
+    delete: jest.fn()
+  }, override)
 }

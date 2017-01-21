@@ -1,6 +1,5 @@
 /* @flow */
-/* eslint-env node, mocha */
-import { expect } from 'chai'
+/* eslint-env jest */
 import {
   PROPERTY_GREEN,
   PROPERTY_BLUE,
@@ -20,78 +19,78 @@ describe('PropertySet', function () {
     it('should not allow to add a property once it is a full set', function () {
       const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_BLUE])
 
-      expect(propertySet.getCards()).to.have.lengthOf(2)
-      expect(propertySet.isFullSet()).to.be.true
-      expect(propertySet.addCard(PROPERTY_BLUE)).to.be.false
-      expect(propertySet.getCards()).to.have.lengthOf(2)
+      expect(propertySet.getCards()).toHaveLength(2)
+      expect(propertySet.isFullSet()).toBe(true)
+      expect(propertySet.addCard(PROPERTY_BLUE)).toBe(false)
+      expect(propertySet.getCards()).toHaveLength(2)
     })
 
     it('should allow to add a property if it is not a full set', function () {
       const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-      expect(propertySet.getCards()).to.have.lengthOf(1)
-      expect(propertySet.addCard(PROPERTY_BLUE)).to.be.true
-      expect(propertySet.getCards()).to.have.lengthOf(2)
+      expect(propertySet.getCards()).toHaveLength(1)
+      expect(propertySet.addCard(PROPERTY_BLUE)).toBe(true)
+      expect(propertySet.getCards()).toHaveLength(2)
     })
 
     describe('Given the card being added is a HOUSE or a HOTEL and the set is not railroad or utility', function () {
       it('should not allow to add HOUSE if it is not a full set', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(1)
-        expect(propertySet.isFullSet()).to.be.false
-        expect(propertySet.addCard(HOUSE)).to.be.false
+        expect(propertySet.getCards()).toHaveLength(1)
+        expect(propertySet.isFullSet()).toBe(false)
+        expect(propertySet.addCard(HOUSE)).toBe(false)
       })
 
       it('should not allow to add HOTEL if it is not a full set', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(1)
-        expect(propertySet.isFullSet()).to.be.false
-        expect(propertySet.addCard(HOTEL)).to.be.false
+        expect(propertySet.getCards()).toHaveLength(1)
+        expect(propertySet.isFullSet()).toBe(false)
+        expect(propertySet.addCard(HOTEL)).toBe(false)
       })
 
       it('should not allow to add HOTEL if there is no HOUSE yet', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_BLUE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(2)
-        expect(propertySet.isFullSet()).to.be.true
-        expect(propertySet.addCard(HOTEL)).to.be.false
+        expect(propertySet.getCards()).toHaveLength(2)
+        expect(propertySet.isFullSet()).toBe(true)
+        expect(propertySet.addCard(HOTEL)).toBe(false)
       })
 
       it('should allow to add HOTEL if there is a HOUSE', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(3)
-        expect(propertySet.isFullSet()).to.be.true
-        expect(propertySet.addCard(HOTEL)).to.be.true
-        expect(propertySet.getCards()).to.have.lengthOf(4)
+        expect(propertySet.getCards()).toHaveLength(3)
+        expect(propertySet.isFullSet()).toBe(true)
+        expect(propertySet.addCard(HOTEL)).toBe(true)
+        expect(propertySet.getCards()).toHaveLength(4)
       })
 
       it('should allow to add a HOUSE or a HOTEL if is a full set', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_BLUE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(2)
-        expect(propertySet.isFullSet()).to.be.true
-        expect(propertySet.addCard(HOUSE)).to.be.true
-        expect(propertySet.getCards()).to.have.lengthOf(3)
-        expect(propertySet.addCard(HOTEL)).to.be.true
-        expect(propertySet.getCards()).to.have.lengthOf(4)
+        expect(propertySet.getCards()).toHaveLength(2)
+        expect(propertySet.isFullSet()).toBe(true)
+        expect(propertySet.addCard(HOUSE)).toBe(true)
+        expect(propertySet.getCards()).toHaveLength(3)
+        expect(propertySet.addCard(HOTEL)).toBe(true)
+        expect(propertySet.getCards()).toHaveLength(4)
       })
 
       it('should not allow to add more than one HOUSE', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE])
 
-        expect(propertySet.getCards()).to.have.lengthOf(3)
-        expect(propertySet.addCard(HOUSE)).to.be.false
+        expect(propertySet.getCards()).toHaveLength(3)
+        expect(propertySet.addCard(HOUSE)).toBe(false)
       })
 
       it('should not allow to add more than one HOTEL', function () {
         const cards = [PROPERTY_BLUE, PROPERTY_BLUE, HOUSE, HOTEL]
         const propertySet = new PropertySet(propertyBlueIdentifier, cards)
 
-        expect(propertySet.getCards()).to.have.lengthOf(4)
-        expect(propertySet.addCard(HOTEL)).to.be.false
+        expect(propertySet.getCards()).toHaveLength(4)
+        expect(propertySet.addCard(HOTEL)).toBe(false)
       })
     })
 
@@ -101,9 +100,9 @@ describe('PropertySet', function () {
           const cards = [PROPERTY_BLACK, PROPERTY_BLACK, PROPERTY_BLACK, PROPERTY_BLACK]
           const propertySet = new PropertySet(getCardObject(PROPERTY_BLACK), cards)
 
-          expect(propertySet.isFullSet()).to.be.true
-          expect(propertySet.addCard(HOUSE)).to.be.false
-          expect(propertySet.addCard(HOTEL)).to.be.false
+          expect(propertySet.isFullSet()).toBe(true)
+          expect(propertySet.addCard(HOUSE)).toBe(false)
+          expect(propertySet.addCard(HOTEL)).toBe(false)
         })
       })
 
@@ -112,9 +111,9 @@ describe('PropertySet', function () {
           const cards = [PROPERTY_LIGHT_GREEN, PROPERTY_LIGHT_GREEN]
           const propertySet = new PropertySet(getCardObject(PROPERTY_LIGHT_GREEN), cards)
 
-          expect(propertySet.isFullSet()).to.be.true
-          expect(propertySet.addCard(HOUSE)).to.be.false
-          expect(propertySet.addCard(HOTEL)).to.be.false
+          expect(propertySet.isFullSet()).toBe(true)
+          expect(propertySet.addCard(HOUSE)).toBe(false)
+          expect(propertySet.addCard(HOTEL)).toBe(false)
         })
       })
     })
@@ -123,7 +122,7 @@ describe('PropertySet', function () {
       it('should not allow to add the card', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-        expect(propertySet.addCard(PROPERTY_BLACK)).to.be.false
+        expect(propertySet.addCard(PROPERTY_BLACK)).toBe(false)
       })
     })
   })
@@ -134,8 +133,8 @@ describe('PropertySet', function () {
       const propertySet = new PropertySet(propertyBlueIdentifier, cards)
 
       const array = propertySet.toArray()
-      expect(array).to.be.instanceof(Array)
-      expect(array).to.eql([
+      expect(array).toBeInstanceOf(Array)
+      expect(array).toEqual([
         PROPERTY_BLUE,
         PROPERTY_BLUE,
         HOUSE,
@@ -150,19 +149,19 @@ describe('PropertySet', function () {
       const thisPropertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
       const thatPropertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-      expect(thisPropertySet.equals(thatPropertySet)).to.be.true
+      expect(thisPropertySet.equals(thatPropertySet)).toBe(true)
     })
 
     it('should return false if 2 property sets do not have the same identifier or cards', function () {
       let thisPropertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, PROPERTY_WILDCARD])
       let thatPropertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE])
 
-      expect(thisPropertySet.equals(thatPropertySet)).to.be.false
+      expect(thisPropertySet.equals(thatPropertySet)).toBe(false)
 
       thisPropertySet = new PropertySet(getCardObject(PROPERTY_GREEN), [])
       thatPropertySet = new PropertySet(propertyBlueIdentifier, [])
 
-      expect(thisPropertySet.equals(thatPropertySet)).to.be.false
+      expect(thisPropertySet.equals(thatPropertySet)).toBe(false)
     })
   })
 
@@ -172,8 +171,8 @@ describe('PropertySet', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_WILDCARD])
         const invalidCards = propertySet.removeInvalidCards()
 
-        expect(propertySet.getCards()).to.be.empty
-        expect(invalidCards).to.eql([PROPERTY_WILDCARD, PROPERTY_WILDCARD])
+        expect(propertySet.getCards()).toHaveLength(0)
+        expect(invalidCards).toEqual([PROPERTY_WILDCARD, PROPERTY_WILDCARD])
       })
     })
 
@@ -182,8 +181,8 @@ describe('PropertySet', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, HOUSE, HOTEL])
         const invalidCards = propertySet.removeInvalidCards()
 
-        expect(propertySet.getCards()).to.eql([PROPERTY_BLUE])
-        expect(invalidCards).to.eql([HOUSE, HOTEL])
+        expect(propertySet.getCards()).toEqual([PROPERTY_BLUE])
+        expect(invalidCards).toEqual([HOUSE, HOTEL])
       })
     })
 
@@ -192,8 +191,8 @@ describe('PropertySet', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_BLUE, HOTEL])
         const invalidCards = propertySet.removeInvalidCards()
 
-        expect(propertySet.getCards()).to.eql([PROPERTY_BLUE])
-        expect(invalidCards).to.eql([HOTEL])
+        expect(propertySet.getCards()).toEqual([PROPERTY_BLUE])
+        expect(invalidCards).toEqual([HOTEL])
       })
     })
 
@@ -202,8 +201,8 @@ describe('PropertySet', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, HOUSE, HOTEL])
         const invalidCards = propertySet.removeInvalidCards()
 
-        expect(propertySet.getCards()).to.be.empty
-        expect(invalidCards).to.eql([PROPERTY_WILDCARD, HOUSE, HOTEL])
+        expect(propertySet.getCards()).toHaveLength(0)
+        expect(invalidCards).toEqual([PROPERTY_WILDCARD, HOUSE, HOTEL])
       })
     })
 
@@ -218,8 +217,8 @@ describe('PropertySet', function () {
 
         const invalidCards = propertySet.removeInvalidCards()
 
-        expect(propertySet.getCards()).to.eql([PROPERTY_BLACK, PROPERTY_WILDCARD])
-        expect(invalidCards).to.eql([HOUSE, HOTEL])
+        expect(propertySet.getCards()).toEqual([PROPERTY_BLACK, PROPERTY_WILDCARD])
+        expect(invalidCards).toEqual([HOUSE, HOTEL])
       })
     })
   })
@@ -229,7 +228,7 @@ describe('PropertySet', function () {
       it('should return false', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_WILDCARD])
 
-        expect(propertySet.isFullSet()).to.be.false
+        expect(propertySet.isFullSet()).toBe(false)
       })
     })
 
@@ -237,7 +236,7 @@ describe('PropertySet', function () {
       it('should return true', function () {
         const propertySet = new PropertySet(propertyBlueIdentifier, [PROPERTY_WILDCARD, PROPERTY_BLUE])
 
-        expect(propertySet.isFullSet()).to.be.true
+        expect(propertySet.isFullSet()).toBe(true)
       })
     })
   })
