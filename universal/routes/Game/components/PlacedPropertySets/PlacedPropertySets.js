@@ -3,7 +3,7 @@ import React from 'react'
 import PropertySet from '../PropertySet'
 import FlipCardButton from '../FlipCardButton'
 import MoveCardButton from '../MoveCardButton'
-import PropertySetSelector from '../PropertySetSelector'
+import PropertySetSelectorForm from '../PropertySetSelectorForm'
 import * as monopoly from '../../../../monopoly/monopoly'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
@@ -120,7 +120,7 @@ export default class PlacedPropertySet extends React.Component {
           </li>
         )}
         {movingToAnotherSet &&
-          <PropertySetSelector
+          <PropertySetSelectorForm
             header='Select a property set'
             subheader={
               setsForMovingCardTo.length

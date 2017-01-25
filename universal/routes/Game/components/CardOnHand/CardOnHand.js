@@ -6,7 +6,7 @@ import PlayCardButton from '../PlayCardButton'
 import DiscardCardButton from '../DiscardCardButton'
 import FlipCardButton from '../FlipCardButton'
 import MoneySignButton from '../MoneySignButton'
-import PropertySetSelector from '../PropertySetSelector'
+import PropertySetSelectorForm from '../PropertySetSelectorForm'
 import {
   isMoneyCard,
   isActionCard,
@@ -102,7 +102,7 @@ export default class CardOnHand extends React.Component {
       .filter(s => s.canAddCard(card))
 
     return (
-      <PropertySetSelector
+      <PropertySetSelectorForm
         header='Select a property set'
         subheader={
           propertySetsToSelect.length

@@ -3,7 +3,7 @@ import React from 'react'
 import Card from '../../../../components/Card'
 import FlipCardButton from '../FlipCardButton'
 import MoveCardButton from '../MoveCardButton'
-import PropertySetSelector from '../PropertySetSelector'
+import PropertySetSelectorForm from '../PropertySetSelectorForm'
 import * as monopoly from '../../../../monopoly/monopoly'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
@@ -94,7 +94,7 @@ export default class PlacedLeftOverCards extends React.Component {
           </li>
         )}
         {movingToASet &&
-          <PropertySetSelector
+          <PropertySetSelectorForm
             header='Select a property set'
             subheader={
               setsForMovingCardTo.length

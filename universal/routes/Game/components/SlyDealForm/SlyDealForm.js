@@ -63,7 +63,7 @@ export default class SlyDealForm extends React.Component {
     })
   }
 
-  select = () => {
+  submit = () => {
     const { player, cardType, setIndex, selectedCardIndex } = this.state
     if (player === undefined || cardType === undefined || selectedCardIndex === undefined) {
       return
@@ -111,7 +111,7 @@ export default class SlyDealForm extends React.Component {
           <Button
             bsStyle='primary'
             disabled={selectedCardIndex === undefined}
-            onClick={this.select}
+            onClick={this.submit}
           >
             Select
           </Button>

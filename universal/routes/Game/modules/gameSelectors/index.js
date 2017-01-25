@@ -6,10 +6,10 @@ import type { PaymentState } from '../payment'
 import type { CurrentPlayerCardsOnHandState } from '../currentPlayerCardsOnHand'
 import type { SayNoState } from '../sayNo'
 
-const getCurrentGame = (state) => state.currentGame
-const getPayment = (state) => state.payment
-const getCurrentPlayerCardsOnHand = (state) => state.currentPlayerCardsOnHand
-const getSayNoState = (state) => state.sayNo
+const getCurrentGame = state => state.currentGame
+const getPayment = state => state.payment
+const getCurrentPlayerCardsOnHand = state => state.currentPlayerCardsOnHand
+const getSayNoState = state => state.sayNo
 
 export const getCurrentPlayer = createSelector(
   getCurrentGame,
