@@ -1,6 +1,7 @@
 3REE Monopoly Deal
 ===================
 
+[![CircleCI](https://circleci.com/gh/baopham/3ree-monopoly-deal.svg?style=svg)](https://circleci.com/gh/baopham/3ree-monopoly-deal)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)  
 
 A WIP POC to test the 3REE (React - Redux - Rethinkdb - Express) stack.
