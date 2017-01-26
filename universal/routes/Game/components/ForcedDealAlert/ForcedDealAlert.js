@@ -11,7 +11,7 @@ type Props = {
   fromUserCard: CardKey,
   toUserCard: CardKey,
   acceptForcedDeal: () => void,
-  sayNoButton: ?Node
+  sayNoButton?: React$Element<*>
 }
 
 export default class ForcedDealAlert extends React.Component {

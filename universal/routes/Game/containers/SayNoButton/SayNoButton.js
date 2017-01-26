@@ -14,7 +14,7 @@ type Props = {
   clickOnceOnly: boolean,
   sayNo: (toUser: Username, onSuccess: Function, cause: SayNoCause) => void,
   discardCard: (card: CardKey) => void,
-  children: React$Element<*>
+  children?: React$Element<*> | Node
 }
 
 type State = {
