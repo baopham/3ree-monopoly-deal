@@ -1,0 +1,847 @@
+exports[`Storyshots CardsOnHand with a playable forced deal 1`] = `
+<div
+  className="panel panel-default"
+  id={null}>
+  <div
+    className="panel-heading">
+    <div
+      className="panel-title"
+      onClick={[Function]}>
+      <a
+        aria-controls={undefined}
+        aria-expanded={true}
+        aria-selected={true}
+        className={null}
+        href={undefined}
+        onClick={[Function]}
+        role={undefined}>
+        <span
+          className="glyphicon glyphicon-chevron-up" />
+         
+        Hand
+      </a>
+    </div>
+  </div>
+  <div
+    aria-expanded={null}
+    aria-hidden={false}
+    className="panel-collapse collapse in"
+    id={undefined}
+    role={undefined}>
+    <div
+      className="panel-body">
+      <div>
+        <ul
+          className="list-inline"
+          style={
+            Object {
+              "minHeight": 250,
+            }
+          }>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/forced-deal.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="FORCED_DEAL" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/rent-black-or-light-green.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="RENT_BLACK_OR_LIGHT_GREEN" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/say-no.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="SAY_NO" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/rent-red-or-yellow.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="RENT_RED_OR_YELLOW" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots CardsOnHand with a playable sly deal 1`] = `
+<div
+  className="panel panel-default"
+  id={null}>
+  <div
+    className="panel-heading">
+    <div
+      className="panel-title"
+      onClick={[Function]}>
+      <a
+        aria-controls={undefined}
+        aria-expanded={true}
+        aria-selected={true}
+        className={null}
+        href={undefined}
+        onClick={[Function]}
+        role={undefined}>
+        <span
+          className="glyphicon glyphicon-chevron-up" />
+         
+        Hand
+      </a>
+    </div>
+  </div>
+  <div
+    aria-expanded={null}
+    aria-hidden={false}
+    className="panel-collapse collapse in"
+    id={undefined}
+    role={undefined}>
+    <div
+      className="panel-body">
+      <div>
+        <ul
+          className="list-inline"
+          style={
+            Object {
+              "minHeight": 250,
+            }
+          }>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/sly-deal.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="SLY_DEAL" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/rent-black-or-light-green.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="RENT_BLACK_OR_LIGHT_GREEN" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/say-no.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="SAY_NO" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+          <li
+            style={
+              Object {
+                "marginBottom": 20,
+              }
+            }>
+            <div>
+              <span
+                style={
+                  Object {
+                    "display": "block",
+                  }
+                }>
+                <img
+                  onClick={[Function]}
+                  src="/images/cards/rent-red-or-yellow.png"
+                  style={
+                    Object {
+                      "border": "none",
+                      "height": 230,
+                      "width": 150,
+                    }
+                  }
+                  title="RENT_RED_OR_YELLOW" />
+              </span>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={false}
+                onClick={[Function]}
+                title="Money?"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-piggy-bank" />
+              </button>
+              <button
+                className="btn btn-xs btn-primary"
+                disabled={true}
+                onClick={[Function]}
+                title="Play card in the center"
+                type="button">
+                <span
+                  className="glyphicon glyphicon-play" />
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots DealBreakerAlert asking to deal break 1`] = `<noscript />`;
+
+exports[`Storyshots DealBreakerAlert getting a deal break and can say no 1`] = `<noscript />`;
+
+exports[`Storyshots DealBreakerAlert getting a deal break and cannot say no 1`] = `<noscript />`;
+
+exports[`Storyshots DealBreakerForm other players have full sets 1`] = `<noscript />`;
+
+exports[`Storyshots GamesView list of games 1`] = `
+<div
+  className="container">
+  <div
+    className="row">
+    <div
+      className="col-xs-12">
+      <h1>
+        Games
+      </h1>
+      <button
+        className="btn btn-primary"
+        disabled={false}
+        onClick={[Function]}
+        type="button">
+        Add new Game
+      </button>
+      <div>
+        <div
+          className="table-responsive">
+          <table
+            className="table">
+            <thead>
+              <tr>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Winner
+                </th>
+                <th>
+                  Created At
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <a
+                    onClick={[Function]}
+                    style={Object {}}>
+                    Test 2
+                  </a>
+                </td>
+                <td />
+                <td>
+                  2017-01-17T13:14:53.062Z
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a
+                    onClick={[Function]}
+                    style={Object {}}>
+                    Test 1
+                  </a>
+                </td>
+                <td />
+                <td>
+                  2017-01-17T13:14:46.941Z
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul
+          className="pager">
+          <li
+            className="disabled previous"
+            style={undefined}>
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}>
+              Previous
+            </a>
+          </li>
+          <li
+            className="disabled next"
+            style={undefined}>
+            <a
+              href="#"
+              onClick={[Function]}
+              role="button"
+              style={
+                Object {
+                  "pointerEvents": "none",
+                }
+              }
+              tabIndex={-1}>
+              Next
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots global.AlertBar with danger background 1`] = `
+<div
+  className="bg-danger"
+  style={
+    Object {
+      "alignItems": "center",
+      "display": "flex",
+      "height": 50,
+      "justifyContent": "center",
+      "left": 0,
+      "position": "fixed",
+      "top": 0,
+      "width": "100%",
+      "zIndex": 10000,
+    }
+  }>
+  Alert alert alert!
+</div>
+`;
+
+exports[`Storyshots global.Card with face down 1`] = `
+<span
+  style={Object {}}>
+  <img
+    onClick={[Function]}
+    src="/images/cards/back.png"
+    style={
+      Object {
+        "border": "none",
+        "height": 230,
+        "width": 150,
+      }
+    }
+    title="PROPERTY_RED" />
+</span>
+`;
+
+exports[`Storyshots global.Card with face up 1`] = `
+<span
+  style={Object {}}>
+  <img
+    onClick={[Function]}
+    src="/images/cards/property-red.png"
+    style={
+      Object {
+        "border": "none",
+        "height": 230,
+        "width": 150,
+      }
+    }
+    title="PROPERTY_RED" />
+</span>
+`;
+
+exports[`Storyshots global.Card with size 'large' 1`] = `
+<span
+  style={Object {}}>
+  <img
+    onClick={[Function]}
+    src="/images/cards/back.png"
+    style={
+      Object {
+        "border": "none",
+        "height": 230,
+        "width": 150,
+      }
+    }
+    title="PROPERTY_RED" />
+</span>
+`;
+
+exports[`Storyshots global.Card with size 'small' 1`] = `
+<span
+  style={Object {}}>
+  <img
+    onClick={[Function]}
+    src="/images/cards/back.png"
+    style={
+      Object {
+        "border": "none",
+        "height": 140,
+        "width": 90,
+      }
+    }
+    title="PROPERTY_RED" />
+</span>
+`;
+
+exports[`Storyshots global.Card with size 'xsmall' 1`] = `
+<span
+  style={Object {}}>
+  <img
+    onClick={[Function]}
+    src="/images/cards/back.png"
+    style={
+      Object {
+        "border": "none",
+        "height": 50,
+        "width": 30,
+      }
+    }
+    title="PROPERTY_RED" />
+</span>
+`;
+
+exports[`Storyshots global.TextFormDialog being cancelable 1`] = `
+<div
+  autoFocus={true}
+  className="modal"
+  role="dialog"
+  style={
+    Object {
+      "display": "block",
+    }
+  }
+  tabIndex="-1">
+  <div
+    className="modal-dialog">
+    <div
+      className="modal-content"
+      role="document">
+      <div
+        className="modal-header">
+        <h4
+          className="modal-title">
+          Header
+        </h4>
+      </div>
+      <div
+        className="modal-body">
+        <div
+          className="form-group has-error">
+          <label
+            className="control-label"
+            htmlFor="join-form">
+            Input Label
+          </label>
+          <input
+            autoFocus={true}
+            className="form-control"
+            id="join-form"
+            onChange={[Function]}
+            type="text"
+            value="" />
+        </div>
+      </div>
+      <div
+        className="modal-footer">
+        <button
+          className="btn btn-primary"
+          disabled={false}
+          onClick={[Function]}
+          type="button">
+          Submit
+        </button>
+        <button
+          className="pull-left btn btn-default"
+          disabled={false}
+          onClick={[Function]}
+          type="button">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots global.TextFormDialog being non-cancelable 1`] = `
+<div
+  autoFocus={true}
+  className="modal"
+  role="dialog"
+  style={
+    Object {
+      "display": "block",
+    }
+  }
+  tabIndex="-1">
+  <div
+    className="modal-dialog">
+    <div
+      className="modal-content"
+      role="document">
+      <div
+        className="modal-header">
+        <h4
+          className="modal-title">
+          Header
+        </h4>
+      </div>
+      <div
+        className="modal-body">
+        <div
+          className="form-group has-error">
+          <label
+            className="control-label"
+            htmlFor="join-form">
+            Input Label
+          </label>
+          <input
+            autoFocus={true}
+            className="form-control"
+            id="join-form"
+            onChange={[Function]}
+            type="text"
+            value="" />
+        </div>
+      </div>
+      <div
+        className="modal-footer">
+        <button
+          className="btn btn-primary"
+          disabled={false}
+          onClick={[Function]}
+          type="button">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots global.TextFormDialog input allowing spaces 1`] = `
+<div
+  autoFocus={true}
+  className="modal"
+  role="dialog"
+  style={
+    Object {
+      "display": "block",
+    }
+  }
+  tabIndex="-1">
+  <div
+    className="modal-dialog">
+    <div
+      className="modal-content"
+      role="document">
+      <div
+        className="modal-header">
+        <h4
+          className="modal-title">
+          Header
+        </h4>
+      </div>
+      <div
+        className="modal-body">
+        <div
+          className="form-group has-error">
+          <label
+            className="control-label"
+            htmlFor="join-form">
+            Input Label
+          </label>
+          <input
+            autoFocus={true}
+            className="form-control"
+            id="join-form"
+            onChange={[Function]}
+            type="text"
+            value="" />
+        </div>
+      </div>
+      <div
+        className="modal-footer">
+        <button
+          className="btn btn-primary"
+          disabled={false}
+          onClick={[Function]}
+          type="button">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
