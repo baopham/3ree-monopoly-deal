@@ -7,7 +7,13 @@ machine:
   node:
     version: 6.7
 
+dependencies:
+  override:
+    - yarn
+
 test:
+  override:
+    - yarn test
   post:
     - npm run lint
     - npm run flow
