@@ -15,5 +15,5 @@ test:
   override:
     - yarn test
   post:
-    - npm run lint
-    - npm run flow
+    - yarn run lint
+    - yarn run flow
