@@ -4,7 +4,6 @@ import ScrollableBackgroundModal from '../../../../components/ScrollableBackgrou
 import { Modal, Button } from 'react-bootstrap'
 import PropertySet from '../PropertySet'
 import PropertySetClass from '../../../../monopoly/PropertySet'
-import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 type Props = {
   currentPlayerIsRequester: boolean,

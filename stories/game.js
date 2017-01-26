@@ -101,8 +101,8 @@ storiesOf('DealBreakerAlert', module)
     return (
       <DealBreakerAlert
         currentPlayerIsRequester={false}
-        fromUser='bao'
-        toUser='bao2'
+        fromUser={fromUser}
+        toUser={toUser}
         setToDealBreak={setToDealBreak}
         sayNoButton={sayNoButton}
         acceptDealBreaker={action('accept deal break')}
