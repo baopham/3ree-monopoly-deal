@@ -9,7 +9,7 @@ import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
 import { markCard } from '../../../universal/monopoly/logMessageParser'
-import type { SlyDealInfo, ForcedDealInfo, DealBreakInfo } from '../../../universal/monopoly/cardRequestTypes'
+import type { SlyDealInfo, ForcedDealInfo, DealBreakerInfo } from '../../../universal/monopoly/cardRequestTypes'
 
 export default class CardRequestService {
   cardRequestRepository: CardRequestRepository
@@ -231,7 +231,7 @@ export default class CardRequestService {
     }
   }
 
-  requestToDealBreak (gameId: string, cardRequestInfo: DealBreakInfo): Promise<[CardRequest, GameHistoryRecord]> {
+  requestToDealBreak (gameId: string, cardRequestInfo: DealBreakerInfo): Promise<[CardRequest, GameHistoryRecord]> {
     const { fromUser, toUser } = cardRequestInfo
 
     return Promise.all([

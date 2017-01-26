@@ -16,11 +16,15 @@ export type SayNoToForcedDeal = {
   forcedDealRequestId: string
 }
 
+export type SayNoToDealBreaker = {
+  dealBreakerId: string
+}
+
 export type SayNoToPaymentRequest = {
   payer: Username,
   payee: Username
 }
 
-export type SayNoCauseInfo = SayNoToPaymentRequest | SayNoToSlyDeal | SayNoToForcedDeal | null
+export type SayNoCauseInfo = SayNoToPaymentRequest | SayNoToSlyDeal | SayNoToForcedDeal | SayNoToDealBreaker | null
 
 export { causes as default }

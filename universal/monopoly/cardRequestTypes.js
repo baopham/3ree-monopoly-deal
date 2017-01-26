@@ -32,12 +32,12 @@ export type ForcedDealInfo = {
   toUserCard: CardKey
 }
 
-export type DealBreakInfo = {
+export type DealBreakerInfo = {
   fromUser: Username,
   toUser: Username,
   setId: PropertySetId
 }
 
-export type CardRequestInfo = SlyDealInfo | ForcedDealInfo | null
+export type CardRequestInfo = SlyDealInfo | ForcedDealInfo | DealBreakerInfo | null
 
 export { types as default }

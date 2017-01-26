@@ -11,6 +11,9 @@ import {
 
 export type PropertySetId = string
 
+const ID_SEPARATOR = ':'
+const CARD_SEPARATOR = '-'
+
 export default class PropertySet {
   identifier: Card
   cards: CardKey[]
@@ -22,6 +25,14 @@ export default class PropertySet {
 
   static unserialize (serializedSet: SerializedPropertySet): PropertySet {
     return new PropertySet(serializedSet.identifier, serializedSet.cards)
+  }
+
+  static convertIdToPropertySet (id: PropertySetId): PropertySet {
+    const [identifierKey, joinedCards] = id.split(ID_SEPARATOR)
+    const identifier = getCardObject(identifierKey)
+    const cards = joinedCards.split(CARD_SEPARATOR)
+
+    return new PropertySet(identifier, cards)
   }
 
   addCard (card: CardKey): boolean {
@@ -197,11 +208,11 @@ export default class PropertySet {
   }
 
   static fromIdToIdentifierKey (id: PropertySetId): string {
-    const [identifierKey] = id.split(':')
+    const [identifierKey] = id.split(ID_SEPARATOR)
     return identifierKey
   }
 
   getId (): PropertySetId {
-    return `${this.identifier.key}:${PropertySet.sortCards(this.cards).join('-')}`
+    return `${this.identifier.key}${ID_SEPARATOR}${PropertySet.sortCards(this.cards).join(CARD_SEPARATOR)}`
   }
 }

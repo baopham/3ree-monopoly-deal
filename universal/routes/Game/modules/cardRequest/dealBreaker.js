@@ -3,7 +3,7 @@ import { namespace, apiUrl } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
 import { getCurrentPlayer } from '../gameSelectors'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
-import type { DealBreakInfo } from '../../../../monopoly/cardRequestTypes'
+import type { DealBreakerInfo } from '../../../../monopoly/cardRequestTypes'
 
 function ns (value) {
   return namespace('DEAL_BREAKER', value)
@@ -44,7 +44,7 @@ function askToDealBreak (toPlayer: Player, setId: PropertySetId) {
         throw new Error('No player to perform a deal breaker')
       }
 
-      const payload: DealBreakInfo = {
+      const payload: DealBreakerInfo = {
         toUser: toPlayer.username,
         fromUser: currentPlayer.username,
         setId
@@ -108,7 +108,7 @@ export default function reducer (state: DealBreakerState = initialState, action:
     case UPDATE:
     case ASK_SUCCESS:
       const { cardRequest }: { cardRequest: CardRequest } = action.payload
-      const { info }: { info: DealBreakInfo } = cardRequest
+      const { info }: { info: DealBreakerInfo } = cardRequest
       return {
         ...initialState,
         ...info,
