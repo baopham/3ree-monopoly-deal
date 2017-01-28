@@ -5,7 +5,8 @@ import { Panel, Glyphicon, Alert } from 'react-bootstrap'
 import CardOnHand from '../../components/CardOnHand'
 import SlyDealForm from '../../components/SlyDealForm'
 import ForcedDealForm from '../../components/ForcedDealForm'
-import { MAX_CARDS_IN_HAND, SLY_DEAL, FORCED_DEAL } from '../../../../monopoly/cards'
+import DealBreakerForm from '../../components/DealBreakerForm'
+import { MAX_CARDS_IN_HAND, SLY_DEAL, FORCED_DEAL, DEAL_BREAKER } from '../../../../monopoly/cards'
 import PropertySetClass from '../../../../monopoly/PropertySet'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import { isPlayerTurn, getCurrentPlayer, getOtherPlayers } from '../../modules/gameSelectors'
@@ -34,6 +35,7 @@ type Props = {
     fromPlayerSetId: PropertySetId,
     fromPlayerCard: CardKey
   ) => void,
+  askToDealBreak: (toPlayer: Player, setId: PropertySetId) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void
 }
@@ -42,7 +44,8 @@ type State = {
   open: boolean,
   needsToDiscard: boolean,
   slyDealing: boolean,
-  forceDealing: boolean
+  forceDealing: boolean,
+  dealBreaker: boolean
 }
 
 const styles = {
@@ -73,7 +76,8 @@ export class CardsOnHand extends React.Component {
       open: true,
       needsToDiscard: this.props.cardsOnHand.length > MAX_CARDS_IN_HAND,
       slyDealing: false,
-      forceDealing: false
+      forceDealing: false,
+      dealBreaker: false
     }
   }
 
@@ -97,6 +101,11 @@ export class CardsOnHand extends React.Component {
 
     if (card === FORCED_DEAL) {
       this.setState({ forceDealing: true })
+      return
+    }
+
+    if (card === DEAL_BREAKER) {
+      this.setState({ dealBreaker: true })
       return
     }
 
@@ -157,6 +166,16 @@ export class CardsOnHand extends React.Component {
     this.setState({ forceDealing: false })
   }
 
+  onDealBreakerSelect = (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => {
+    this.props.askToDealBreak(playerToDealBreakFrom, setToDealBreak.getId())
+    this.props.discardCard(DEAL_BREAKER)
+    this.onCancelDealBreakerRequest()
+  }
+
+  onCancelDealBreakerRequest = () => {
+    this.setState({ dealBreaker: false })
+  }
+
   renderSlyDealForm = () => {
     const { otherPlayers } = this.props
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
@@ -190,6 +209,18 @@ export class CardsOnHand extends React.Component {
     )
   }
 
+  renderDealBreakerForm = () => {
+    const { otherPlayers } = this.props
+
+    return (
+      <DealBreakerForm
+        otherPlayers={otherPlayers}
+        onSelect={this.onDealBreakerSelect}
+        onCancel={this.onCancelDealBreakerRequest}
+      />
+    )
+  }
+
   renderHeader () {
     return (
       <div onClick={this.togglePanel}>
@@ -215,7 +246,7 @@ export class CardsOnHand extends React.Component {
       isPlayerTurn
     } = this.props
 
-    const { needsToDiscard, slyDealing, forceDealing } = this.state
+    const { needsToDiscard, slyDealing, forceDealing, dealBreaker } = this.state
 
     return (
       <Panel
@@ -235,6 +266,9 @@ export class CardsOnHand extends React.Component {
             }
             {forceDealing &&
               this.renderForcedDealForm()
+            }
+            {dealBreaker &&
+              this.renderDealBreakerForm()
             }
             <ul className='list-inline' style={styles.cardsOnHand}>
               {cardsOnHand.map((card, i) =>

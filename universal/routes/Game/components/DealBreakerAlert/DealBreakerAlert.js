@@ -11,15 +11,11 @@ type Props = {
   toUser: Username,
   setToDealBreak: PropertySetClass,
   acceptDealBreaker: () => void,
-  sayNoButton?: React$Element<*>
+  sayNoButton: ?React$Element<*>
 }
 
 export default class DealBreakerAlert extends React.Component {
   props: Props
-
-  static defaultProps = {
-    acceptDealBreaker: () => {}
-  }
 
   render () {
     const {

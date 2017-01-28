@@ -24,6 +24,7 @@ storiesOf('CardsOnHand', module)
       askToSlyDealLeftOverCard={action('asking to sly deal a left over card')}
       askToForceDealSetCard={action('asking to force deal a set card')}
       askToForceDealLeftOverCard={action('asking to force deal a left over card')}
+      askToDealBreak={action('asking to deal break')}
       discardCard={action('discarding card')}
       flipCardOnHand={action('flipping card')}
     />
@@ -40,6 +41,7 @@ storiesOf('CardsOnHand', module)
       askToSlyDealLeftOverCard={action('asking to sly deal a left over card')}
       askToForceDealSetCard={action('asking to force deal a set card')}
       askToForceDealLeftOverCard={action('asking to force deal a left over card')}
+      askToDealBreak={action('asking to deal break')}
       discardCard={action('discarding card')}
       flipCardOnHand={action('flipping card')}
     />
@@ -63,7 +65,9 @@ storiesOf('DealBreakerAlert', module)
         currentPlayerIsRequester
         fromUser='bao'
         toUser='bao2'
+        acceptDealBreaker={action('accepting deal breaker')}
         setToDealBreak={setToDealBreak}
+        sayNoButton={null}
       />
     )
   })
@@ -77,6 +81,7 @@ storiesOf('DealBreakerAlert', module)
         toUser='bao2'
         setToDealBreak={setToDealBreak}
         acceptDealBreaker={action('accept deal break')}
+        sayNoButton={null}
       />
     )
   })

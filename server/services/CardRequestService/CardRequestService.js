@@ -33,11 +33,6 @@ export default class CardRequestService {
     return this.cardRequestRepository.find(id)
   }
 
-  async cancelRequest (id: string): Promise<*> {
-    const cardRequest: CardRequest = await this.cardRequestRepository.find(id)
-    return cardRequest.delete()
-  }
-
   requestToSlyDeal (gameId: string, cardRequestInfo: SlyDealInfo): Promise<[CardRequest, GameHistoryRecord]> {
     const { fromUser, toUser, card } = cardRequestInfo
 
@@ -244,10 +239,9 @@ export default class CardRequestService {
   }
 
   async acceptDealBreaker (dealBreakerRequestId: string): Promise<*> {
-    const cardRequest = this.cardRequestRepository.find(dealBreakerRequestId)
+    const cardRequest = await this.cardRequestRepository.find(dealBreakerRequestId)
 
-    const { fromUser, toUser, setId } = cardRequest.info
-    const { gameId } = cardRequest
+    const { gameId, info: { fromUser, toUser, setId } } = cardRequest
 
     const [fromPlayer: Player, toPlayer: Player] = await Promise.all([
       this.playerRepository.findByGameIdAndUsername(gameId, fromUser),
@@ -270,11 +264,13 @@ export default class CardRequestService {
 
     fromPlayer.actionCounter += 1
 
-    return Promise.all([
+    await Promise.all([
       fromPlayer.save(),
       toPlayer.save(),
       this.gameHistoryService.record(gameId, `${toUser} accepted the deal breaker request from ${fromUser}`, [fromUser])
     ])
+
+    return cardRequest.delete()
   }
 
   findPlayers (cardRequest: CardRequest): Promise<[Player, Player]> {

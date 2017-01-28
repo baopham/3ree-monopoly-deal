@@ -10,7 +10,7 @@ type Props = {
   currentPlayerIsRequester: boolean,
   cardToSlyDeal: CardKey,
   acceptSlyDeal: () => void,
-  sayNoButton?: React$Element<*>
+  sayNoButton: ?React$Element<*>
 }
 
 export default class SlyDealAlert extends React.Component {

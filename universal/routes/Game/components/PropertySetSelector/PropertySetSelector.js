@@ -6,11 +6,16 @@ import PropertySetClass from '../../../../monopoly/PropertySet'
 type Props = {
   propertySets: PropertySetClass[],
   onClick: (selectedSetIndex: number) => void,
-  setIsSelected: (selectedSetIndex: number) => boolean
+  setIsSelected: (selectedSetIndex: number) => boolean,
+  setFilter: (set: PropertySetClass) => boolean
 }
 
 export default class PropertySetSelector extends React.Component {
   props: Props
+
+  static defaultProps = {
+    setFilter: set => true
+  }
 
   highlightedSetStyle (setIndex: number): Object {
     return {
@@ -19,7 +24,7 @@ export default class PropertySetSelector extends React.Component {
   }
 
   render () {
-    const { propertySets, onClick } = this.props
+    const { propertySets, setFilter, onClick } = this.props
 
     return (
       <ul className='list-inline'>
@@ -29,9 +34,11 @@ export default class PropertySetSelector extends React.Component {
             style={this.highlightedSetStyle(setIndex)}
             onClick={() => onClick(setIndex)}
           >
-            <PropertySet
-              propertySet={set}
-            />
+            {setFilter(set) &&
+              <PropertySet
+                propertySet={set}
+              />
+            }
           </li>
         )}
       </ul>

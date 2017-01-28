@@ -28,5 +28,7 @@ router.put('/api/v1/games/:id/card-request/sly-deal', game.requestToSlyDeal)
 router.put('/api/v1/games/:id/card-request-accept/sly-deal/:requestId', game.acceptSlyDeal)
 router.put('/api/v1/games/:id/card-request/force-deal', game.requestToForceDeal)
 router.put('/api/v1/games/:id/card-request-accept/forced-deal/:requestId', game.acceptForcedDeal)
+router.put('/api/v1/games/:id/card-request/deal-break', game.requestToDealBreak)
+router.put('/api/v1/games/:id/card-request-accept/deal-breaker/:requestId', game.acceptDealBreaker)
 
 module.exports = router

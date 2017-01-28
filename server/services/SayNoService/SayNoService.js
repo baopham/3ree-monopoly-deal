@@ -112,7 +112,27 @@ export default class SayNoService {
         return this.cardRequestService.getCardRequest(slyDealRequestId)
           .then((cardRequest: CardRequest) => {
             const cancelRequest = cardRequest.info.toUser === sayNo.fromUser
-            return cancelRequest && this.cardRequestService.cancelRequest(slyDealRequestId)
+            return cancelRequest && cardRequest.delete()
+          })
+      }
+
+      case sayNoCauses.FORCED_DEAL: {
+        const { forcedDealRequestId } = sayNo.causeInfo
+
+        return this.cardRequestService.getCardRequest(forcedDealRequestId)
+          .then((cardRequest: CardRequest) => {
+            const cancelRequest = cardRequest.info.toUser === sayNo.fromUser
+            return cancelRequest && cardRequest.delete()
+          })
+      }
+
+      case sayNoCauses.DEAL_BREAKER: {
+        const { dealBreakerRequestId } = sayNo.causeInfo
+
+        return this.cardRequestService.getCardRequest(dealBreakerRequestId)
+          .then((cardRequest: CardRequest) => {
+            const cancelRequest = cardRequest.info.toUser === sayNo.fromUser
+            return cancelRequest && cardRequest.delete()
           })
       }
 

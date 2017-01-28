@@ -17,7 +17,7 @@ export type SayNoToForcedDeal = {
 }
 
 export type SayNoToDealBreaker = {
-  dealBreakerId: string
+  dealBreakerRequestId: string
 }
 
 export type SayNoToPaymentRequest = {

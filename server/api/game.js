@@ -177,6 +177,22 @@ export function acceptForcedDeal (req: AppRequest, res: express$Response) {
     .catch(err => handleError(err, res))
 }
 
+export function requestToDealBreak (req: AppRequest, res: express$Response) {
+  const promise = cardRequestService.requestToDealBreak(req.params.id, req.body)
+
+  promise
+    .then(([cardRequest]) => res.json({ cardRequest }))
+    .catch(err => handleError(err, res))
+}
+
+export function acceptDealBreaker (req: AppRequest, res: express$Response) {
+  const promise = cardRequestService.acceptDealBreaker(req.params.requestId)
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
 export function sayNoToUser (req: AppRequest, res: express$Response) {
   const promise = sayNoService.sayNoToUser(
     req.params.id,

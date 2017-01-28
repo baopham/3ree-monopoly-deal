@@ -108,9 +108,9 @@ export const actions = {
 // Reducer
 // ------------------------------------
 export type SlyDealState = {
+  slyDealRequestId: string,
   toUser: ?Username,
   fromUser: ?Username,
-  slyDealRequestId: string,
   setId: ?PropertySetId,
   card: ?CardKey,
   isWorking: boolean,
@@ -118,9 +118,9 @@ export type SlyDealState = {
 }
 
 const initialState: SlyDealState = {
+  slyDealRequestId: '',
   toUser: null,
   fromUser: null,
-  slyDealRequestId: '',
   setId: null,
   card: null,
   isWorking: false,

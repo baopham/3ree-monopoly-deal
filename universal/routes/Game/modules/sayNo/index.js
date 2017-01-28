@@ -69,6 +69,12 @@ function getCauseInfo (getState: Function, fromUser: Username, toUser: Username,
         forcedDealRequestId: forcedDeal && forcedDeal.forcedDealRequestId
       }
 
+    case sayNoCauses.DEAL_BREAKER:
+      const { dealBreaker } = getState().cardRequest
+      return {
+        dealBreakerRequestId: dealBreaker && dealBreaker.dealBreakerRequestId
+      }
+
     default:
       return null
   }

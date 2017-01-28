@@ -58,15 +58,15 @@ export default class DealBreakerForm extends React.Component {
   }
 
   renderOtherPlayerFullSets (player: Player) {
-    const fullSets = player.placedCards.serializedPropertySets
-      .map(PropertySetClass.unserialize)
-      .filter(set => set.isFullSet())
+    const sets = player.placedCards.serializedPropertySets
+      .map(PropertySetClass.unserialize);
 
     return (
       <PropertySetSelector
-        propertySets={fullSets}
+        propertySets={sets}
         setIsSelected={setIndex => this.setIsSelected(player, setIndex)}
         onClick={setIndex => this.onToggleSet(player, setIndex)}
+        setFilter={(set: PropertySetClass) => set.isFullSet()}
       />
     )
   }
