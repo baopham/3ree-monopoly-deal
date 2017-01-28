@@ -8,7 +8,7 @@ import PropertySet from '../../../universal/monopoly/PropertySet'
 import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
-import { markCard } from '../../../universal/monopoly/logMessageParser'
+import { markCard, markSet } from '../../../universal/monopoly/logMessageParser'
 import type { SlyDealInfo, ForcedDealInfo, DealBreakerInfo } from '../../../universal/monopoly/cardRequestTypes'
 
 export default class CardRequestService {
@@ -233,7 +233,7 @@ export default class CardRequestService {
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.DEAL_BREAKER, info: cardRequestInfo }),
       this.gameHistoryService.record(
         gameId,
-        `${fromUser} wants to deal break from ${toUser}`
+        `${fromUser} wants to deal break ${markSet(cardRequestInfo.setId)} from ${toUser}`
       )
     ])
   }
