@@ -21,8 +21,6 @@ type State = {
 }
 
 export default class PlayerSelectorForm extends React.Component {
-  input: HTMLInputElement
-
   props: Props
 
   state: State = {
@@ -35,10 +33,6 @@ export default class PlayerSelectorForm extends React.Component {
       ? this.props.players.find(player => player.id === selectedPlayerId)
       : undefined
     this.setState({ selectedPlayer })
-  }
-
-  handleInputRef = (input: HTMLInputElement) => {
-    this.input = input
   }
 
   submit = () => {
@@ -61,7 +55,6 @@ export default class PlayerSelectorForm extends React.Component {
             <ControlLabel>{label}</ControlLabel>
             <FormControl
               componentClass='select'
-              inputRef={this.handleInputRef}
               onChange={this.onSelect}
             >
               <option value={undefined}>-</option>
