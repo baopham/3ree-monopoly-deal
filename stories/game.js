@@ -7,6 +7,7 @@ import { CardsOnHand } from '../universal/routes/Game/containers/CardsOnHand/Car
 import { SayNoButton } from '../universal/routes/Game/containers/SayNoButton/SayNoButton'
 import DealBreakerForm from '../universal/routes/Game/components/DealBreakerForm'
 import DealBreakerAlert from '../universal/routes/Game/components/DealBreakerAlert'
+import PlayerSelectorForm from '../universal/routes/Game/components/PlayerSelectorForm'
 import PropertySet from '../universal/monopoly/PropertySet'
 import { PROPERTY_BLUE, getCardObject } from '../universal/monopoly/cards'
 import sayNoCauses from '../universal/monopoly/sayNoCauses'
@@ -24,9 +25,9 @@ storiesOf('CardsOnHand', module)
       askToSlyDealLeftOverCard={action('asking to sly deal a left over card')}
       askToForceDealSetCard={action('asking to force deal a set card')}
       askToForceDealLeftOverCard={action('asking to force deal a left over card')}
-      askToDealBreak={action('asking to deal break')}
-      discardCard={action('discarding card')}
-      flipCardOnHand={action('flipping card')}
+      askToDealBreak={action('ask to deal break')}
+      discardCard={action('discard card')}
+      flipCardOnHand={action('flip card')}
     />
   ))
   .add('with a playable sly deal', () => (
@@ -35,15 +36,15 @@ storiesOf('CardsOnHand', module)
       otherPlayers={getOtherPlayers(playableSlyDealState)}
       cardsOnHand={playableSlyDealState.currentPlayerCardsOnHand.cardsOnHand}
       isPlayerTurn={isPlayerTurn(playableSlyDealState)}
-      placeCard={action('placing card')}
-      playCard={action('playing card')}
-      askToSlyDealSetCard={action('asking to sly deal a set card')}
-      askToSlyDealLeftOverCard={action('asking to sly deal a left over card')}
-      askToForceDealSetCard={action('asking to force deal a set card')}
-      askToForceDealLeftOverCard={action('asking to force deal a left over card')}
-      askToDealBreak={action('asking to deal break')}
-      discardCard={action('discarding card')}
-      flipCardOnHand={action('flipping card')}
+      placeCard={action('place card')}
+      playCard={action('play card')}
+      askToSlyDealSetCard={action('ask to sly deal a set card')}
+      askToSlyDealLeftOverCard={action('ask to sly deal a left over card')}
+      askToForceDealSetCard={action('ask to force deal a set card')}
+      askToForceDealLeftOverCard={action('ask to force deal a left over card')}
+      askToDealBreak={action('ask to deal break')}
+      discardCard={action('discard card')}
+      flipCardOnHand={action('flip card')}
     />
   ))
 
@@ -51,7 +52,7 @@ storiesOf('DealBreakerForm', module)
   .add('other players have full sets', () => (
     <DealBreakerForm
       otherPlayers={getOtherPlayers(playersHaveFullSetsState)}
-      onSelect={action('select set')}
+      onSubmit={action('select set')}
       onCancel={action('cancel deal break')}
     />
   ))
@@ -65,7 +66,7 @@ storiesOf('DealBreakerAlert', module)
         currentPlayerIsRequester
         fromUser='bao'
         toUser='bao2'
-        acceptDealBreaker={action('accepting deal breaker')}
+        acceptDealBreaker={action('accept deal breaker')}
         setToDealBreak={setToDealBreak}
         sayNoButton={null}
       />
@@ -114,3 +115,13 @@ storiesOf('DealBreakerAlert', module)
       />
     )
   })
+
+storiesOf('PlayerSelectorForm', module)
+  .add('selecting a player', () => (
+    <PlayerSelectorForm
+      label='Select a player to collect debt from'
+      players={getOtherPlayers(playableForcedDealState)}
+      onSubmit={action('select a player')}
+      onCancel={action('cancel')}
+    />
+  ))

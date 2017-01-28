@@ -7,7 +7,7 @@ import PropertySetClass from '../../../../monopoly/PropertySet'
 
 type Props = {
   otherPlayers: Player[],
-  onSelect: (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => void,
+  onSubmit: (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => void,
   onCancel: () => void
 }
 
@@ -27,14 +27,14 @@ export default class DealBreakerForm extends React.Component {
   }
 
   submit = () => {
-    const { onSelect } = this.props
+    const { onSubmit } = this.props
     const { player, setIndex } = this.state
 
     if (!player || setIndex === undefined) {
       return
     }
 
-    onSelect(player, PropertySetClass.unserialize(player.placedCards.serializedPropertySets[setIndex]))
+    onSubmit(player, PropertySetClass.unserialize(player.placedCards.serializedPropertySets[setIndex]))
   }
 
   onToggleSet = (player: Player, setIndex: number) => {

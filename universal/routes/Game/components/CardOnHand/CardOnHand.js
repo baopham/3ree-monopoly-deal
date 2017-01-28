@@ -111,7 +111,7 @@ export default class CardOnHand extends React.Component {
         }
         propertySets={propertySetsToSelect}
         onCancel={this.onCancelSelectingPropertySet}
-        onSelect={this.onSelectPropertySet}
+        onSubmit={this.onSelectPropertySet}
       />
     )
   }

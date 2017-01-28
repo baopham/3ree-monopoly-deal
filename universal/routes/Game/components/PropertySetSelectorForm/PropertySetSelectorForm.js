@@ -9,7 +9,7 @@ type Props = {
   header: string,
   subheader: string,
   propertySets: PropertySetClass[],
-  onSelect: (selectedSet: PropertySetClass) => void,
+  onSubmit: (selectedSet: PropertySetClass) => void,
   onCancel: () => void
 }
 
@@ -26,7 +26,7 @@ export default class PropertySetSelectorForm extends React.Component {
     selectedSetIndex: undefined
   }
 
-  select = () => {
+  submit = () => {
     const { selectedSetIndex } = this.state
     const { propertySets } = this.props
 
@@ -34,7 +34,7 @@ export default class PropertySetSelectorForm extends React.Component {
       return
     }
 
-    this.props.onSelect(propertySets[selectedSetIndex])
+    this.props.onSubmit(propertySets[selectedSetIndex])
   }
 
   toggleSelectSet = (setIndex: number) => {
@@ -79,7 +79,7 @@ export default class PropertySetSelectorForm extends React.Component {
           <Button
             bsStyle='primary'
             disabled={selectedSetIndex === undefined}
-            onClick={this.select}
+            onClick={this.submit}
           >
             Select
           </Button>

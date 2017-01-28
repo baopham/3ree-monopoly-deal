@@ -102,7 +102,7 @@ export default class PlacedLeftOverCards extends React.Component {
               : 'Cannot move this card'
             }
             propertySets={setsForMovingCardTo}
-            onSelect={this.onSelectASetForMovingCardTo}
+            onSubmit={this.onSelectASetForMovingCardTo}
             onCancel={this.cancelMovingToAnotherSet}
           />
         }

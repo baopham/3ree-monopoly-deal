@@ -215,7 +215,7 @@ export class CardsOnHand extends React.Component {
     return (
       <DealBreakerForm
         otherPlayers={otherPlayers}
-        onSelect={this.onDealBreakerSelect}
+        onSubmit={this.onDealBreakerSelect}
         onCancel={this.onCancelDealBreakerRequest}
       />
     )
