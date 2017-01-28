@@ -59,7 +59,7 @@ export default class DealBreakerForm extends React.Component {
 
   renderOtherPlayerFullSets (player: Player) {
     const sets = player.placedCards.serializedPropertySets
-      .map(PropertySetClass.unserialize);
+      .map(PropertySetClass.unserialize)
 
     return (
       <PropertySetSelector

@@ -9,7 +9,7 @@ describe('logMessageParser', function () {
     it('should mark the set', function () {
       const propertySet = new PropertySet(getCardObject(PROPERTY_BLUE), [PROPERTY_BLUE, PROPERTY_BLUE])
       const expected = `card:PROPERTY_BLUE:card card:PROPERTY_BLUE:card`
-      
+
       expect(logMessageParser.markSet(propertySet.getId())).toBe(expected)
     })
   })
