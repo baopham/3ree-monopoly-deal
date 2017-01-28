@@ -41,10 +41,10 @@ TODOs
 
 - [x] Improve log - show card images for example
 - [x] Allow to sly deal, force deal, pay "left over cards"
-- [ ] Say no to
+- [x] Say no to
   - [x] sly deal
   - [x] forced deal
-  - [ ] deal breaker
+  - [x] deal breaker
   - [x] payment (birthday, debt collector, rent)
   - [x] say no
 - [x] Fix bug when paying using properties / house / hotel...
@@ -72,7 +72,7 @@ TODOs
   - [x] Payment: rent
   - [ ] Payment: target rent
   - [ ] Debt collector
-- [ ] Deal breaker
+- [x] Deal breaker
 - [x] Sly deal
 - [x] Forced deal
 - [ ] Double rent
