@@ -18,6 +18,10 @@ export function parseToJxs (message: string): React.Element<*> {
   )
 
   return (
-    <span>{parts.map(part => part)}</span>
+    <span>
+      {parts.map((part, index) =>
+        <span key={index}>{part}</span>
+      )}
+    </span>
   )
 }
