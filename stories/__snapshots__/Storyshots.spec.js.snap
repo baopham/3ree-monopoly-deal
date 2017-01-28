@@ -566,6 +566,8 @@ exports[`Storyshots GamesView list of games 1`] = `
 </div>
 `;
 
+exports[`Storyshots PlayerSelectorForm selecting a player 1`] = `<noscript />`;
+
 exports[`Storyshots global.AlertBar with danger background 1`] = `
 <div
   className="bg-danger"
