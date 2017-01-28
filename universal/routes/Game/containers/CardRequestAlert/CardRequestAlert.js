@@ -46,7 +46,6 @@ export class CardRequest extends React.Component {
       <SayNoButton
         toUser={slyDeal.fromUser}
         cause={sayNoCauses.SLY_DEAL}
-        clickOnceOnly
       >
         Say No?
       </SayNoButton>
@@ -64,7 +63,6 @@ export class CardRequest extends React.Component {
       <SayNoButton
         toUser={forcedDeal.fromUser}
         cause={sayNoCauses.FORCED_DEAL}
-        clickOnceOnly
       >
         Say No?
       </SayNoButton>
@@ -82,7 +80,6 @@ export class CardRequest extends React.Component {
       <SayNoButton
         toUser={dealBreaker.fromUser}
         cause={sayNoCauses.DEAL_BREAKER}
-        clickOnceOnly
       >
         Say No?
       </SayNoButton>

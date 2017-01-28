@@ -112,7 +112,8 @@ function unsubscribeSayNoEvent (socket: Socket, gameId: string) {
 
 function onSayNoUpdate (dispatch: Function, getState: Function, change: SocketSayNoChangeEvent) {
   if (!change.new_val || change.deleted) {
-    return { type: ACCEPT_SUCCESS }
+    dispatch({ type: ACCEPT_SUCCESS })
+    return
   }
 
   dispatch(updateSayNoState(change.new_val))
@@ -139,6 +140,7 @@ export type SayNoState = {
   toUser: ?Username,
   cause: ?SayNoCause,
   causeInfo: ?SayNoCauseInfo,
+  waitingForResponse: boolean,
   isWorking: boolean,
   error: mixed
 }
@@ -148,6 +150,7 @@ const initialState: SayNoState = {
   toUser: null,
   cause: null,
   causeInfo: null,
+  waitingForResponse: false,
   isWorking: false,
   error: null
 }
@@ -165,6 +168,7 @@ export default function reducer (state: SayNoState = initialState, action: Redux
         toUser: action.toUser,
         cause: action.cause,
         causeInfo: action.causeInfo,
+        waitingForResponse: true,
         isWorking: false
       }
 
