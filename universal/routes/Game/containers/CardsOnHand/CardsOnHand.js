@@ -237,7 +237,7 @@ export class CardsOnHand extends React.Component {
   }
 
   renderSelectPlayerForm = () => {
-    const { otherPlayers, targetRent, discardCard } = this.props
+    const { otherPlayers, targetRent } = this.props
     const { playingTargetRent } = this.state
 
     const cancelTargetRent = () => this.setState({ playingTargetRent: false })
