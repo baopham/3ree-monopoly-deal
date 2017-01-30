@@ -52,6 +52,12 @@ export default class TextFormDialog extends React.Component {
     })
   }
 
+  handleKeyPress = (e: KeyboardEvent) => {
+    if (e.charCode === 13) {
+      this.submit()
+    }
+  }
+
   submit = () => {
     const { value } = this.state
     value && this.props.onSubmit(value)
@@ -79,6 +85,7 @@ export default class TextFormDialog extends React.Component {
           >
             <ControlLabel>{inputLabel}</ControlLabel>
             <FormControl
+              onKeyPress={this.handleKeyPress}
               type='text'
               autoFocus
               value={this.state.value}
