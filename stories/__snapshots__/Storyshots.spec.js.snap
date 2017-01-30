@@ -710,6 +710,7 @@ exports[`Storyshots global.TextFormDialog being cancelable 1`] = `
             className="form-control"
             id="join-form"
             onChange={[Function]}
+            onKeyPress={[Function]}
             type="text"
             value="" />
         </div>
@@ -773,6 +774,7 @@ exports[`Storyshots global.TextFormDialog being non-cancelable 1`] = `
             className="form-control"
             id="join-form"
             onChange={[Function]}
+            onKeyPress={[Function]}
             type="text"
             value="" />
         </div>
@@ -829,6 +831,7 @@ exports[`Storyshots global.TextFormDialog input allowing spaces 1`] = `
             className="form-control"
             id="join-form"
             onChange={[Function]}
+            onKeyPress={[Function]}
             type="text"
             value="" />
         </div>
