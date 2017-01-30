@@ -30,5 +30,6 @@ router.put('/api/v1/games/:id/card-request/force-deal', game.requestToForceDeal)
 router.put('/api/v1/games/:id/card-request-accept/forced-deal/:requestId', game.acceptForcedDeal)
 router.put('/api/v1/games/:id/card-request/deal-break', game.requestToDealBreak)
 router.put('/api/v1/games/:id/card-request-accept/deal-breaker/:requestId', game.acceptDealBreaker)
+router.put('/api/v1/games/:id/target-rent', game.targetRent)
 
 module.exports = router

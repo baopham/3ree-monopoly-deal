@@ -214,3 +214,11 @@ export function acceptSayNo (req: AppRequest, res: express$Response) {
     .then(() => res.json('success'))
     .catch(err => handleError(err, res))
 }
+
+export function targetRent (req: AppRequest, res: express$Response) {
+  const promise = playerService.targetRent(req.params.id, req.body.payee, req.body.targetUser)
+
+  promise
+    .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}

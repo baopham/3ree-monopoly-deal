@@ -22,7 +22,7 @@ export default class PaymentInProgressAlert extends React.Component {
         </Modal.Header>
 
         <Modal.Body>
-          <p>Please wait for other players to finish paying you ${amount}M</p>
+          <p>Please wait for other player(s) to finish paying you ${amount}M</p>
         </Modal.Body>
       </ScrollableBackgroundModal>
     )

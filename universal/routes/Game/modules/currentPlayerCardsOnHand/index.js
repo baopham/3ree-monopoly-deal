@@ -1,10 +1,10 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import * as request from '../../../../request-util'
-import { PASS_GO } from '../../../../monopoly/cards'
+import { PASS_GO, RENT_ALL_COLOUR } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
 import { actions as paymentActions } from '../payment'
-import { getCurrentPlayer } from '../gameSelectors'
+import { getCurrentPlayer, getOtherPlayers } from '../gameSelectors'
 
 function ns (value) {
   return namespace('CARDS_ON_HAND', value)
@@ -86,15 +86,51 @@ function playCard (card: CardKey) {
       card === PASS_GO && dispatch(drawCards())
 
       if (monopoly.cardRequiresPayment(card)) {
-        const payee: Player = currentGame.game.players.find(player => player.username === currentPlayer.username)
+        const payee: Player = currentPlayer
 
-        const payers: Player[] = currentGame.game.players
-          .filter(player => player.username !== payee.username)
+        const payers: Player[] = getOtherPlayers(getState())
 
         const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
 
         dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
       }
+    }
+
+    function handleErrorRequest (error) {
+      dispatch({ type: ERROR, error })
+    }
+  }
+}
+
+function targetRent (targetPlayer: Player) {
+  return (dispatch: Function, getState: Function) => {
+    const currentGame = getState().currentGame
+    const payee = getCurrentPlayer(getState())
+
+    if (!payee) {
+      throw new Error('Payee does not exist')
+    }
+
+    return request
+      .put(`${gamesUrl}/${currentGame.game.id}/target-rent`, {
+        payee: payee.username,
+        targetUser: targetPlayer.username
+      })
+      .then(handleSuccessRequest, handleErrorRequest)
+
+    function handleSuccessRequest (res) {
+      const rentCard = RENT_ALL_COLOUR
+
+      const payee = getCurrentPlayer(getState())
+
+      if (!payee) {
+        return
+      }
+
+      const amount = monopoly.getCardPaymentAmount(rentCard, payee.placedCards.serializedPropertySets)
+
+      dispatch(paymentActions.requestForPayment(payee.username, [targetPlayer.username], rentCard, amount))
+      dispatch({ type: DISCARD_CARD_SUCCESS, card: rentCard })
     }
 
     function handleErrorRequest (error) {
@@ -121,7 +157,8 @@ export const actions = {
   playCard,
   placeCard,
   discardCard,
-  flipCardOnHand
+  flipCardOnHand,
+  targetRent
 }
 
 // ------------------------------------

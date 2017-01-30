@@ -7,6 +7,7 @@ import {
   PROPERTY_WILDCARD,
   HOUSE,
   HOTEL,
+  RENT_ALL_COLOUR,
   newDeck,
   getCardObject
 } from '../../../universal/monopoly/cards'
@@ -128,6 +129,38 @@ export default class PlayerService {
     return Promise.all([
       player.saveAll(),
       this.gameHistoryService.record(gameId, `${username} played ${markCard(cardKey)}`, playersToNotify)
+    ])
+  }
+
+  async targetRent (gameId: string, payee: Username, targetUser: Username): Promise<*> {
+    const promises = [
+      this.playerRepository.findByGameIdAndUsername(gameId, payee),
+      this.playerRepository.findByGameIdAndUsername(gameId, targetUser)
+    ]
+
+    const [thisPlayer: Player, otherPlayer: Player] = await Promise.all(promises)
+
+    if (!otherPlayer) {
+      throw new Error('The target user does not exist')
+    }
+
+    const cardKey = RENT_ALL_COLOUR
+
+    thisPlayer.game.lastCardPlayedBy = payee
+    thisPlayer.game.discardedCards.push(cardKey)
+    thisPlayer.actionCounter += 1
+
+    thisPlayer.payeeInfo = {
+      cardPlayed: cardKey,
+      amount: monopoly.getCardPaymentAmount(cardKey, thisPlayer.placedCards.serializedPropertySets),
+      payers: [targetUser]
+    }
+
+    const playersToNotify = thisPlayer.payeeInfo.payers
+
+    return Promise.all([
+      thisPlayer.saveAll(),
+      this.gameHistoryService.record(gameId, `${payee} played ${markCard(cardKey)}`, playersToNotify)
     ])
   }
 
