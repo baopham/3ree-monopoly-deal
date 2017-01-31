@@ -2,6 +2,8 @@
 import { namespace, apiUrl } from '../../../../ducks-utils'
 import request from 'axios'
 import { getCurrentPlayer } from '../gameSelectors'
+import { DEAL_BREAKER } from '../../../../monopoly/cards'
+import { DISCARD_CARD_SUCCESS } from '../currentPlayerCardsOnHand'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { DealBreakerInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -50,6 +52,10 @@ function askToDealBreak (toPlayer: Player, setId: PropertySetId) {
         setId
       }
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/deal-break`, payload)
+        .then(res => {
+          dispatch({ type: DISCARD_CARD_SUCCESS, card: DEAL_BREAKER })
+          return res
+        })
     }
   }
 }

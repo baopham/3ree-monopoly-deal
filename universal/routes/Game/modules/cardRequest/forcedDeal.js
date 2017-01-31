@@ -3,6 +3,8 @@ import { namespace, apiUrl } from '../../../../ducks-utils'
 import request from 'axios'
 import { getCurrentPlayer } from '../gameSelectors'
 import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
+import { FORCED_DEAL } from '../../../../monopoly/cards'
+import { DISCARD_CARD_SUCCESS } from '../currentPlayerCardsOnHand'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { ForcedDealInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -61,6 +63,10 @@ function askToForceDealSetCard (
         fromUserCard: fromPlayerCard
       }
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/force-deal`, payload)
+        .then(res => {
+          dispatch({ type: DISCARD_CARD_SUCCESS, card: FORCED_DEAL })
+          return res
+        })
     }
   }
 }
@@ -91,6 +97,10 @@ function askToForceDealLeftOverCard (
         fromUserCard: fromPlayerCard
       }
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/force-deal`, payload)
+        .then(res => {
+          dispatch({ type: DISCARD_CARD_SUCCESS, card: FORCED_DEAL })
+          return res
+        })
     }
   }
 }

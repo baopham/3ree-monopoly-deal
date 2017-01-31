@@ -1,6 +1,5 @@
 /* @flow */
 import React from 'react'
-import { SAY_NO } from '../../../../monopoly/cards'
 import { Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { actions as sayNoActions } from '../../modules/sayNo'
@@ -12,8 +11,7 @@ type Props = {
   toUser: string,
   disabled?: boolean,
   clickOnceOnly: boolean,
-  sayNo: (toUser: Username, onSuccess: Function, cause: SayNoCause) => void,
-  discardCard: (card: CardKey) => void,
+  sayNo: (toUser: Username, cause: SayNoCause) => void,
   children?: React$Element<*> | Node
 }
 
@@ -35,11 +33,7 @@ export class SayNoButton extends React.Component {
   sayNo = () => {
     const { sayNo, toUser, cause } = this.props
     this.setState({ clicked: true })
-    sayNo(toUser, this.removeSayNoCardFromHand, cause)
-  }
-
-  removeSayNoCardFromHand = () => {
-    this.props.discardCard(SAY_NO)
+    sayNo(toUser, cause)
   }
 
   render () {

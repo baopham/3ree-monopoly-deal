@@ -1,10 +1,12 @@
 /* @flow */
 import SayNoRepository from '../../repositories/SayNoRepository'
+import GameRepository from '../../repositories/GameRepository'
 import PlayerService from '../../services/PlayerService'
 import GameHistoryService from '../../services/GameHistoryService'
 import CardRequestService from '../../services/CardRequestService'
 import ModelNotFound from '../../errors/ModelNotFound'
 import sayNoCauses from '../../../universal/monopoly/sayNoCauses'
+import { SAY_NO } from '../../../universal/monopoly/cards'
 import type { SayNoCause, SayNoCauseInfo } from '../../../universal/monopoly/sayNoCauses'
 
 export default class SayNoService {
@@ -12,12 +14,14 @@ export default class SayNoService {
   playerService: PlayerService
   gameHistoryService: GameHistoryService
   cardRequestService: CardRequestService
+  gameRepository: GameRepository
 
   constructor () {
     this.sayNoRepository = new SayNoRepository()
     this.playerService = new PlayerService()
     this.gameHistoryService = new GameHistoryService()
     this.cardRequestService = new CardRequestService()
+    this.gameRepository = new GameRepository()
   }
 
   static liveUpdates (io) {
@@ -35,6 +39,14 @@ export default class SayNoService {
       [toUser]
     )
 
+    const discardCard = () => {
+      return this.gameRepository.find(gameId)
+        .then(game => {
+          game.discardedCards.push(SAY_NO)
+          return game.save()
+        })
+    }
+
     let sayNo
 
     try {
@@ -47,6 +59,7 @@ export default class SayNoService {
 
       await Promise.all([
         sayNo.save(),
+        discardCard(),
         logAction()
       ])
     } catch (error) {
@@ -64,6 +77,7 @@ export default class SayNoService {
 
       await Promise.all([
         this.sayNoRepository.insert(sayNo),
+        discardCard(),
         logAction()
       ])
     }

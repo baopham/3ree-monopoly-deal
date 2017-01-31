@@ -2,6 +2,8 @@
 import request from 'axios'
 import { namespace, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import sayNoCauses from '../../../../monopoly/sayNoCauses'
+import { SAY_NO } from '../../../../monopoly/cards'
+import { DISCARD_CARD_SUCCESS } from '../currentPlayerCardsOnHand'
 import type { SayNoCause, SayNoCauseInfo } from '../../../../monopoly/sayNoCauses'
 
 function ns (value) {
@@ -24,7 +26,7 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function sayNo (toUser: Username, onSuccess: Function, cause: SayNoCause) {
+function sayNo (toUser: Username, cause: SayNoCause) {
   return (dispatch: Function, getState: Function) => {
     const [gameId, fromUser] = getGameIdAndCurrentPlayerUsername(getState())
 
@@ -40,7 +42,7 @@ function sayNo (toUser: Username, onSuccess: Function, cause: SayNoCause) {
     //////
     function handleSuccessRequest (res) {
       dispatch({ type: SAY_NO_SUCCESS, fromUser, toUser, cause, causeInfo })
-      onSuccess()
+      dispatch({ type: DISCARD_CARD_SUCCESS, card: SAY_NO })
     }
 
     function handleErrorRequest (error) {

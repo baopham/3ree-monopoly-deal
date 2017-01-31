@@ -4,6 +4,8 @@ import request from 'axios'
 import { getCurrentPlayer } from '../gameSelectors'
 import PropertySet from '../../../../monopoly/PropertySet'
 import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
+import { SLY_DEAL } from '../../../../monopoly/cards'
+import { DISCARD_CARD_SUCCESS } from '../currentPlayerCardsOnHand'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 import type { SlyDealInfo } from '../../../../monopoly/cardRequestTypes'
 
@@ -55,6 +57,10 @@ function askToSlyDealSetCard (playerToSlyDealFrom: Player, fromSet: PropertySet,
       }
 
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/sly-deal`, payload)
+        .then(res => {
+          dispatch({ type: DISCARD_CARD_SUCCESS, card: SLY_DEAL })
+          return res
+        })
     }
   }
 }
@@ -77,7 +83,12 @@ function askToSlyDealLeftOverCard (playerToSlyDealFrom: Player, wildcardToSlyDea
         cardType: LeftOverCardType,
         card: wildcardToSlyDeal
       }
+
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/sly-deal`, payload)
+        .then(res => {
+          dispatch({ type: DISCARD_CARD_SUCCESS, card: SLY_DEAL })
+          return res
+        })
     }
   }
 }

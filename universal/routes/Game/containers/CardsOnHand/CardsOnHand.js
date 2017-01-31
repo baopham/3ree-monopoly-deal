@@ -129,13 +129,11 @@ export class CardsOnHand extends React.Component {
 
   onSlyDealSetCard = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
     this.props.askToSlyDealSetCard(playerToSlyDealFrom, fromSet, selectedCard)
-    this.props.discardCard(SLY_DEAL)
     this.onCancelSlyDealRequest()
   }
 
   onSlyDealLeftOverCard = (playerToSlyDealFrom: Player, selectedCard: CardKey) => {
     this.props.askToSlyDealLeftOverCard(playerToSlyDealFrom, selectedCard)
-    this.props.discardCard(SLY_DEAL)
     this.onCancelSlyDealRequest()
   }
 
@@ -157,7 +155,6 @@ export class CardsOnHand extends React.Component {
       fromPlayerSetId,
       fromPlayerCard
     )
-    this.props.discardCard(FORCED_DEAL)
     this.onCancelForcedDealRequest()
   }
 
@@ -173,7 +170,6 @@ export class CardsOnHand extends React.Component {
       fromPlayerSetId,
       fromPlayerCard
     )
-    this.props.discardCard(FORCED_DEAL)
     this.onCancelForcedDealRequest()
   }
 
@@ -183,7 +179,6 @@ export class CardsOnHand extends React.Component {
 
   onDealBreakerSelect = (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => {
     this.props.askToDealBreak(playerToDealBreakFrom, setToDealBreak.getId())
-    this.props.discardCard(DEAL_BREAKER)
     this.onCancelDealBreakerRequest()
   }
 

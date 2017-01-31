@@ -1,11 +1,12 @@
 /* @flow */
 import CardRequestRepository from '../../repositories/CardRequestRepository'
 import PlayerRepository from '../../repositories/PlayerRepository'
+import GameRepository from '../../repositories/GameRepository'
 import GameHistoryService from '../GameHistoryService'
 import cardRequestTypes, { SetCardType, LeftOverCardType } from '../../../universal/monopoly/cardRequestTypes'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import PropertySet from '../../../universal/monopoly/PropertySet'
-import { SLY_DEAL, FORCED_DEAL } from '../../../universal/monopoly/cards'
+import { SLY_DEAL, FORCED_DEAL, DEAL_BREAKER } from '../../../universal/monopoly/cards'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
 import { markCard, markSet } from '../../../universal/monopoly/logMessageParser'
@@ -15,11 +16,13 @@ export default class CardRequestService {
   cardRequestRepository: CardRequestRepository
   gameHistoryService: GameHistoryService
   playerRepository: PlayerRepository
+  gameRepository: GameRepository
 
   constructor () {
     this.cardRequestRepository = new CardRequestRepository()
     this.gameHistoryService = new GameHistoryService()
     this.playerRepository = new PlayerRepository()
+    this.gameRepository = new GameRepository()
   }
 
   static liveUpdates (io) {
@@ -33,11 +36,12 @@ export default class CardRequestService {
     return this.cardRequestRepository.find(id)
   }
 
-  requestToSlyDeal (gameId: string, cardRequestInfo: SlyDealInfo): Promise<[CardRequest, GameHistoryRecord]> {
+  requestToSlyDeal (gameId: string, cardRequestInfo: SlyDealInfo): Promise<[CardRequest, Game, GameHistoryRecord]> {
     const { fromUser, toUser, card } = cardRequestInfo
 
     return Promise.all([
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.SLY_DEAL, info: cardRequestInfo }),
+      this.discardCard(gameId, SLY_DEAL),
       this.gameHistoryService.record(gameId, `${fromUser} wants to sly deal ${markCard(card)} from ${toUser}`)
     ])
   }
@@ -120,11 +124,15 @@ export default class CardRequestService {
     }
   }
 
-  requestToForceDeal (gameId: string, cardRequestInfo: ForcedDealInfo): Promise<[CardRequest, GameHistoryRecord]> {
+  requestToForceDeal (
+    gameId: string,
+    cardRequestInfo: ForcedDealInfo
+  ): Promise<[CardRequest, Game, GameHistoryRecord]> {
     const { fromUser, toUser, fromUserCard, toUserCard } = cardRequestInfo
 
     return Promise.all([
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.FORCED_DEAL, info: cardRequestInfo }),
+      this.discardCard(gameId, FORCED_DEAL),
       this.gameHistoryService.record(
         gameId,
         `${fromUser} wants to swap ${markCard(fromUserCard)} with ${markCard(toUserCard)} from ${toUser}`
@@ -226,11 +234,15 @@ export default class CardRequestService {
     }
   }
 
-  requestToDealBreak (gameId: string, cardRequestInfo: DealBreakerInfo): Promise<[CardRequest, GameHistoryRecord]> {
+  requestToDealBreak (
+    gameId: string,
+    cardRequestInfo: DealBreakerInfo
+  ): Promise<[CardRequest, Game, GameHistoryRecord]> {
     const { fromUser, toUser } = cardRequestInfo
 
     return Promise.all([
       this.cardRequestRepository.insert({ gameId, type: cardRequestTypes.DEAL_BREAKER, info: cardRequestInfo }),
+      this.discardCard(gameId, DEAL_BREAKER),
       this.gameHistoryService.record(
         gameId,
         `${fromUser} wants to deal break ${markSet(cardRequestInfo.setId)} from ${toUser}`
@@ -280,5 +292,13 @@ export default class CardRequestService {
       this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.fromUser),
       this.playerRepository.findByGameIdAndUsername(cardRequest.gameId, info.toUser)
     ])
+  }
+
+  discardCard (gameId: string, cardKey: CardKey): Promise<Game> {
+    return this.gameRepository.find(gameId)
+      .then((game: Game) => {
+        game.discardedCards.push(cardKey)
+        return game.save()
+      })
   }
 }
