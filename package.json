@@ -40,6 +40,7 @@
   "dependencies": {
     "audio-loader": "^0.6.0",
     "audio-play": "^2.1.0",
+    "axios": "^0.15.3",
     "body-parser": "1.14.x",
     "classnames": "2.2.x",
     "compression": "^1.6.2",

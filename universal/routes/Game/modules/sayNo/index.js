@@ -1,5 +1,5 @@
 /* @flow */
-import * as request from '../../../../request-util'
+import request from 'axios'
 import { namespace, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import sayNoCauses from '../../../../monopoly/sayNoCauses'
 import type { SayNoCause, SayNoCauseInfo } from '../../../../monopoly/sayNoCauses'
@@ -34,7 +34,8 @@ function sayNo (toUser: Username, onSuccess: Function, cause: SayNoCause) {
 
     return request
       .put(`${gamesUrl}/${gameId}/say-no/${fromUser}/${toUser}`, { cause, causeInfo })
-      .then(handleSuccessRequest, handleErrorRequest)
+      .then(handleSuccessRequest)
+      .catch(handleErrorRequest)
 
     //////
     function handleSuccessRequest (res) {

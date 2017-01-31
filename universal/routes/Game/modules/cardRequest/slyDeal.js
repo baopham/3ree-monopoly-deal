@@ -1,6 +1,6 @@
 /* @flow */
 import { namespace, apiUrl } from '../../../../ducks-utils'
-import * as request from '../../../../request-util'
+import request from 'axios'
 import { getCurrentPlayer } from '../gameSelectors'
 import PropertySet from '../../../../monopoly/PropertySet'
 import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
@@ -53,6 +53,7 @@ function askToSlyDealSetCard (playerToSlyDealFrom: Player, fromSet: PropertySet,
         cardType: SetCardType,
         card: cardToSlyDeal
       }
+
       return request.put(`${gamesUrl}/${currentGame.game.id}/card-request/sly-deal`, payload)
     }
   }

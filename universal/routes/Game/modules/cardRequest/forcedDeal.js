@@ -1,6 +1,6 @@
 /* @flow */
 import { namespace, apiUrl } from '../../../../ducks-utils'
-import * as request from '../../../../request-util'
+import request from 'axios'
 import { getCurrentPlayer } from '../gameSelectors'
 import { SetCardType, LeftOverCardType } from '../../../../monopoly/cardRequestTypes'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'

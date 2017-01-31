@@ -4,7 +4,7 @@ import PlayerService from '../services/PlayerService'
 import PlayerPlacedCardService from '../services/PlayerPlacedCardService'
 import SayNoService from '../services/SayNoService'
 import CardRequestService from '../services/CardRequestService'
-import * as request from '../../universal/request-util'
+import * as requestUtils from '../../universal/request-util'
 
 const gameService = new GameService()
 const playerService = new PlayerService()
@@ -77,7 +77,7 @@ export function pay (req: AppRequest, res: express$Response) {
     req.body.payee,
     req.body.bankCards,
     req.body.leftOverCards,
-    request.jsonToMap(req.body.mapOfNonMoneyCards)
+    requestUtils.jsonToMap(req.body.mapOfNonMoneyCards)
   )
 
   promise

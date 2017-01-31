@@ -1,6 +1,6 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
-import * as request from '../../../../request-util'
+import request from 'axios'
 import { PASS_GO, RENT_ALL_COLOUR } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
 import { actions as paymentActions } from '../payment'
@@ -75,14 +75,17 @@ function playCard (card: CardKey) {
 
     return request
       .put(`${gamesUrl}/${currentGame.game.id}/play`, { card, username: currentPlayer.username })
-      .then(handleSuccessRequest, handleErrorRequest)
+      .then(handleSuccessRequest)
+      .catch(handleErrorRequest)
 
+    //////
     function handleSuccessRequest (res) {
       if (!currentPlayer) {
         throw new Error('Cannot find current player')
       }
 
-      dispatch({ type: PLAY_CARD_SUCCESS, payload: res.body, card })
+      dispatch({ type: PLAY_CARD_SUCCESS, payload: res.data, card })
+
       card === PASS_GO && dispatch(drawCards())
 
       if (monopoly.cardRequiresPayment(card)) {
@@ -116,7 +119,8 @@ function targetRent (targetPlayer: Player) {
         payee: payee.username,
         targetUser: targetPlayer.username
       })
-      .then(handleSuccessRequest, handleErrorRequest)
+      .then(handleSuccessRequest)
+      .catch(handleErrorRequest)
 
     function handleSuccessRequest (res) {
       const rentCard = RENT_ALL_COLOUR

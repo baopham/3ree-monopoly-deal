@@ -1,6 +1,6 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../ducks-utils'
-import * as request from '../../../request-util'
+import request from 'axios'
 
 function ns (value) {
   return namespace('GAMES', value)
@@ -28,7 +28,7 @@ function getGames (page: number = 0) {
   return {
     types: [LOAD_PAGE_REQUEST, LOAD_SUCCESS, ERROR],
     page,
-    promise: () => request.get(gamesUrl, { page })
+    promise: () => request.get(gamesUrl, { params: { page } })
   }
 }
 

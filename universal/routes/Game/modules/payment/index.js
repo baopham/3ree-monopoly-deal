@@ -1,6 +1,7 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl } from '../../../../ducks-utils'
-import * as request from '../../../../request-util'
+import * as requestUtils from '../../../../request-util'
+import request from 'axios'
 import type { PropertySetId } from '../../../../monopoly/PropertySet'
 
 function ns (value) {
@@ -48,7 +49,7 @@ function pay (
         payee,
         bankCards,
         leftOverCards,
-        mapOfNonMoneyCards: request.mapToJSON(mapOfNonMoneyCards)
+        mapOfNonMoneyCards: requestUtils.mapToJSON(mapOfNonMoneyCards)
       })
     }
   }

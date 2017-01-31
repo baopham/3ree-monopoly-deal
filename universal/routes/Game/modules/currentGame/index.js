@@ -1,6 +1,6 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
-import * as request from '../../../../request-util'
+import request from 'axios'
 import { actions as paymentActions } from '../payment'
 import { actions as gameHistoryActions } from '../gameHistory'
 import { actions as currentPlayerCardsOnHandActions } from '../currentPlayerCardsOnHand'
