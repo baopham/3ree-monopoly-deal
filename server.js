@@ -7,6 +7,7 @@ import socketIO from 'socket.io'
 import config from 'config'
 import setupRealtime from './server/real-time'
 import * as uni from './server/app'
+import DashboardPlugin from 'webpack-dashboard/plugin'
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -35,6 +36,8 @@ if (process.env.NODE_ENV === 'development') {
 
   console.log('Enabling webpack dev and HMR middleware')
 
+  compiler.apply(new DashboardPlugin())
+
   app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
     hot: true,
@@ -42,6 +45,7 @@ if (process.env.NODE_ENV === 'development') {
     noInfo: true,
     lazy: false
   }))
+
   app.use(require('webpack-hot-middleware')(compiler))
 
   console.log('Watching server/universal files')

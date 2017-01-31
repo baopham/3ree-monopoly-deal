@@ -8,7 +8,7 @@
     "db:setup": "node dbSetup.babel.js",
     "lint": "eslint client server universal test stories .storybook server.js dbSetup.js",
     "lint:fix": "npm run lint -- --fix",
-    "start": "NODE_ENV=development node start-dev.js",
+    "start": "NODE_ENV=development webpack-dashboard -- node start-dev.js",
     "start:prod": "NODE_ENV=production node server.babel.js",
     "test": "jest --forceExit",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
@@ -121,6 +121,7 @@
     "stylus": "0.54.x",
     "stylus-loader": "2.0.x",
     "webpack": "1.13.x",
+    "webpack-dashboard": "^0.3.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.13.2"
   }
