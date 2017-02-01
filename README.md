@@ -71,7 +71,7 @@ TODOs
   - [x] Payment: handle when the payer does not have enough money to pay
   - [x] Payment: rent
   - [x] Payment: target rent
-  - [ ] Debt collector
+  - [x] Debt collector
 - [x] Deal breaker
 - [x] Sly deal
 - [x] Forced deal
