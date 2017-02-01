@@ -127,68 +127,21 @@ export class CardsOnHand extends React.Component {
     this.props.playCard(card)
   }
 
-  onSlyDealSetCard = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
-    this.props.askToSlyDealSetCard(playerToSlyDealFrom, fromSet, selectedCard)
-    this.onCancelSlyDealRequest()
-  }
-
-  onSlyDealLeftOverCard = (playerToSlyDealFrom: Player, selectedCard: CardKey) => {
-    this.props.askToSlyDealLeftOverCard(playerToSlyDealFrom, selectedCard)
-    this.onCancelSlyDealRequest()
-  }
-
-  onCancelSlyDealRequest = () => {
-    this.setState({ slyDealing: false })
-  }
-
-  onForceDealSetCard = (
-    toPlayer: Player,
-    toPlayerSetId: PropertySetId,
-    toPlayerCard: CardKey,
-    fromPlayerSetId: PropertySetId,
-    fromPlayerCard: CardKey
-  ) => {
-    this.props.askToForceDealSetCard(
-      toPlayer,
-      toPlayerSetId,
-      toPlayerCard,
-      fromPlayerSetId,
-      fromPlayerCard
-    )
-    this.onCancelForcedDealRequest()
-  }
-
-  onForceDealLeftOverCard = (
-    toPlayer: Player,
-    toPlayerCard: CardKey,
-    fromPlayerSetId: PropertySetId,
-    fromPlayerCard: CardKey
-  ) => {
-    this.props.askToForceDealLeftOverCard(
-      toPlayer,
-      toPlayerCard,
-      fromPlayerSetId,
-      fromPlayerCard
-    )
-    this.onCancelForcedDealRequest()
-  }
-
-  onCancelForcedDealRequest = () => {
-    this.setState({ forceDealing: false })
-  }
-
-  onDealBreakerSelect = (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => {
-    this.props.askToDealBreak(playerToDealBreakFrom, setToDealBreak.getId())
-    this.onCancelDealBreakerRequest()
-  }
-
-  onCancelDealBreakerRequest = () => {
-    this.setState({ dealBreaker: false })
-  }
-
   renderSlyDealForm = () => {
     const { otherPlayers } = this.props
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
+
+    const cancelSlyDealRequest = () => this.setState({ slyDealing: false })
+
+    const startSlyDealSetCard = (playerToSlyDealFrom: Player, fromSet: PropertySetClass, selectedCard: CardKey) => {
+      this.props.askToSlyDealSetCard(playerToSlyDealFrom, fromSet, selectedCard)
+      cancelSlyDealRequest()
+    }
+
+    const startSlyDealLeftOverCard = (playerToSlyDealFrom: Player, selectedCard: CardKey) => {
+      this.props.askToSlyDealLeftOverCard(playerToSlyDealFrom, selectedCard)
+      cancelSlyDealRequest()
+    }
 
     return (
       <SlyDealForm
@@ -196,9 +149,9 @@ export class CardsOnHand extends React.Component {
         subheader='Click to select a card to sly deal'
         players={otherPlayers}
         playerPropertySetFilter={propertySetFilter}
-        onSetCardSelect={this.onSlyDealSetCard}
-        onLeftOverCardSelect={this.onSlyDealLeftOverCard}
-        onCancel={this.onCancelSlyDealRequest}
+        onSetCardSelect={startSlyDealSetCard}
+        onLeftOverCardSelect={startSlyDealLeftOverCard}
+        onCancel={cancelSlyDealRequest}
       />
     )
   }
@@ -207,14 +160,48 @@ export class CardsOnHand extends React.Component {
     const { currentPlayer, otherPlayers } = this.props
     const propertySetFilter = (set: PropertySetClass) => !set.isFullSet()
 
+    const cancelForcedDealRequest = () => this.setState({ forceDealing: false })
+
+    const startForceDealSetCard = (
+      toPlayer: Player,
+      toPlayerSetId: PropertySetId,
+      toPlayerCard: CardKey,
+      fromPlayerSetId: PropertySetId,
+      fromPlayerCard: CardKey
+    ) => {
+      this.props.askToForceDealSetCard(
+        toPlayer,
+        toPlayerSetId,
+        toPlayerCard,
+        fromPlayerSetId,
+        fromPlayerCard
+      )
+      cancelForcedDealRequest()
+    }
+
+    const startForceDealLeftOverCard = (
+      toPlayer: Player,
+      toPlayerCard: CardKey,
+      fromPlayerSetId: PropertySetId,
+      fromPlayerCard: CardKey
+    ) => {
+      this.props.askToForceDealLeftOverCard(
+        toPlayer,
+        toPlayerCard,
+        fromPlayerSetId,
+        fromPlayerCard
+      )
+      cancelForcedDealRequest()
+    }
+
     return (
       <ForcedDealForm
         thisPlayer={currentPlayer}
         otherPlayers={otherPlayers}
         playerPropertySetFilter={propertySetFilter}
-        onSetCardSelect={this.onForceDealSetCard}
-        onLeftOverCardSelect={this.onForceDealLeftOverCard}
-        onCancel={this.onCancelForcedDealRequest}
+        onSetCardSelect={startForceDealSetCard}
+        onLeftOverCardSelect={startForceDealLeftOverCard}
+        onCancel={cancelForcedDealRequest}
       />
     )
   }
@@ -222,16 +209,23 @@ export class CardsOnHand extends React.Component {
   renderDealBreakerForm = () => {
     const { otherPlayers } = this.props
 
+    const cancelDealBreaker = () => this.setState({ dealBreaker: false })
+
+    const startDealBreaker = (playerToDealBreakFrom: Player, setToDealBreak: PropertySetClass) => {
+      this.props.askToDealBreak(playerToDealBreakFrom, setToDealBreak.getId())
+      cancelDealBreaker()
+    }
+
     return (
       <DealBreakerForm
         otherPlayers={otherPlayers}
-        onSubmit={this.onDealBreakerSelect}
-        onCancel={this.onCancelDealBreakerRequest}
+        onSubmit={startDealBreaker}
+        onCancel={cancelDealBreaker}
       />
     )
   }
 
-  renderSelectPlayerForm = () => {
+  renderTargetRentForm = () => {
     const { otherPlayers, targetRent } = this.props
     const { playingTargetRent } = this.state
 
@@ -312,7 +306,7 @@ export class CardsOnHand extends React.Component {
               this.renderDealBreakerForm()
             }
             {playingTargetRent &&
-              this.renderSelectPlayerForm()
+              this.renderTargetRentForm()
             }
             <ul className='list-inline' style={styles.cardsOnHand}>
               {cardsOnHand.map((card, i) =>
