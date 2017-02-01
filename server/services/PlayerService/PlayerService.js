@@ -8,6 +8,7 @@ import {
   HOUSE,
   HOTEL,
   RENT_ALL_COLOUR,
+  DEBT_COLLECTOR,
   newDeck,
   getCardObject
 } from '../../../universal/monopoly/cards'
@@ -132,7 +133,11 @@ export default class PlayerService {
     ])
   }
 
-  async targetRent (gameId: string, payee: Username, targetUser: Username): Promise<*> {
+  async targetPayment (gameId: string, payee: Username, targetUser: Username, cardKey: CardKey): Promise<*> {
+    if (![DEBT_COLLECTOR, RENT_ALL_COLOUR].includes(cardKey)) {
+      return Promise.reject(new Error(`${cardKey} is not a valid target payment card`))
+    }
+
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, payee),
       this.playerRepository.findByGameIdAndUsername(gameId, targetUser)
@@ -143,8 +148,6 @@ export default class PlayerService {
     if (!otherPlayer) {
       throw new Error('The target user does not exist')
     }
-
-    const cardKey = RENT_ALL_COLOUR
 
     thisPlayer.game.lastCardPlayedBy = payee
     thisPlayer.game.discardedCards.push(cardKey)

@@ -215,8 +215,8 @@ export function acceptSayNo (req: AppRequest, res: express$Response) {
     .catch(err => handleError(err, res))
 }
 
-export function targetRent (req: AppRequest, res: express$Response) {
-  const promise = playerService.targetRent(req.params.id, req.body.payee, req.body.targetUser)
+export function targetPayment (req: AppRequest, res: express$Response) {
+  const promise = playerService.targetPayment(req.params.id, req.body.payee, req.body.targetUser, req.body.card)
 
   promise
     .then(() => res.json('success'))

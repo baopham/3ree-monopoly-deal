@@ -12,6 +12,7 @@ import {
   SLY_DEAL,
   FORCED_DEAL,
   DEAL_BREAKER,
+  DEBT_COLLECTOR,
   RENT_ALL_COLOUR
 } from '../../../../monopoly/cards'
 import PropertySetClass from '../../../../monopoly/PropertySet'
@@ -45,7 +46,7 @@ type Props = {
   askToDealBreak: (toPlayer: Player, setId: PropertySetId) => void,
   discardCard: (card: CardKey) => void,
   flipCardOnHand: (card: CardKey) => void,
-  targetRent: (player: Player) => void
+  targetPayment: (player: Player, card: CardKey) => void
 }
 
 type State = {
@@ -54,7 +55,8 @@ type State = {
   slyDealing: boolean,
   forceDealing: boolean,
   dealBreaker: boolean,
-  playingTargetRent: boolean
+  playingTargetRent: boolean,
+  playingDebtCollector: boolean
 }
 
 const styles = {
@@ -64,6 +66,14 @@ const styles = {
   card: {
     marginBottom: 20
   }
+}
+
+const ACTION_CARD_FLAG_MAPPING = {
+  [DEBT_COLLECTOR]: 'playingDebtCollector',
+  [RENT_ALL_COLOUR]: 'playingTargetRent',
+  [FORCED_DEAL]: 'forceDealing',
+  [SLY_DEAL]: 'slyDealing',
+  [DEAL_BREAKER]: 'dealBreaker'
 }
 
 const mapStateToProps = (state) => ({
@@ -87,7 +97,8 @@ export class CardsOnHand extends React.Component {
       slyDealing: false,
       forceDealing: false,
       dealBreaker: false,
-      playingTargetRent: false
+      playingTargetRent: false,
+      playingDebtCollector: false
     }
   }
 
@@ -104,23 +115,8 @@ export class CardsOnHand extends React.Component {
   }
 
   onPlayCard = (card: CardKey) => {
-    if (card === SLY_DEAL) {
-      this.setState({ slyDealing: true })
-      return
-    }
-
-    if (card === FORCED_DEAL) {
-      this.setState({ forceDealing: true })
-      return
-    }
-
-    if (card === DEAL_BREAKER) {
-      this.setState({ dealBreaker: true })
-      return
-    }
-
-    if (card === RENT_ALL_COLOUR) {
-      this.setState({ playingTargetRent: true })
+    if (ACTION_CARD_FLAG_MAPPING[card]) {
+      this.setState({ [ACTION_CARD_FLAG_MAPPING[card]]: true })
       return
     }
 
@@ -225,15 +221,22 @@ export class CardsOnHand extends React.Component {
     )
   }
 
-  renderTargetRentForm = () => {
-    const { otherPlayers, targetRent } = this.props
-    const { playingTargetRent } = this.state
+  renderTargetPaymentForm = () => {
+    const { otherPlayers, targetPayment } = this.props
+    const { playingTargetRent, playingDebtCollector } = this.state
 
     const cancelTargetRent = () => this.setState({ playingTargetRent: false })
 
     const startTargetRent = (target: Player) => {
-      targetRent(target)
+      targetPayment(target, RENT_ALL_COLOUR)
       cancelTargetRent()
+    }
+
+    const cancelDebtCollector = () => this.setState({ playingDebtCollector: false })
+
+    const startDebtCollector = (target: Player) => {
+      targetPayment(target, DEBT_COLLECTOR)
+      cancelDebtCollector()
     }
 
     return (
@@ -244,6 +247,14 @@ export class CardsOnHand extends React.Component {
             players={otherPlayers}
             onSubmit={startTargetRent}
             onCancel={cancelTargetRent}
+          />
+        }
+        {playingDebtCollector &&
+          <PlayerSelectorForm
+            label='Select a player to collect debt from'
+            players={otherPlayers}
+            onSubmit={startDebtCollector}
+            onCancel={cancelDebtCollector}
           />
         }
       </div>
@@ -280,7 +291,8 @@ export class CardsOnHand extends React.Component {
       slyDealing,
       forceDealing,
       dealBreaker,
-      playingTargetRent
+      playingTargetRent,
+      playingDebtCollector
     } = this.state
 
     return (
@@ -305,8 +317,8 @@ export class CardsOnHand extends React.Component {
             {dealBreaker &&
               this.renderDealBreakerForm()
             }
-            {playingTargetRent &&
-              this.renderTargetRentForm()
+            {(playingTargetRent || playingDebtCollector) &&
+              this.renderTargetPaymentForm()
             }
             <ul className='list-inline' style={styles.cardsOnHand}>
               {cardsOnHand.map((card, i) =>

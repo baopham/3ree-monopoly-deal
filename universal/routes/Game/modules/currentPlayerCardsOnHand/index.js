@@ -1,7 +1,7 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import request from 'axios'
-import { PASS_GO, RENT_ALL_COLOUR } from '../../../../monopoly/cards'
+import { PASS_GO } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
 import { actions as paymentActions } from '../payment'
 import { getCurrentPlayer, getOtherPlayers } from '../gameSelectors'
@@ -105,7 +105,7 @@ function playCard (card: CardKey) {
   }
 }
 
-function targetRent (targetPlayer: Player) {
+function targetPayment (targetPlayer: Player, card: CardKey) {
   return (dispatch: Function, getState: Function) => {
     const currentGame = getState().currentGame
     const payee = getCurrentPlayer(getState())
@@ -115,26 +115,26 @@ function targetRent (targetPlayer: Player) {
     }
 
     return request
-      .put(`${gamesUrl}/${currentGame.game.id}/target-rent`, {
+      .put(`${gamesUrl}/${currentGame.game.id}/target-payment`, {
         payee: payee.username,
-        targetUser: targetPlayer.username
+        targetUser: targetPlayer.username,
+        card
       })
       .then(handleSuccessRequest)
       .catch(handleErrorRequest)
 
+    //////
     function handleSuccessRequest (res) {
-      const rentCard = RENT_ALL_COLOUR
-
       const payee = getCurrentPlayer(getState())
 
       if (!payee) {
         return
       }
 
-      const amount = monopoly.getCardPaymentAmount(rentCard, payee.placedCards.serializedPropertySets)
+      const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
 
-      dispatch(paymentActions.requestForPayment(payee.username, [targetPlayer.username], rentCard, amount))
-      dispatch({ type: DISCARD_CARD_SUCCESS, card: rentCard })
+      dispatch(paymentActions.requestForPayment(payee.username, [targetPlayer.username], card, amount))
+      dispatch({ type: DISCARD_CARD_SUCCESS, card })
     }
 
     function handleErrorRequest (error) {
@@ -162,7 +162,7 @@ export const actions = {
   placeCard,
   discardCard,
   flipCardOnHand,
-  targetRent
+  targetPayment
 }
 
 // ------------------------------------

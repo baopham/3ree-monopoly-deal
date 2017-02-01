@@ -28,7 +28,7 @@ storiesOf('CardsOnHand', module)
       askToDealBreak={action('ask to deal break')}
       discardCard={action('discard card')}
       flipCardOnHand={action('flip card')}
-      targetRent={action('target rent')}
+      targetPayment={action('target rent')}
     />
   ))
   .add('with a playable sly deal', () => (
@@ -46,7 +46,7 @@ storiesOf('CardsOnHand', module)
       askToDealBreak={action('ask to deal break')}
       discardCard={action('discard card')}
       flipCardOnHand={action('flip card')}
-      targetRent={action('target rent')}
+      targetPayment={action('target rent')}
     />
   ))
 
