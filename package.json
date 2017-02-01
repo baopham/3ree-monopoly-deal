@@ -8,6 +8,7 @@
     "db:setup": "node dbSetup.babel.js",
     "lint": "eslint client server universal test stories .storybook server.js dbSetup.js",
     "lint:fix": "npm run lint -- --fix",
+    "check": "npm run lint && npm run flow",
     "start": "NODE_ENV=development webpack-dashboard -- node start-dev.js",
     "start:prod": "NODE_ENV=production node server.babel.js",
     "test": "jest --forceExit",
@@ -17,9 +18,8 @@
     "deploy-storybook": "storybook-to-ghpages"
   },
   "pre-push": [
-    "test",
-    "lint",
-    "flow"
+    "check",
+    "test"
   ],
   "keywords": [
     "react",
