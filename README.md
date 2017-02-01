@@ -70,7 +70,7 @@ TODOs
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
   - [x] Payment: handle when the payer does not have enough money to pay
   - [x] Payment: rent
-  - [ ] Payment: target rent
+  - [x] Payment: target rent
   - [ ] Debt collector
 - [x] Deal breaker
 - [x] Sly deal
