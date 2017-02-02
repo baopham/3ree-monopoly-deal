@@ -113,6 +113,8 @@ export default class PlayerService {
 
     const [player: Player, players: Player[]] = await Promise.all(promises)
 
+    const paymentAmount = paymentHelper.getCardPaymentAmount(player.game, player, cardKey)
+
     player.game.lastCardPlayedBy = username
     player.game.discardedCards.push(cardKey)
     player.actionCounter += 1
@@ -120,7 +122,7 @@ export default class PlayerService {
     if (cardRequiresPayment) {
       player.payeeInfo = {
         cardPlayed: cardKey,
-        amount: monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets),
+        amount: paymentAmount,
         payers: players.filter(p => p.username !== username).map(p => p.username)
       }
     }
@@ -149,13 +151,15 @@ export default class PlayerService {
       throw new Error('The target user does not exist')
     }
 
+    const paymentAmount = paymentHelper.getCardPaymentAmount(thisPlayer.game, thisPlayer, cardKey)
+
     thisPlayer.game.lastCardPlayedBy = payee
     thisPlayer.game.discardedCards.push(cardKey)
     thisPlayer.actionCounter += 1
 
     thisPlayer.payeeInfo = {
       cardPlayed: cardKey,
-      amount: monopoly.getCardPaymentAmount(cardKey, thisPlayer.placedCards.serializedPropertySets),
+      amount: paymentAmount,
       payers: [targetUser]
     }
 

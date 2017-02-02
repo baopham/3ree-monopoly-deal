@@ -1,5 +1,5 @@
 /* @flow */
-import { getCardObject } from '../../../universal/monopoly/cards'
+import { DOUBLE_RENT, getCardObject } from '../../../universal/monopoly/cards'
 import * as monopoly from '../../../universal/monopoly/monopoly'
 import * as sideEffectUtils from '../../side-effect-utils'
 import * as propertySetUtils from '../../property-set-utils'
@@ -86,6 +86,28 @@ export function updatePayer (
   payerPlayer.placedCards = propertySetUtils.cleanUpPlacedCards(placedCards)
 
   return payerPlayer.save()
+}
+
+export function getCardPaymentAmount (game: Game, player: Player, cardKey: CardKey): number {
+  const basePaymentAmount = monopoly.getCardPaymentAmount(cardKey, player.placedCards.serializedPropertySets)
+
+  const hasPlayedDoubleRent =
+    monopoly.isRentCard(cardKey) &&
+    game.discardedCards.includes(DOUBLE_RENT) &&
+    game.lastCardPlayedBy === player.username
+
+  if (hasPlayedDoubleRent) {
+    const [secondToLastCard, lastCard] = game.discardedCards.slice(Math.max(game.discardedCards.length - 2, 0))
+
+    const hasPlayedTwoDoubleRentInARow =
+      secondToLastCard === DOUBLE_RENT &&
+      lastCard === DOUBLE_RENT &&
+      player.actionCounter === 2
+
+    return hasPlayedTwoDoubleRentInARow ? basePaymentAmount * 4 : basePaymentAmount * 2
+  }
+
+  return basePaymentAmount
 }
 
 function convertMapOfNonMoneyCards (

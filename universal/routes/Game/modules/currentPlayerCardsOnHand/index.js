@@ -3,8 +3,7 @@ import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from 
 import request from 'axios'
 import { PASS_GO } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
-import { actions as paymentActions } from '../payment'
-import { getCurrentPlayer, getOtherPlayers } from '../gameSelectors'
+import { getCurrentPlayer } from '../gameSelectors'
 
 function ns (value) {
   return namespace('CARDS_ON_HAND', value)
@@ -93,16 +92,6 @@ function playCard (card: CardKey) {
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.data, card })
 
       card === PASS_GO && dispatch(drawCards())
-
-      if (monopoly.cardRequiresPayment(card)) {
-        const payee: Player = currentPlayer
-
-        const payers: Player[] = getOtherPlayers(getState())
-
-        const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
-
-        dispatch(paymentActions.requestForPayment(payee.username, payers.map(p => p.username), card, amount))
-      }
     }
 
     function handleErrorRequest (error) {
@@ -137,9 +126,6 @@ function targetPayment (targetPlayer: Player, card: CardKey) {
         return
       }
 
-      const amount = monopoly.getCardPaymentAmount(card, payee.placedCards.serializedPropertySets)
-
-      dispatch(paymentActions.requestForPayment(payee.username, [targetPlayer.username], card, amount))
       dispatch({ type: DISCARD_CARD_SUCCESS, card })
     }
 
