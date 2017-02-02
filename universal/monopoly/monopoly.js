@@ -167,11 +167,25 @@ export function getTotalMoneyFromPlacedCards (placedCards: PlacedCards): number 
  * Return boolean: if false, no set to put in, if true, the card has been put in a set
  */
 export function putInTheFirstNonFullSet (cardKey: CardKey, serializedPropertySets: SerializedPropertySet[]): boolean {
-  const hasBeenPlaced = serializedPropertySets
-    .some((set, index) => {
-      const canAddCard = PropertySet.unserialize(set).canAddCard(cardKey)
+  const eligibleItems: Array<{ index: number, needs: number }> = serializedPropertySets
+    .reduce((acc, item, index) => {
+      const set = PropertySet.unserialize(item)
 
-      canAddCard && set.cards.push(cardKey)
+      if (set.canAddCard(cardKey)) {
+        return acc.concat([{ index, needs: set.identifier.needs - set.getCards().length }])
+      }
+
+      return acc
+    }, [])
+    .sort((a, b) => a.needs - b.needs)
+
+  const hasBeenPlaced = eligibleItems
+    .some(({ index, needs }) => {
+      const serializedSet = serializedPropertySets[index]
+
+      const canAddCard = PropertySet.unserialize(serializedSet).canAddCard(cardKey)
+
+      canAddCard && serializedSet.cards.push(cardKey)
 
       return canAddCard
     })

@@ -230,4 +230,30 @@ describe('monopoly', function () {
       })
     })
   })
+
+  describe('#putInTheFirstNonFullSet', function () {
+    describe('Given I have a few non-full sets', function () {
+      it('should put the wildcard into the first non-full set that is closest to being a full set', function () {
+        const redSerializedSet = {
+          identifier: getCardObject(PROPERTY_RED),
+          cards: [PROPERTY_RED]
+        }
+
+        const blueSerializedSet = {
+          identifier: getCardObject(PROPERTY_BLUE),
+          cards: [PROPERTY_BLUE]
+        }
+
+        const serializedPropertySets = [
+          redSerializedSet,
+          blueSerializedSet
+        ]
+
+        monopoly.putInTheFirstNonFullSet(PROPERTY_WILDCARD, serializedPropertySets)
+
+        expect(serializedPropertySets[0].cards).toEqual([PROPERTY_RED])
+        expect(serializedPropertySets[1].cards).toEqual([PROPERTY_BLUE, PROPERTY_WILDCARD])
+      })
+    })
+  })
 })
