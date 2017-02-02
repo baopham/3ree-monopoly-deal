@@ -75,7 +75,7 @@ TODOs
 - [x] Deal breaker
 - [x] Sly deal
 - [x] Forced deal
-- [ ] Double rent
+- [x] Double rent
 - [x] House
 - [x] Hotel
 - [x] Draw 5 cards when hand is empty
