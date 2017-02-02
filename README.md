@@ -65,7 +65,7 @@ TODOs
 - [x] Allow player to flip card
 - [x] Allow player to select which set the wildcard, house, or hotel card should go to (when these cards are still in hand)
 - [ ] Player can minimize the modal
-- [ ] Handle actions that require other players' responses
+- [x] Handle actions that require other players' responses
   - [x] Payment: payers get a form to select cards
   - [x] Payment: payee should not be able to do any other actions until all the payers pay their due
   - [x] Payment: handle when the payer does not have enough money to pay
