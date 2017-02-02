@@ -24,7 +24,7 @@ import { actions as cardRequestActions } from '../../modules/cardRequest'
 type Props = {
   currentPlayer: ?Player,
   otherPlayers: Player[],
-  cardsOnHand: CardKey[],
+  cardsOnHand: ?CardKey[],
   isPlayerTurn: boolean,
   placeCard: (card: CardKey) => void,
   playCard: (card: CardKey) => void,
@@ -93,7 +93,7 @@ export class CardsOnHand extends React.Component {
 
     this.state = {
       open: true,
-      needsToDiscard: this.props.cardsOnHand.length > MAX_CARDS_IN_HAND,
+      needsToDiscard: !!this.props.cardsOnHand && this.props.cardsOnHand.length > MAX_CARDS_IN_HAND,
       slyDealing: false,
       forceDealing: false,
       dealBreaker: false,
@@ -104,7 +104,7 @@ export class CardsOnHand extends React.Component {
 
   componentWillReceiveProps (nextProps: Props) {
     this.setState({
-      needsToDiscard: nextProps.cardsOnHand.length > MAX_CARDS_IN_HAND
+      needsToDiscard: !!nextProps.cardsOnHand && nextProps.cardsOnHand.length > MAX_CARDS_IN_HAND
     })
   }
 
@@ -302,7 +302,7 @@ export class CardsOnHand extends React.Component {
         expanded={this.state.open}
       >
         {currentPlayer &&
-          <div>
+          <div style={styles.cardsOnHand}>
             {needsToDiscard &&
               <Alert bsStyle='danger'>
                 You have more then {MAX_CARDS_IN_HAND} cards! Please discard.
@@ -320,22 +320,24 @@ export class CardsOnHand extends React.Component {
             {(playingTargetRent || playingDebtCollector) &&
               this.renderTargetPaymentForm()
             }
-            <ul className='list-inline' style={styles.cardsOnHand}>
-              {cardsOnHand.map((card, i) =>
-                <li key={i} style={styles.card}>
-                  <CardOnHand
-                    placedCards={currentPlayer.placedCards}
-                    card={card}
-                    needsToDiscard={this.state.needsToDiscard}
-                    isPlayerTurn={isPlayerTurn}
-                    onPlaceCard={placeCard}
-                    onPlayCard={this.onPlayCard}
-                    onDiscardCard={discardCard}
-                    onFlipCard={flipCardOnHand}
-                  />
-                </li>
-              )}
-            </ul>
+            {cardsOnHand &&
+              <ul className='list-inline'>
+                {cardsOnHand.map((card, i) =>
+                  <li key={i} style={styles.card}>
+                    <CardOnHand
+                      placedCards={currentPlayer.placedCards}
+                      card={card}
+                      needsToDiscard={this.state.needsToDiscard}
+                      isPlayerTurn={isPlayerTurn}
+                      onPlaceCard={placeCard}
+                      onPlayCard={this.onPlayCard}
+                      onDiscardCard={discardCard}
+                      onFlipCard={flipCardOnHand}
+                    />
+                  </li>
+                )}
+              </ul>
+            }
           </div>
         }
       </Panel>

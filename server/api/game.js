@@ -23,7 +23,7 @@ function handleError (err, res) {
 }
 
 export function drawCards (req: AppRequest, res: express$Response) {
-  const promise = playerService.drawCards(req.params.id)
+  const promise = playerService.drawCards(req.params.id, req.query.username, req.query.emptyHand === 'true')
 
   promise
     .then(cards => res.json({ cards }))

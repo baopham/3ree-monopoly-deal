@@ -30,14 +30,14 @@ exports[`Storyshots CardsOnHand with a playable forced deal 1`] = `
     role={undefined}>
     <div
       className="panel-body">
-      <div>
+      <div
+        style={
+          Object {
+            "minHeight": 250,
+          }
+        }>
         <ul
-          className="list-inline"
-          style={
-            Object {
-              "minHeight": 250,
-            }
-          }>
+          className="list-inline">
           <li
             style={
               Object {
@@ -257,14 +257,14 @@ exports[`Storyshots CardsOnHand with a playable sly deal 1`] = `
     role={undefined}>
     <div
       className="panel-body">
-      <div>
+      <div
+        style={
+          Object {
+            "minHeight": 250,
+          }
+        }>
         <ul
-          className="list-inline"
-          style={
-            Object {
-              "minHeight": 250,
-            }
-          }>
+          className="list-inline">
           <li
             style={
               Object {

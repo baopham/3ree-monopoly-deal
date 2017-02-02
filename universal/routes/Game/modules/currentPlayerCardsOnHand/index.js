@@ -34,8 +34,14 @@ function drawCards () {
   return {
     types: [DRAW_CARDS_REQUEST, DRAW_CARDS_SUCCESS, ERROR],
     promise: (dispatch: Function, getState: Function) => {
-      const gameId = getState().currentGame.game.id
-      return request.get(`${gamesUrl}/${gameId}/draw`)
+      const [id, username] = getGameIdAndCurrentPlayerUsername(getState())
+      const cardsOnHand = getState().currentPlayerCardsOnHand.cardsOnHand
+      return request.get(`${gamesUrl}/${id}/draw`, {
+        params: {
+          emptyHand: cardsOnHand ? !cardsOnHand.length : false,
+          username
+        }
+      })
     }
   }
 }
@@ -169,13 +175,13 @@ export const actions = {
 // Reducer
 // ------------------------------------
 export type CurrentPlayerCardsOnHandState = {
-  cardsOnHand: CardKey[],
+  cardsOnHand: ?CardKey[],
   isWorking: boolean,
   error: mixed
 }
 
 const initialState: CurrentPlayerCardsOnHandState = {
-  cardsOnHand: [],
+  cardsOnHand: null,
   isWorking: false,
   error: null
 }
@@ -188,11 +194,13 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
     case PLAY_CARD_REQUEST:
       return deepmerge(state, { isWorking: true, error: null })
 
-    case DRAW_CARDS_SUCCESS:
+    case DRAW_CARDS_SUCCESS: {
+      const previousCardsOnHand = state.cardsOnHand || []
       return {
         ...state,
-        cardsOnHand: state.cardsOnHand.concat(action.payload.cards)
+        cardsOnHand: previousCardsOnHand.concat(action.payload.cards)
       }
+    }
 
     case FLIP_CARD_ON_HAND: {
       const nextState = deepmerge(state)
@@ -204,7 +212,7 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
     case PLAY_CARD_SUCCESS: {
-      const { cardsOnHand } = state
+      const cardsOnHand = state.cardsOnHand || []
       const indexToRemove = cardsOnHand.indexOf(action.card)
 
       return {

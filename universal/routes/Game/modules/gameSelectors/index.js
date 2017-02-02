@@ -66,7 +66,7 @@ export const isPayer = createSelector(
 export const canSayNo = createSelector(
   getCurrentPlayerCardsOnHand,
   (currentPlayerCardsOnHand: CurrentPlayerCardsOnHandState): boolean => {
-    const { cardsOnHand } = currentPlayerCardsOnHand
+    const cardsOnHand = currentPlayerCardsOnHand.cardsOnHand || []
     return cardsOnHand.includes(SAY_NO)
   }
 )

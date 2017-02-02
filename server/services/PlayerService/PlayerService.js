@@ -199,26 +199,32 @@ export default class PlayerService {
     return game.currentTurn
   }
 
-  async drawCards (gameId: string): Promise<CardKey[]> {
-    const game: Game = await this.gameService.getGame(gameId)
+  async drawCards (gameId: string, username: Username, emptyHand: boolean = false): Promise<CardKey[]> {
+    const player: Player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-    if (!game.availableCards) {
+    if (player.game.currentTurn !== player.username) {
+      return Promise.reject(new Error(`Not ${username} turn yet`))
+    }
+
+    if (!player.game.availableCards) {
       return Promise.reject(new Error('No available cards'))
     }
 
-    if (game.availableCards.length < 2) {
-      game.availableCards = newDeck()
+    if (player.game.availableCards.length < 2 || (emptyHand && player.game.availableCards.length < 5)) {
+      player.game.availableCards = newDeck()
     }
 
-    const [first, second, ...rest] = game.availableCards
-    game.availableCards = rest
+    const [first, second, ...rest] = player.game.availableCards
+    player.game.availableCards = rest
+
+    const drawnCards = emptyHand ? [first, second].concat(rest.slice(0, 3)) : [first, second]
 
     await Promise.all([
-      this.gameHistoryService.record(gameId, `${game.currentTurn} picked up 2 cards`),
-      game.save()
+      this.gameHistoryService.record(gameId, `${player.game.currentTurn} picked up 2 cards`),
+      player.saveAll()
     ])
 
-    return [first, second]
+    return drawnCards
   }
 
   async removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
