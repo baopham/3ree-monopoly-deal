@@ -78,7 +78,7 @@ TODOs
 - [ ] Double rent
 - [x] House
 - [x] Hotel
-- [ ] Draw 5 cards when hand is empty
+- [x] Draw 5 cards when hand is empty
 - [ ] Fix HMR errors
 - [ ] Improve notification... possibly debounce?
 - [ ] Hydrate store from server
