@@ -46,15 +46,20 @@ export default class AutoPaymentAlert extends React.Component {
   }
 
   componentWillUnmount () {
-    this.intervalId && clearInterval(this.intervalId)
+    this.cancelInterval()
   }
 
   componentWillUpdate (nextProps: Props, nextState: State) {
-    if (!nextProps.countDown || nextState.counter !== 0) {
+    if (nextState.counter > 0) {
       return
     }
 
     this.pay()
+    this.cancelInterval()
+  }
+
+  cancelInterval () {
+    this.intervalId && clearInterval(this.intervalId)
   }
 
   pay = () => {

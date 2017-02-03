@@ -7,9 +7,10 @@ import { CardsOnHand } from '../universal/routes/Game/containers/CardsOnHand/Car
 import { SayNoButton } from '../universal/routes/Game/containers/SayNoButton/SayNoButton'
 import DealBreakerForm from '../universal/routes/Game/components/DealBreakerForm'
 import DealBreakerAlert from '../universal/routes/Game/components/DealBreakerAlert'
+import AutoPaymentAlert from '../universal/routes/Game/components/AutoPaymentAlert'
 import PlayerSelectorForm from '../universal/routes/Game/components/PlayerSelectorForm'
 import PropertySet from '../universal/monopoly/PropertySet'
-import { PROPERTY_BLUE, getCardObject } from '../universal/monopoly/cards'
+import { MONEY_1M, PROPERTY_BLUE, getCardObject } from '../universal/monopoly/cards'
 import sayNoCauses from '../universal/monopoly/sayNoCauses'
 
 storiesOf('CardsOnHand', module)
@@ -125,5 +126,33 @@ storiesOf('PlayerSelectorForm', module)
       players={getOtherPlayers(playableForcedDealState)}
       onSubmit={action('select a player')}
       onCancel={action('cancel')}
+    />
+  ))
+
+storiesOf('AutoPaymentAlert', module)
+  .add('paying using all cards in 10s', () => (
+    <AutoPaymentAlert
+      payee='bao'
+      dueAmount={60}
+      cards={{
+        bank: [MONEY_1M],
+        leftOverCards: [],
+        serializedPropertySets: []
+      }}
+      sayNoButton={null}
+      onPay={action('pay')}
+    />
+  ))
+  .add('having no cards to pay', () => (
+    <AutoPaymentAlert
+      payee='bao'
+      dueAmount={60}
+      cards={{
+        bank: [],
+        leftOverCards: [],
+        serializedPropertySets: []
+      }}
+      sayNoButton={null}
+      onPay={action('pay')}
     />
   ))
