@@ -22,7 +22,7 @@ const styles = {
     height: 50,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
-    minWidth: 400
+    width: 400
   },
   maximized: {
 
