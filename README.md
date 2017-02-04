@@ -80,7 +80,7 @@ TODOs
 - [x] Hotel
 - [x] Draw 5 cards when hand is empty
 - [ ] Fix HMR errors
-- [ ] Improve notification... possibly debounce?
+- [x] Improve notification... possibly throttled?
 - [ ] Hydrate store from server
 
 
