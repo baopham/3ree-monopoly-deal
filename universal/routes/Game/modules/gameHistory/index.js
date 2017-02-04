@@ -1,4 +1,5 @@
 /* @flow */
+import _ from 'lodash'
 import { namespace } from '../../../../ducks-utils'
 import { getCurrentPlayer } from '../gameSelectors'
 import audioPlay from 'audio-play'
@@ -14,6 +15,7 @@ function ns (value) {
 const MAX_ITEMS = 20
 const RECORD = ns('RECORD')
 const RESET = ns('RESET')
+const throttledPlaySound = _.throttle(playSound, 1000)
 
 // ------------------------------------
 // Action creators
@@ -49,10 +51,14 @@ function onGameHistoryEvent (dispatch: Function, getState: Function, newRecord: 
   }
 
   if (newRecord.playersToNotify.length && newRecord.playersToNotify.includes(currentPlayer.username)) {
-    audioLoad('/notification.mp3').then(audioPlay)
+    throttledPlaySound()
   }
 
   dispatch(record(newRecord))
+}
+
+function playSound () {
+  audioLoad('/notification.mp3').then(audioPlay)
 }
 
 export const actions = {
