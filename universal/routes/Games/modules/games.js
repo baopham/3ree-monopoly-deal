@@ -40,9 +40,9 @@ function addGame (game: Object) {
   }
 }
 
-function subscribeSocket (socket: Socket) {
+function subscribeSocket () {
   return (dispatch: Function) => {
-    socket.on('game-change', onGameChange.bind(this, dispatch))
+    global.socket.on('game-change', onGameChange.bind(this, dispatch))
   }
 }
 
@@ -56,9 +56,9 @@ function onGameChange (dispatch: Function, change: Function) {
   }
 }
 
-function unsubscribeSocket (socket: Socket) {
+function unsubscribeSocket () {
   return (dispatch: Function) => {
-    socket.off('game-change')
+    global.socket.off('game-change')
   }
 }
 

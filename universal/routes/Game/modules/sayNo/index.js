@@ -101,15 +101,15 @@ function updateSayNoState (sayNo: SayNo) {
   }
 }
 
-function subscribeSayNoEvent (socket: Socket, gameId: string) {
+function subscribeSayNoEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.on(`game-${gameId}-say-no-update`, onSayNoUpdate.bind(this, dispatch, getState))
+    global.socket.on(`game-${gameId}-say-no-update`, onSayNoUpdate.bind(this, dispatch, getState))
   }
 }
 
-function unsubscribeSayNoEvent (socket: Socket, gameId: string) {
+function unsubscribeSayNoEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${gameId}-say-no-update`)
+    global.socket.off(`game-${gameId}-say-no-update`)
   }
 }
 

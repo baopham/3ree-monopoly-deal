@@ -47,15 +47,15 @@ function reset () {
   return { type: RESET }
 }
 
-function subscribeGameHistoryEvent (socket: Socket, gameId: string) {
+function subscribeGameHistoryEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.on(`game-${gameId}-history`, onGameHistoryEvent.bind(this, dispatch, getState))
+    global.socket.on(`game-${gameId}-history`, onGameHistoryEvent.bind(this, dispatch, getState))
   }
 }
 
-function unsubscribeGameHistoryEvent (socket: Socket, gameId: string) {
+function unsubscribeGameHistoryEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${gameId}-history`)
+    global.socket.off(`game-${gameId}-history`)
   }
 }
 

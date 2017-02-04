@@ -11,15 +11,15 @@ import type { DealBreakerState } from './dealBreaker'
 // ------------------------------------
 // Action creators
 // ------------------------------------
-function subscribeCardRequestEvent (socket: Socket, gameId: string) {
+function subscribeCardRequestEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.on(`game-${gameId}-card-request-update`, onCardRequestUpdate.bind(this, dispatch))
+    global.socket.on(`game-${gameId}-card-request-update`, onCardRequestUpdate.bind(this, dispatch))
   }
 }
 
-function unsubscribeCardRequestEvent (socket: Socket, gameId: string) {
+function unsubscribeCardRequestEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.off(`game-${gameId}-card-request-update`)
+    global.socket.off(`game-${gameId}-card-request-update`)
   }
 }
 

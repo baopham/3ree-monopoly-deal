@@ -10,8 +10,8 @@ type Props = {
   currentGame: CurrentGameState,
   getGame: (id: string) => void,
   params: { id: string },
-  subscribeGameEvents: (socket: Socket, id: string) => void,
-  resetCurrentGame: (socket: Socket) => void
+  subscribeGameEvents: (id: string) => void,
+  resetCurrentGame: () => void
 }
 
 const mapStateToProps = (state) => ({
@@ -23,11 +23,11 @@ export class GameView extends React.Component {
 
   componentDidMount () {
     this.props.getGame(this.props.params.id)
-    this.props.subscribeGameEvents(global.socket, this.props.params.id)
+    this.props.subscribeGameEvents(this.props.params.id)
   }
 
   componentWillUnmount () {
-    this.props.resetCurrentGame(global.socket)
+    this.props.resetCurrentGame()
   }
 
   render () {

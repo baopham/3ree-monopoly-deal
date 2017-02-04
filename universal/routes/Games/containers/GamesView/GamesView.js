@@ -12,8 +12,8 @@ type Props = {
   games: GamesState,
   addGame: (game: Object) => void,
   getGames: () => void,
-  subscribeSocket: (socket: Socket) => void,
-  unsubscribeSocket: (socket: Socket) => void
+  subscribeSocket: () => void,
+  unsubscribeSocket: () => void
 }
 
 type State = {
@@ -35,11 +35,11 @@ export class GamesView extends React.Component {
 
   componentDidMount () {
     this.props.getGames(this.props.games.page)
-    this.props.subscribeSocket(global.socket)
+    this.props.subscribeSocket()
   }
 
   componentWillUnmount () {
-    this.props.unsubscribeSocket(global.socket)
+    this.props.unsubscribeSocket()
   }
 
   addGame = (name: string) => {

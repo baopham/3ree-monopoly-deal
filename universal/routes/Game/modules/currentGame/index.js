@@ -123,15 +123,15 @@ function setWinner (winner: Username) {
   }
 }
 
-function resetCurrentGame (socket: Socket) {
+function resetCurrentGame () {
   return (dispatch: Function, getState: Function) => {
     const gameId = getState().currentGame.game.id
-    socket.off(`game-${gameId}-change`)
-    socket.off(`game-${gameId}-player-change`)
+    global.socket.off(`game-${gameId}-change`)
+    global.socket.off(`game-${gameId}-player-change`)
 
-    dispatch(gameHistoryActions.unsubscribeGameHistoryEvent(socket, gameId))
-    dispatch(sayNoActions.unsubscribeSayNoEvent(socket, gameId))
-    dispatch(cardRequestActions.unsubscribeCardRequestEvent(socket, gameId))
+    dispatch(gameHistoryActions.unsubscribeGameHistoryEvent(gameId))
+    dispatch(sayNoActions.unsubscribeSayNoEvent(gameId))
+    dispatch(cardRequestActions.unsubscribeCardRequestEvent(gameId))
     dispatch({ type: RESET })
     dispatch(paymentActions.reset())
     dispatch(gameHistoryActions.reset())
@@ -140,13 +140,13 @@ function resetCurrentGame (socket: Socket) {
   }
 }
 
-function subscribeGameEvents (socket: Socket, gameId: string) {
+function subscribeGameEvents (gameId: string) {
   return (dispatch: Function, getState: Function) => {
-    socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
-    socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
-    dispatch(gameHistoryActions.subscribeGameHistoryEvent(socket, gameId))
-    dispatch(sayNoActions.subscribeSayNoEvent(socket, gameId))
-    dispatch(cardRequestActions.subscribeCardRequestEvent(socket, gameId))
+    global.socket.on(`game-${gameId}-change`, onGameChange.bind(this, dispatch))
+    global.socket.on(`game-${gameId}-player-change`, onGamePlayerChange.bind(this, dispatch, getState))
+    dispatch(gameHistoryActions.subscribeGameHistoryEvent(gameId))
+    dispatch(sayNoActions.subscribeSayNoEvent(gameId))
+    dispatch(cardRequestActions.subscribeCardRequestEvent(gameId))
   }
 }
 
