@@ -13,6 +13,8 @@ function ns (value) {
 // ------------------------------------
 const gamesUrl = `${apiUrl}/games`
 
+const LOAD_REQUEST = ns('LOAD_REQUEST')
+const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const PAYMENT_REQUEST = ns('PAYMENT_REQUEST')
 const PAY_REQUEST = ns('PAY_REQUEST')
 const PAY_SUCCESS = ns('PAY_SUCCESS')
@@ -23,6 +25,16 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Action creators
 // ------------------------------------
+function getCurrentPaymentInfo () {
+  return {
+    types: [LOAD_REQUEST, LOAD_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const game = getState().currentGame.game
+      return request.get(`${gamesUrl}/${game.id}/payment-info`)
+    }
+  }
+}
+
 function requestForPayment (payee: Username, payers: Username[], cardPlayed: CardKey, amount: number) {
   return {
     type: PAYMENT_REQUEST,
@@ -70,6 +82,7 @@ function reset () {
 }
 
 export const actions = {
+  getCurrentPaymentInfo,
   requestForPayment,
   pay,
   updatePayment,
@@ -95,6 +108,17 @@ const initialState: PaymentState = {
 
 export default function reducer (state: PaymentState = initialState, action: ReduxAction) {
   switch (action.type) {
+    case LOAD_SUCCESS: {
+      const { payers, amount, cardPlayed, payee } = action.payload.paymentInfo
+
+      return deepmerge(state, {
+        payers,
+        amount,
+        payee,
+        cardPlayed
+      })
+    }
+
     case PAYMENT_REQUEST:
       return {
         payers: [...action.payers],

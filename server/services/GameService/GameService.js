@@ -94,6 +94,32 @@ export default class GameService {
     return player.game.save()
   }
 
+  async getPaymentInfo (
+    gameId: string
+  ): Promise<{ payers: Username[], amount: number, cardPlayed: CardKey, payee: Username }> {
+    const game = await this.gameRepository.find(gameId)
+
+    let paymentInfo = {
+      payers: [],
+      payee: null,
+      cardPlayed: null,
+      amount: 0
+    }
+
+    game.players.some(player => {
+      if (player.payeeInfo && player.payeeInfo.payers.length) {
+        paymentInfo = {
+          ...player.payeeInfo,
+          payee: player.username
+        }
+
+        return true
+      }
+    })
+
+    return paymentInfo
+  }
+
   _removeAvailableCards (game: Game): Game {
     return { ...game, availableCards: undefined }
   }

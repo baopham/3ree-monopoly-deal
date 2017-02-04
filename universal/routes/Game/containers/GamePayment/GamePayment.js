@@ -23,7 +23,8 @@ type Props = {
     bankCards: CardKey[],
     leftOverCards: CardKey[],
     mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
-  ) => void
+  ) => void,
+  getCurrentPaymentInfo: () => void
 }
 
 const mapStateToProps = (state) => ({
@@ -36,6 +37,10 @@ const mapStateToProps = (state) => ({
 
 export class GamePayment extends React.Component {
   props: Props
+
+  componentDidMount () {
+    this.props.getCurrentPaymentInfo()
+  }
 
   onPay = (bankCards: CardKey[], leftOverCards: CardKey[], mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>) => {
     const { pay, currentPlayer } = this.props

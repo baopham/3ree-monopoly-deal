@@ -232,3 +232,11 @@ export function getRecentHistoryLogs (req: AppRequest, res: express$Response) {
     .then(logs => res.json({ logs }))
     .catch(err => handleError(err, res))
 }
+
+export function getPaymentInfo (req: AppRequest, res: express$Response) {
+  const promise = gameService.getPaymentInfo(req.params.id)
+
+  promise
+    .then(paymentInfo => res.json({ paymentInfo }))
+    .catch(err => handleError(err, res))
+}

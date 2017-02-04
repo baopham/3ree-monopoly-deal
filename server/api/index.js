@@ -32,5 +32,6 @@ router.put('/api/v1/games/:id/card-request/deal-break', game.requestToDealBreak)
 router.put('/api/v1/games/:id/card-request-accept/deal-breaker/:requestId', game.acceptDealBreaker)
 router.put('/api/v1/games/:id/target-payment', game.targetPayment)
 router.get('/api/v1/games/:id/history', game.getRecentHistoryLogs)
+router.get('/api/v1/games/:id/payment-info', game.getPaymentInfo)
 
 module.exports = router
