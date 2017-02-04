@@ -218,10 +218,17 @@ export default class PlayerService {
       player.game.availableCards = newDeck()
     }
 
-    const [first, second, ...rest] = player.game.availableCards
-    player.game.availableCards = rest
+    let drawnCards
 
-    const drawnCards = emptyHand ? [first, second].concat(rest.slice(0, 3)) : [first, second]
+    if (!emptyHand) {
+      const [first, second, ...rest] = player.game.availableCards
+      player.game.availableCards = rest
+      drawnCards = [first, second]
+    } else {
+      const [first, second, third, fourth, fifth, ...rest] = player.game.availableCards
+      player.game.availableCards = rest
+      drawnCards = [first, second, third, fourth, fifth]
+    }
 
     await Promise.all([
       this.gameHistoryService.record(gameId, `${player.game.currentTurn} picked up 2 cards`),
