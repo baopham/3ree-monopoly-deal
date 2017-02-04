@@ -81,7 +81,7 @@ TODOs
 - [x] Draw 5 cards when hand is empty
 - [ ] Fix HMR errors
 - [x] Improve notification... possibly throttled?
-- [ ] Hydrate store from server
+- [ ] ~~Hydrate store from server~~
 
 
 License
