@@ -1,6 +1,16 @@
 /* @flow */
 /* eslint-env jest */
-import { PROPERTY_BLUE, RENT_BLUE_OR_GREEN, DOUBLE_RENT, getCardObject } from '../../../universal/monopoly/cards'
+import {
+  PROPERTY_BLUE,
+  PROPERTY_LIGHT_BLUE,
+  RENT_BLUE_OR_GREEN,
+  RENT_LIGHT_BLUE_OR_BROWN,
+  DOUBLE_RENT,
+  DEBT_COLLECTOR,
+  PASS_GO,
+  HOUSE,
+  getCardObject
+} from '../../../universal/monopoly/cards'
 import * as paymentHelper from './paymentHelper'
 import * as testUtils from '../../test-utils'
 
@@ -94,6 +104,46 @@ describe('PlayerService: paymentHelper', function () {
 
         expect(paymentHelper.getCardPaymentAmount(game, player, RENT_BLUE_OR_GREEN)).toEqual(expectedPaymentAmount)
       })
+    })
+  })
+
+  describe('Given the player plays a DEBT_COLLECTOR', function () {
+    it('should return $5M', function () {
+      const game = testUtils.fakeGame()
+
+      const player = testUtils.fakePlayer({ game })
+
+      expect(paymentHelper.getCardPaymentAmount(game, player, DEBT_COLLECTOR)).toEqual(5)
+    })
+  })
+
+  describe('Given the player has a full set including a HOUSE and has played a DOUBLE_RENT a while back', function () {
+    it('should not double the rent and add $3M to the rent', function () {
+      const username = 'bao'
+
+      const fullSet = {
+        identifier: getCardObject(PROPERTY_LIGHT_BLUE),
+        cards: [PROPERTY_LIGHT_BLUE, PROPERTY_LIGHT_BLUE, PROPERTY_LIGHT_BLUE, HOUSE]
+      }
+
+      const game = testUtils.fakeGame({
+        discardedCards: [DOUBLE_RENT, PASS_GO]
+      })
+
+      const player = testUtils.fakePlayer({
+        game,
+        username,
+        actionCounter: 2,
+        placedCards: {
+          leftOverCards: [],
+          bankCards: [],
+          serializedPropertySets: [fullSet]
+        }
+      })
+
+      const expectedPaymentAmount = 6
+
+      expect(paymentHelper.getCardPaymentAmount(game, player, RENT_LIGHT_BLUE_OR_BROWN)).toEqual(expectedPaymentAmount)
     })
   })
 })

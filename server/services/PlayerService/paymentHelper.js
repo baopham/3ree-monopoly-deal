@@ -93,7 +93,7 @@ export function getCardPaymentAmount (game: Game, player: Player, cardKey: CardK
 
   const hasPlayedDoubleRent =
     monopoly.isRentCard(cardKey) &&
-    game.discardedCards.includes(DOUBLE_RENT) &&
+    game.discardedCards[game.discardedCards.length - 1] === DOUBLE_RENT &&
     game.lastCardPlayedBy === player.username
 
   if (hasPlayedDoubleRent) {
