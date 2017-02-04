@@ -4,6 +4,7 @@ import PlayerService from '../services/PlayerService'
 import PlayerPlacedCardService from '../services/PlayerPlacedCardService'
 import SayNoService from '../services/SayNoService'
 import CardRequestService from '../services/CardRequestService'
+import GameHistoryService from '../services/GameHistoryService'
 import * as requestUtils from '../../universal/request-util'
 
 const gameService = new GameService()
@@ -11,6 +12,7 @@ const playerService = new PlayerService()
 const playerPlacedCardService = new PlayerPlacedCardService()
 const sayNoService = new SayNoService()
 const cardRequestService = new CardRequestService()
+const gameHistoryService = new GameHistoryService()
 
 declare class AppRequest extends express$Request {
   body: any
@@ -220,5 +222,13 @@ export function targetPayment (req: AppRequest, res: express$Response) {
 
   promise
     .then(() => res.json('success'))
+    .catch(err => handleError(err, res))
+}
+
+export function getRecentHistoryLogs (req: AppRequest, res: express$Response) {
+  const promise = gameHistoryService.getRecentHistoryLogs(req.params.id)
+
+  promise
+    .then(logs => res.json({ logs }))
     .catch(err => handleError(err, res))
 }

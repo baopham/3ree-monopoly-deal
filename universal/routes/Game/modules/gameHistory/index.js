@@ -1,6 +1,7 @@
 /* @flow */
 import _ from 'lodash'
-import { namespace } from '../../../../ducks-utils'
+import request from 'axios'
+import { namespace, apiUrl } from '../../../../ducks-utils'
 import { getCurrentPlayer } from '../gameSelectors'
 import audioPlay from 'audio-play'
 import audioLoad from 'audio-loader'
@@ -12,14 +13,29 @@ function ns (value) {
 // ------------------------------------
 // Constants
 // ------------------------------------
+const gamesUrl = `${apiUrl}/games`
+const throttledPlaySound = _.throttle(playSound, 1000)
+
 const MAX_ITEMS = 20
+const LOAD_REQUEST = ns('LOAD_REQUEST')
+const LOAD_SUCCESS = ns('LOAD_SUCCESS')
 const RECORD = ns('RECORD')
 const RESET = ns('RESET')
-const throttledPlaySound = _.throttle(playSound, 1000)
+const ERROR = ns('ERROR')
 
 // ------------------------------------
 // Action creators
 // ------------------------------------
+function getRecentHistoryLogs () {
+  return {
+    types: [LOAD_REQUEST, LOAD_SUCCESS, ERROR],
+    promise: (dispatch: Function, getState: Function) => {
+      const game = getState().currentGame.game
+      return request.get(`${gamesUrl}/${game.id}/history`)
+    }
+  }
+}
+
 function record (newRecord: GameHistoryRecord) {
   return {
     type: RECORD,
@@ -63,6 +79,7 @@ function playSound () {
 
 export const actions = {
   reset,
+  getRecentHistoryLogs,
   subscribeGameHistoryEvent,
   unsubscribeGameHistoryEvent
 }
@@ -76,6 +93,9 @@ const inititalState: GameHistoryState = []
 
 export default function reducer (state: GameHistoryState = inititalState, action: ReduxAction): GameHistoryState {
   switch (action.type) {
+    case LOAD_SUCCESS:
+      return action.payload.logs
+
     case RECORD:
       return [action.newRecord, ...state.slice(0, MAX_ITEMS - 1)]
 

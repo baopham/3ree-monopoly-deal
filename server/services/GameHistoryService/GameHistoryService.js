@@ -23,4 +23,8 @@ export default class GameHistoryService {
   record (gameId: string, message: string, playersToNotify?: Username[]): Promise<GameHistoryRecord> {
     return this.gameHistoryRepository.insert({ gameId, message, playersToNotify })
   }
+
+  getRecentHistoryLogs (gameId: string): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRepository.getAll(gameId, 0, 20)
+  }
 }

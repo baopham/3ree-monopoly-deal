@@ -33,8 +33,9 @@ export default class GameHistoryRepository {
       })
   }
 
-  getAll (page = 0, limit = 10) {
+  getAll (gameId, page = 0, limit = 10) {
     return GameHistory
+      .filter({ gameId })
       .orderBy(r.desc('createdAt'))
       .skip(page * limit)
       .limit(limit)

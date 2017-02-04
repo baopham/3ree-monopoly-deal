@@ -2,11 +2,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
-import type { GameHistoryState } from '../../modules/gameHistory'
 import { parseToJxs } from '../../../../monopoly/logMessageParser'
+import { actions } from '../../modules/gameHistory'
+import type { GameHistoryState } from '../../modules/gameHistory'
 
 type Props = {
-  records: GameHistoryState
+  records: GameHistoryState,
+  getRecentHistoryLogs: () => void
 }
 
 const styles = {
@@ -22,6 +24,10 @@ const mapStateToProps = (state) => ({
 
 export class GameHistoryLog extends React.Component {
   props: Props
+
+  componentDidMount () {
+    this.props.getRecentHistoryLogs()
+  }
 
   render () {
     const { records } = this.props
@@ -52,4 +58,4 @@ export class GameHistoryLog extends React.Component {
   }
 }
 
-export default connect(mapStateToProps)(GameHistoryLog)
+export default connect(mapStateToProps, actions)(GameHistoryLog)
