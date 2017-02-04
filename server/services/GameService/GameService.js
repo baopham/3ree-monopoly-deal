@@ -96,7 +96,7 @@ export default class GameService {
 
   async getPaymentInfo (
     gameId: string
-  ): Promise<{ payers: Username[], amount: number, cardPlayed: CardKey, payee: Username }> {
+  ): Promise<{ payers: Username[], amount: number, cardPlayed: ?CardKey, payee: ?Username }> {
     const game = await this.gameRepository.find(gameId)
 
     let paymentInfo = {
