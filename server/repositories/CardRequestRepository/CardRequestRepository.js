@@ -39,4 +39,8 @@ export default class CardRequestRepository {
   find (id) {
     return CardRequest.get(id).run()
   }
+
+  getAllByGameId (gameId) {
+    return CardRequest.filter({ gameId }).run()
+  }
 }

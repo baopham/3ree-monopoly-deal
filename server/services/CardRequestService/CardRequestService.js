@@ -32,6 +32,16 @@ export default class CardRequestService {
     })
   }
 
+  async getCardRequestByGameId (gameId: string): Promise<CardRequest> {
+    const [cardRequest, ...rest] = await this.cardRequestRepository.getAllByGameId(gameId)
+
+    if (rest.length) {
+      throw new Error('There are multiple card requests!')
+    }
+
+    return cardRequest
+  }
+
   getCardRequest (id: string): Promise<CardRequest> {
     return this.cardRequestRepository.find(id)
   }

@@ -19,6 +19,7 @@ type Props = {
   dealBreaker: DealBreakerState,
   currentPlayer: Player,
   canSayNo: boolean,
+  getCurrentCardRequest: () => void,
   acceptSlyDeal: (requestId: string) => void,
   acceptForcedDeal: (requestId: string) => void,
   acceptDealBreaker: (requestId: string) => void
@@ -32,8 +33,12 @@ const mapStateToProps = (state) => ({
   canSayNo: canSayNo(state)
 })
 
-export class CardRequest extends React.Component {
+export class CardRequestAlert extends React.Component {
   props: Props
+
+  componentDidMount () {
+    this.props.getCurrentCardRequest()
+  }
 
   renderSayNoButtonForSlyDeal = () => {
     const { slyDeal, canSayNo } = this.props
@@ -137,7 +142,4 @@ export class CardRequest extends React.Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  { ...actions }
-)(CardRequest)
+export default connect(mapStateToProps, actions)(CardRequestAlert)

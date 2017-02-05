@@ -240,3 +240,11 @@ export function getPaymentInfo (req: AppRequest, res: express$Response) {
     .then(paymentInfo => res.json({ paymentInfo }))
     .catch(err => handleError(err, res))
 }
+
+export function getCardRequest (req: AppRequest, res: express$Response) {
+  const promise = cardRequestService.getCardRequestByGameId(req.params.id)
+
+  promise
+    .then(cardRequest => res.json({ cardRequest }))
+    .catch(err => handleError(err, res))
+}

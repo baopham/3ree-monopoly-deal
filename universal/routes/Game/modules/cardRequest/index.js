@@ -1,5 +1,7 @@
 /* @flow */
 import { combineReducers } from 'redux'
+import request from 'axios'
+import { apiUrl } from '../../../../ducks-utils'
 import cardRequestTypes from '../../../../monopoly/cardRequestTypes'
 import slyDeal, { actions as slyDealActions } from './slyDeal'
 import forcedDeal, { actions as forcedDealActions } from './forcedDeal'
@@ -11,6 +13,21 @@ import type { DealBreakerState } from './dealBreaker'
 // ------------------------------------
 // Action creators
 // ------------------------------------
+function getCurrentCardRequest (gameId: string) {
+  return (dispatch: Function, getState: Function) => {
+    const game = getState().currentGame.game
+    request.get(`${apiUrl}/games/${game.id}/card-request`)
+      .then(res => {
+        const { cardRequest } = res.data
+        const cardRequestUpdate = {
+          new_val: cardRequest
+        }
+
+        onCardRequestUpdate(dispatch, cardRequestUpdate)
+      })
+  }
+}
+
 function subscribeCardRequestEvent (gameId: string) {
   return (dispatch: Function, getState: Function) => {
     global.socket.on(`game-${gameId}-card-request-update`, onCardRequestUpdate.bind(this, dispatch))
@@ -53,6 +70,7 @@ function reset () {
 }
 
 export const actions = {
+  getCurrentCardRequest,
   subscribeCardRequestEvent,
   unsubscribeCardRequestEvent,
   reset,
