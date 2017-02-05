@@ -34,5 +34,6 @@ router.put('/api/v1/games/:id/target-payment', game.targetPayment)
 router.get('/api/v1/games/:id/history', game.getRecentHistoryLogs)
 router.get('/api/v1/games/:id/payment-info', game.getPaymentInfo)
 router.get('/api/v1/games/:id/card-request', game.getCardRequest)
+router.get('/api/v1/games/:id/say-no-status', game.getSayNoStatus)
 
 module.exports = router

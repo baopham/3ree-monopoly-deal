@@ -30,6 +30,10 @@ export default class SayNoService {
     })
   }
 
+  getSayNoStatus (gameId: string): Promise<SayNo> {
+    return this.sayNoRepository.findByGameId(gameId)
+  }
+
   async sayNoToUser (
     gameId: string, fromUser: Username, toUser: Username, cause: SayNoCause, causeInfo: SayNoCauseInfo
   ): Promise<SayNo> {

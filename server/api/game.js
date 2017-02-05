@@ -248,3 +248,11 @@ export function getCardRequest (req: AppRequest, res: express$Response) {
     .then(cardRequest => res.json({ cardRequest }))
     .catch(err => handleError(err, res))
 }
+
+export function getSayNoStatus (req: AppRequest, res: express$Response) {
+  const promise = sayNoService.getSayNoStatus(req.params.id)
+
+  promise
+    .then(sayNo => res.json({ sayNo }))
+    .catch(err => handleError(err, res))
+}

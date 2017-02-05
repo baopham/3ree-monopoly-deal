@@ -12,23 +12,26 @@ type Props = {
   fromUser: Username,
   toUser: Username,
   cause: SayNoCause,
-  waitingForResponse: boolean,
   currentPlayer: Player,
   canRespondToASayNo: boolean,
-  acceptSayNo: () => void
+  acceptSayNo: () => void,
+  getCurrentSayNoStatus: () => void
 }
 
 const mapStateToProps = (state) => ({
   fromUser: state.sayNo.fromUser,
   toUser: state.sayNo.toUser,
   cause: state.sayNo.cause,
-  waitingForResponse: state.sayNo.waitingForResponse,
   currentPlayer: getCurrentPlayer(state),
   canRespondToASayNo: canRespondToASayNo(state)
 })
 
 export class SayNoAlert extends React.Component {
   props: Props
+
+  componentDidMount () {
+    this.props.getCurrentSayNoStatus()
+  }
 
   render () {
     const {
@@ -37,9 +40,10 @@ export class SayNoAlert extends React.Component {
       cause,
       currentPlayer,
       canRespondToASayNo,
-      acceptSayNo,
-      waitingForResponse
+      acceptSayNo
     } = this.props
+
+    const waitingForResponse = currentPlayer.username === fromUser
 
     return (
       <AlertBar show={toUser === currentPlayer.username || waitingForResponse}>
@@ -61,7 +65,7 @@ export class SayNoAlert extends React.Component {
         }
         {waitingForResponse &&
           <div>
-            {`You said NO to ${toUser}. Waiting for response from them`}
+            {`You said NO to ${toUser}. Waiting for their response`}
           </div>
         }
       </AlertBar>

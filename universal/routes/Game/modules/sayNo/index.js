@@ -26,6 +26,18 @@ const ERROR = ns('ERROR')
 // ------------------------------------
 // Action creators
 // ------------------------------------
+function getCurrentSayNoStatus () {
+  return (dispatch: Function, getState: Function) => {
+    const game = getState().currentGame.game
+
+    request.get(`${gamesUrl}/${game.id}/say-no-status`)
+      .then(res => {
+        const { sayNo } = res.data
+        dispatch(updateSayNoState(sayNo))
+      })
+  }
+}
+
 function sayNo (toUser: Username, cause: SayNoCause) {
   return (dispatch: Function, getState: Function) => {
     const [gameId, fromUser] = getGameIdAndCurrentPlayerUsername(getState())
@@ -127,6 +139,7 @@ function reset () {
 }
 
 export const actions = {
+  getCurrentSayNoStatus,
   sayNo,
   updateSayNoState,
   acceptSayNo,
@@ -143,7 +156,6 @@ export type SayNoState = {
   toUser: ?Username,
   cause: ?SayNoCause,
   causeInfo: ?SayNoCauseInfo,
-  waitingForResponse: boolean,
   isWorking: boolean,
   error: mixed
 }
@@ -153,7 +165,6 @@ const initialState: SayNoState = {
   toUser: null,
   cause: null,
   causeInfo: null,
-  waitingForResponse: false,
   isWorking: false,
   error: null
 }
@@ -171,7 +182,6 @@ export default function reducer (state: SayNoState = initialState, action: Redux
         toUser: action.toUser,
         cause: action.cause,
         causeInfo: action.causeInfo,
-        waitingForResponse: true,
         isWorking: false
       }
 
