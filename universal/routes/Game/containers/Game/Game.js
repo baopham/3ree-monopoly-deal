@@ -12,20 +12,22 @@ import Board from '../Board'
 import WinnerNotification from '../../components/WinnerNotification'
 import SayNoAlert from '../SayNoAlert'
 import CardRequestAlert from '../CardRequestAlert'
-import { getCurrentPlayer } from '../../modules/gameSelectors'
+import { getCurrentPlayer, paymentOrCardRequestStillPending } from '../../modules/gameSelectors'
 import { actions as gameActions } from '../../modules/currentGame'
 import { MAX_NUMBER_OF_ACTIONS } from '../../../../monopoly/monopoly'
 
 type Props = {
   game: Game,
   currentPlayer: Player,
+  paymentOrCardRequestStillPending: boolean,
   join: (username: Username) => void,
   endTurn: () => void
 }
 
 const mapStateToProps = (state) => ({
   game: state.currentGame.game,
-  currentPlayer: getCurrentPlayer(state)
+  currentPlayer: getCurrentPlayer(state),
+  paymentOrCardRequestStillPending: paymentOrCardRequestStillPending(state)
 })
 
 export class GameComponent extends React.Component {
@@ -44,7 +46,10 @@ export class GameComponent extends React.Component {
       return
     }
 
-    if (nextProps.currentPlayer.actionCounter === MAX_NUMBER_OF_ACTIONS) {
+    if (
+      nextProps.currentPlayer.actionCounter === MAX_NUMBER_OF_ACTIONS &&
+      !nextProps.paymentOrCardRequestStillPending
+    ) {
       this.props.endTurn()
     }
   }

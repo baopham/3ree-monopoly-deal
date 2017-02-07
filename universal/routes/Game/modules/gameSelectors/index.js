@@ -5,11 +5,13 @@ import type { CurrentGameState } from '../currentGame'
 import type { PaymentState } from '../payment'
 import type { CurrentPlayerCardsOnHandState } from '../currentPlayerCardsOnHand'
 import type { SayNoState } from '../sayNo'
+import type { CardRequestState } from '../cardRequest'
 
 const getCurrentGame = state => state.currentGame
 const getPayment = state => state.payment
 const getCurrentPlayerCardsOnHand = state => state.currentPlayerCardsOnHand
 const getSayNoState = state => state.sayNo
+const getCardRequest = state => state.cardRequest
 
 export const getCurrentPlayer = createSelector(
   getCurrentGame,
@@ -74,5 +76,30 @@ export const canRespondToASayNo = createSelector(
   canSayNo, getSayNoState, getCurrentPlayer,
   (canSayNo: boolean, sayNo: SayNoState, currentPlayer: ?Player): boolean => {
     return !!currentPlayer && currentPlayer.username === sayNo.toUser && canSayNo
+  }
+)
+
+export const paymentOrCardRequestStillPending = createSelector(
+  getCurrentGame, getCurrentPlayer, getPayment, getCardRequest,
+  (
+    currentGame: CurrentGameState,
+    currentPlayer: ?Player,
+    payment: PaymentState,
+    cardRequest: CardRequestState
+  ): boolean => {
+    if (!currentGame.game || !currentPlayer) {
+      return false
+    }
+
+    const { username } = currentPlayer
+
+    return (payment.payers && payment.payers.includes(username)) ||
+      payment.payee === username ||
+      cardRequest.slyDeal.fromUser === username ||
+      cardRequest.slyDeal.toUser === username ||
+      cardRequest.forcedDeal.fromUser === username ||
+      cardRequest.forcedDeal.toUser === username ||
+      cardRequest.dealBreaker.fromUser === username ||
+      cardRequest.dealBreaker.toUser === username
   }
 )
