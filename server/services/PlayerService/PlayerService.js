@@ -9,6 +9,7 @@ import {
   HOTEL,
   RENT_ALL_COLOUR,
   DEBT_COLLECTOR,
+  PASS_GO,
   newDeck,
   getCardObject
 } from '../../../universal/monopoly/cards'
@@ -100,7 +101,11 @@ export default class PlayerService {
     }
   }
 
-  async playCard (gameId: string, username: Username, cardKey: CardKey): Promise<*> {
+  async playCard (
+    gameId: string,
+    username: Username,
+    cardKey: CardKey
+  ): Promise<[?CardKey[], Player, GameHistoryRecord]> {
     const promises = [
       this.playerRepository.findByGameIdAndUsername(gameId, username)
     ]
@@ -130,6 +135,7 @@ export default class PlayerService {
     const playersToNotify = player.payeeInfo ? player.payeeInfo.payers : undefined
 
     return Promise.all([
+      cardKey === PASS_GO ? this._drawCards(player) : Promise.resolve(null),
       player.saveAll(),
       this.gameHistoryService.record(gameId, `${username} played ${markCard(cardKey)}`, playersToNotify)
     ])
@@ -206,36 +212,7 @@ export default class PlayerService {
   async drawCards (gameId: string, username: Username, emptyHand: boolean = false): Promise<CardKey[]> {
     const player: Player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-    if (player.game.currentTurn !== player.username) {
-      return Promise.reject(new Error(`Not ${username} turn yet`))
-    }
-
-    if (!player.game.availableCards) {
-      return Promise.reject(new Error('No available cards'))
-    }
-
-    if (player.game.availableCards.length < 2 || (emptyHand && player.game.availableCards.length < 5)) {
-      player.game.availableCards = newDeck()
-    }
-
-    let drawnCards
-
-    if (!emptyHand) {
-      const [first, second, ...rest] = player.game.availableCards
-      player.game.availableCards = rest
-      drawnCards = [first, second]
-    } else {
-      const [first, second, third, fourth, fifth, ...rest] = player.game.availableCards
-      player.game.availableCards = rest
-      drawnCards = [first, second, third, fourth, fifth]
-    }
-
-    await Promise.all([
-      this.gameHistoryService.record(gameId, `${player.game.currentTurn} picked up 2 cards`),
-      player.saveAll()
-    ])
-
-    return drawnCards
+    return this._drawCards(player, emptyHand)
   }
 
   async removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
@@ -290,4 +267,38 @@ export default class PlayerService {
       return `${payer} paid ${payee} $${dueAmount}M with ${allCards.join(' ')}`
     }
   }
+
+  async _drawCards (player: Player, emptyHand: boolean = false): Promise<CardKey[]> {
+    if (player.game.currentTurn !== player.username) {
+      return Promise.reject(new Error(`Not ${player.username} turn yet`))
+    }
+
+    if (!player.game.availableCards) {
+      return Promise.reject(new Error('No available cards'))
+    }
+
+    if (player.game.availableCards.length < 2 || (emptyHand && player.game.availableCards.length < 5)) {
+      player.game.availableCards = newDeck()
+    }
+
+    let drawnCards
+
+    if (!emptyHand) {
+      const [first, second, ...rest] = player.game.availableCards
+      player.game.availableCards = rest
+      drawnCards = [first, second]
+    } else {
+      const [first, second, third, fourth, fifth, ...rest] = player.game.availableCards
+      player.game.availableCards = rest
+      drawnCards = [first, second, third, fourth, fifth]
+    }
+
+    await Promise.all([
+      this.gameHistoryService.record(player.game.id, `${player.game.currentTurn} picked up 2 cards`),
+      player.saveAll()
+    ])
+
+    return drawnCards
+  }
+
 }

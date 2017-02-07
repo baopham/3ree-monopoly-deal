@@ -52,7 +52,7 @@ export function playCard (req: AppRequest, res: express$Response) {
   const promise = playerService.playCard(req.params.id, req.body.username, req.body.card)
 
   promise
-    .then(() => res.json({ success: true }))
+    .then(([goCardResult]) => res.json({ goCardResult }))
     .catch(err => handleError(err, res))
 }
 

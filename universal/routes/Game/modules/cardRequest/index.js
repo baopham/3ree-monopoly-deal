@@ -19,6 +19,11 @@ function getCurrentCardRequest (gameId: string) {
     request.get(`${apiUrl}/games/${game.id}/card-request`)
       .then(res => {
         const { cardRequest } = res.data
+
+        if (!cardRequest) {
+          return
+        }
+
         const cardRequestUpdate = {
           new_val: cardRequest
         }

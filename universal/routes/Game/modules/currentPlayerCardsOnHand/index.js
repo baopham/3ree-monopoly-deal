@@ -1,7 +1,6 @@
 /* @flow */
 import { namespace, deepmerge, apiUrl, getGameIdAndCurrentPlayerUsername } from '../../../../ducks-utils'
 import request from 'axios'
-import { PASS_GO } from '../../../../monopoly/cards'
 import * as monopoly from '../../../../monopoly/monopoly'
 import { getCurrentPlayer } from '../gameSelectors'
 
@@ -90,8 +89,6 @@ function playCard (card: CardKey) {
       }
 
       dispatch({ type: PLAY_CARD_SUCCESS, payload: res.data, card })
-
-      card === PASS_GO && dispatch(drawCards())
     }
 
     function handleErrorRequest (error) {
@@ -198,12 +195,14 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
     case PLACE_CARD_SUCCESS:
     case PLAY_CARD_SUCCESS: {
       const indexToRemove = state.cardsOnHand.indexOf(action.card)
+      const goCardResult = (action.payload && action.payload.goCardResult) || []
 
       return {
         ...state,
         cardsOnHand: [
           ...state.cardsOnHand.slice(0, indexToRemove),
-          ...state.cardsOnHand.slice(indexToRemove + 1)
+          ...state.cardsOnHand.slice(indexToRemove + 1),
+          ...goCardResult
         ]
       }
     }
