@@ -110,6 +110,96 @@ export function getCardPaymentAmount (game: Game, player: Player, cardKey: CardK
   return basePaymentAmount
 }
 
+export function validatePayerHasGivenCards (
+  player: Player,
+  bankCards: CardKey[],
+  leftOverCards: CardKey[],
+  mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
+): boolean {
+  if (player.placedCards.bank.length < bankCards.length) {
+    return false
+  }
+
+  const validBankCards = itemsAreValid(bankCards, player.placedCards.bank)
+
+  if (!validBankCards) {
+    return false
+  }
+
+  const validLeftOverCards = itemsAreValid(leftOverCards, player.placedCards.leftOverCards)
+
+  if (!validLeftOverCards) {
+    return false
+  }
+
+  if (!nonMoneyCardsAreValid()) {
+    return false
+  }
+
+  return true
+
+  //////
+  function itemsAreValid<T> (items: Array<T>, collection: Array<T>): boolean {
+    if (!items.length) {
+      return true
+    }
+
+    const cloneOfCollection = [...collection]
+
+    return items.every(item => {
+      const hasItemToPay = cloneOfCollection.includes(item)
+      sideEffectUtils.removeFirstInstanceFromArray(item, cloneOfCollection)
+      return hasItemToPay
+    })
+  }
+
+  function nonMoneyCardsAreValid (): boolean {
+    if (!mapOfNonMoneyCards.size) {
+      return true
+    }
+
+    const mapOfPlayerPropertySets: Map<PropertySetId, PropertySet> = player.placedCards.serializedPropertySets
+      .reduce((acc, item) => {
+        const set = PropertySet.unserialize(item)
+        acc.set(set.getId(), set)
+        return acc
+      }, new Map())
+
+    return Array.from(mapOfNonMoneyCards.keys()).every(id => {
+      const set = mapOfPlayerPropertySets.get(id)
+
+      if (!set) {
+        return false
+      }
+
+      return itemsAreValid(mapOfNonMoneyCards.get(id) || [], set.getCards())
+    })
+  }
+}
+
+export function validatePayerPaymentAmount (
+  player: Player,
+  bankCards: CardKey[],
+  leftOverCards: CardKey[],
+  mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>,
+  dueAmount: number
+): boolean {
+  const allCards = Array.from(mapOfNonMoneyCards.values())
+    .reduce((acc, cards) => acc.concat(cards), [])
+    .concat(bankCards)
+    .concat(leftOverCards)
+
+  const totalAmount = monopoly.getTotalMoneyFromCards(allCards)
+
+  if (totalAmount >= dueAmount) {
+    return true
+  }
+
+  return player.placedCards.bank.length === bankCards.length &&
+    player.placedCards.leftOverCards.length === leftOverCards.length &&
+    player.placedCards.serializedPropertySets.length === mapOfNonMoneyCards.size
+}
+
 function convertMapOfNonMoneyCards (
   mapOfNonMoneyCards: Map<PropertySetId, CardKey[]>
 ): [SerializedPropertySet[], CardKey[]] {

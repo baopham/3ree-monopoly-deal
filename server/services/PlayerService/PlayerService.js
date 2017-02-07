@@ -241,6 +241,13 @@ export default class PlayerService {
 
     const dueAmount = payeePlayer.payeeInfo.amount
 
+    if (
+      !paymentHelper.validatePayerHasGivenCards(payerPlayer, bankCards, leftOverCards, mapOfNonMoneyCards) ||
+      !paymentHelper.validatePayerPaymentAmount(payerPlayer, bankCards, leftOverCards, mapOfNonMoneyCards, dueAmount)
+    ) {
+      throw new Error(`Payer ${payerPlayer.username} is trying to cheat!`)
+    }
+
     return Promise.all([
       updatePayer(payerPlayer),
       updatePayee(payeePlayer),
