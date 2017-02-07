@@ -7,7 +7,7 @@ import { CardsOnHand } from '../universal/routes/Game/containers/CardsOnHand/Car
 import { SayNoButton } from '../universal/routes/Game/containers/SayNoButton/SayNoButton'
 import DealBreakerForm from '../universal/routes/Game/components/DealBreakerForm'
 import DealBreakerAlert from '../universal/routes/Game/components/DealBreakerAlert'
-import AutoPaymentAlert from '../universal/routes/Game/components/AutoPaymentAlert'
+import PaymentAlert from '../universal/routes/Game/components/PaymentAlert'
 import PlayerSelectorForm from '../universal/routes/Game/components/PlayerSelectorForm'
 import PropertySet from '../universal/monopoly/PropertySet'
 import { MONEY_1M, PROPERTY_BLUE, getCardObject } from '../universal/monopoly/cards'
@@ -129,9 +129,9 @@ storiesOf('PlayerSelectorForm', module)
     />
   ))
 
-storiesOf('AutoPaymentAlert', module)
-  .add('paying using all cards in 10s', () => (
-    <AutoPaymentAlert
+storiesOf('PaymentAlert', module)
+  .add('paying using all cards', () => (
+    <PaymentAlert
       payee='bao'
       dueAmount={60}
       cards={{
@@ -144,7 +144,7 @@ storiesOf('AutoPaymentAlert', module)
     />
   ))
   .add('having no cards to pay', () => (
-    <AutoPaymentAlert
+    <PaymentAlert
       payee='bao'
       dueAmount={60}
       cards={{

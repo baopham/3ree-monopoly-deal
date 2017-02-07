@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PaymentForm from '../../components/PaymentForm'
-import AutoPaymentAlert from '../../components/AutoPaymentAlert'
+import PaymentAlert from '../../components/PaymentAlert'
 import PaymentInProgressAlert from '../../components/PaymentInProgressAlert'
 import SayNoButton from '../SayNoButton'
 import { getCurrentPlayer, isPayee, isPayer, canSayNo } from '../../modules/gameSelectors'
@@ -79,7 +79,7 @@ export class GamePayment extends React.Component {
         }
 
         {payment.payee && isPayer && !needToPayAndHaveEnoughMoney &&
-          <AutoPaymentAlert
+          <PaymentAlert
             onPay={this.onPay}
             cards={currentPlayer.placedCards}
             payee={payment.payee}

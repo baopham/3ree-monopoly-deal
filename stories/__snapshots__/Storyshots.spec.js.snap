@@ -1,7 +1,3 @@
-exports[`Storyshots AutoPaymentAlert having no cards to pay 1`] = `<noscript />`;
-
-exports[`Storyshots AutoPaymentAlert paying using all cards in 10s 1`] = `<noscript />`;
-
 exports[`Storyshots CardsOnHand with a playable forced deal 1`] = `
 <div
   className="panel panel-default"
@@ -569,6 +565,10 @@ exports[`Storyshots GamesView list of games 1`] = `
   </div>
 </div>
 `;
+
+exports[`Storyshots PaymentAlert having no cards to pay 1`] = `<noscript />`;
+
+exports[`Storyshots PaymentAlert paying using all cards 1`] = `<noscript />`;
 
 exports[`Storyshots PlayerSelectorForm selecting a player 1`] = `<noscript />`;
 
