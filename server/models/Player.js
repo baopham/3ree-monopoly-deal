@@ -1,6 +1,7 @@
 import thinky from '../thinky'
 
 const type = thinky.type
+const r = thinky.r
 
 const Player = thinky.createModel('game_players', {
   id: type.string(),
@@ -12,7 +13,8 @@ const Player = thinky.createModel('game_players', {
     serializedPropertySets: [],
     leftOverCards: []
   }),
-  payeeInfo: type.object()
+  payeeInfo: type.object(),
+  createdAt: type.date().default(r.now())
 })
 
 module.exports = Player

@@ -43,7 +43,11 @@ export default class GameRepository {
   }
 
   find (id) {
-    return Game.get(id).getJoin({ players: true }).run()
+    return Game.get(id).getJoin({
+      players: {
+        _apply: sequence => sequence.orderBy(r.asc('createdAt'))
+      }
+    }).run()
   }
 
   getCount () {
