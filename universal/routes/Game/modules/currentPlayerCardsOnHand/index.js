@@ -37,7 +37,7 @@ function drawCards () {
       const cardsOnHand = getState().currentPlayerCardsOnHand.cardsOnHand
       return request.get(`${gamesUrl}/${id}/draw`, {
         params: {
-          emptyHand: cardsOnHand ? !cardsOnHand.length : false,
+          emptyHand: !cardsOnHand.length,
           username
         }
       })
@@ -161,13 +161,13 @@ export const actions = {
 // Reducer
 // ------------------------------------
 export type CurrentPlayerCardsOnHandState = {
-  cardsOnHand: ?CardKey[],
+  cardsOnHand: CardKey[],
   isWorking: boolean,
   error: mixed
 }
 
 const initialState: CurrentPlayerCardsOnHandState = {
-  cardsOnHand: null,
+  cardsOnHand: [],
   isWorking: false,
   error: null
 }
@@ -181,10 +181,9 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
       return deepmerge(state, { isWorking: true, error: null })
 
     case DRAW_CARDS_SUCCESS: {
-      const previousCardsOnHand = state.cardsOnHand || []
       return {
         ...state,
-        cardsOnHand: previousCardsOnHand.concat(action.payload.cards)
+        cardsOnHand: state.cardsOnHand.concat(action.payload.cards)
       }
     }
 
@@ -198,14 +197,13 @@ export default function reducer (state: CurrentPlayerCardsOnHandState = initialS
     case DISCARD_CARD_SUCCESS:
     case PLACE_CARD_SUCCESS:
     case PLAY_CARD_SUCCESS: {
-      const cardsOnHand = state.cardsOnHand || []
-      const indexToRemove = cardsOnHand.indexOf(action.card)
+      const indexToRemove = state.cardsOnHand.indexOf(action.card)
 
       return {
         ...state,
         cardsOnHand: [
-          ...cardsOnHand.slice(0, indexToRemove),
-          ...cardsOnHand.slice(indexToRemove + 1)
+          ...state.cardsOnHand.slice(0, indexToRemove),
+          ...state.cardsOnHand.slice(indexToRemove + 1)
         ]
       }
     }
