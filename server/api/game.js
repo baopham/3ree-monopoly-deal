@@ -57,10 +57,10 @@ export function playCard (req: AppRequest, res: express$Response) {
 }
 
 export function joinGame (req: AppRequest, res: express$Response) {
-  const promise = gameService.addPlayer(req.params.id, req.body.username)
+  const promise = playerService.joinGame(req.params.id, req.body.username)
 
   promise
-    .then(newPlayer => res.json({ newPlayer }))
+    .then(([newPlayer, initialCards]) => res.json({ newPlayer, initialCards }))
     .catch(err => handleError(err, res))
 }
 

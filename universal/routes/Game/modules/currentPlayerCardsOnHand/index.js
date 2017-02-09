@@ -44,6 +44,13 @@ function drawCards () {
   }
 }
 
+function setCardsOnHand (cards: CardKey[]) {
+  return {
+    type: DRAW_CARDS_SUCCESS,
+    payload: { cards }
+  }
+}
+
 function discardCard (card: CardKey) {
   return {
     types: [DISCARD_CARD_REQUEST, DISCARD_CARD_SUCCESS, ERROR],
@@ -147,6 +154,7 @@ function reset () {
 export const actions = {
   reset,
   drawCards,
+  setCardsOnHand,
   playCard,
   placeCard,
   discardCard,

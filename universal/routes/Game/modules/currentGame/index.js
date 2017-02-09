@@ -58,6 +58,10 @@ function join (username: Username) {
     promise: (dispatch: Function, getState: Function) => {
       const id = getState().currentGame.game.id
       return request.post(`${gamesUrl}/${id}/join`, { username })
+        .then((response) => {
+          dispatch(currentPlayerCardsOnHandActions.setCardsOnHand(response.data.initialCards))
+          return response
+        })
     }
   }
 }

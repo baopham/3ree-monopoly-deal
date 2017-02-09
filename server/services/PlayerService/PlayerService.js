@@ -135,7 +135,7 @@ export default class PlayerService {
     const playersToNotify = player.payeeInfo ? player.payeeInfo.payers : undefined
 
     return Promise.all([
-      cardKey === PASS_GO ? this._drawCards(player) : Promise.resolve(null),
+      cardKey === PASS_GO ? Promise.resolve(this._pickUpCards(player, player.game)) : Promise.resolve(null),
       player.saveAll(),
       this.gameHistoryService.record(gameId, `${username} played ${markCard(cardKey)}`, playersToNotify)
     ])
@@ -209,10 +209,35 @@ export default class PlayerService {
     return game.currentTurn
   }
 
+  async joinGame (gameId: string, username: Username): Promise<[Player, CardKey[]]> {
+    const newPlayer: Player = await this.playerRepository.joinGame(gameId, username)
+
+    const [game: Game] = await Promise.all([
+      this.gameService.getGame(gameId, true),
+      this.gameHistoryService.record(gameId, `${newPlayer.username} has joined`)
+    ])
+
+    newPlayer.game = game
+
+    const initialCards = this._pickUpCards(newPlayer, newPlayer.game, true)
+
+    if (game.currentTurn) {
+      return [newPlayer, initialCards]
+    }
+
+    await Object.assign(game, { currentTurn: username }).save()
+
+    return [newPlayer, initialCards]
+  }
+
   async drawCards (gameId: string, username: Username, emptyHand: boolean = false): Promise<CardKey[]> {
     const player: Player = await this.playerRepository.findByGameIdAndUsername(gameId, username)
 
-    return this._drawCards(player, emptyHand)
+    if (player.game.currentTurn !== player.username) {
+      throw new Error(`Not ${player.username} turn yet`)
+    }
+
+    return this._pickUpCards(player, player.game, emptyHand)
   }
 
   async removePayer (gameId: string, payer: Username, payee: Username): Promise<*> {
@@ -275,37 +300,25 @@ export default class PlayerService {
     }
   }
 
-  async _drawCards (player: Player, emptyHand: boolean = false): Promise<CardKey[]> {
-    if (player.game.currentTurn !== player.username) {
-      return Promise.reject(new Error(`Not ${player.username} turn yet`))
+  _pickUpCards (player: Player, game: Game, emptyHand: boolean = false): CardKey[] {
+    if (!game.availableCards) {
+      throw new Error('No available cards')
     }
 
-    if (!player.game.availableCards) {
-      return Promise.reject(new Error('No available cards'))
+    if (game.availableCards.length < 2 || (emptyHand && game.availableCards.length < 5)) {
+      game.availableCards = newDeck()
     }
-
-    if (player.game.availableCards.length < 2 || (emptyHand && player.game.availableCards.length < 5)) {
-      player.game.availableCards = newDeck()
-    }
-
-    let drawnCards
 
     if (!emptyHand) {
-      const [first, second, ...rest] = player.game.availableCards
-      player.game.availableCards = rest
-      drawnCards = [first, second]
-    } else {
-      const [first, second, third, fourth, fifth, ...rest] = player.game.availableCards
-      player.game.availableCards = rest
-      drawnCards = [first, second, third, fourth, fifth]
+      const [first, second, ...rest] = game.availableCards
+      game.availableCards = rest
+      return [first, second]
     }
 
-    await Promise.all([
-      this.gameHistoryService.record(player.game.id, `${player.game.currentTurn} picked up 2 cards`),
-      player.saveAll()
-    ])
+    const [first, second, third, fourth, fifth, ...rest] = game.availableCards
 
-    return drawnCards
+    game.availableCards = rest
+
+    return [first, second, third, fourth, fifth]
   }
-
 }

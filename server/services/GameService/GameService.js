@@ -63,23 +63,6 @@ export default class GameService {
     return this.gameRepository.delete(id)
   }
 
-  async addPlayer (gameId: string, username: Username): Promise<Player> {
-    const newPlayer: Player = await this.playerRepository.joinGame(gameId, username)
-
-    const [game: Game] = await Promise.all([
-      this.gameRepository.find(gameId),
-      this.gameHistoryService.record(gameId, `${newPlayer.username} has joined`)
-    ])
-
-    if (game.currentTurn) {
-      return newPlayer
-    }
-
-    await Object.assign(game, { currentTurn: username }).save()
-
-    return newPlayer
-  }
-
   async setWinner (gameId: string, winner: Username): Promise<*> {
     const player = await this.playerRepository.findByGameIdAndUsername(gameId, winner)
 
