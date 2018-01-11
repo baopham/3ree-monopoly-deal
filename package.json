@@ -45,7 +45,7 @@
     "classnames": "2.2.x",
     "compression": "^1.6.2",
     "config": "1.19.x",
-    "ejs": "2.3.x",
+    "ejs": "2.5.5",
     "express": "4.13.x",
     "history": "1.13.x",
     "lodash": "^4.16.6",
